@@ -1,9 +1,0 @@
-<application>
-  <component name="AcceptedLanguageLevels">
-    <explicitly-accepted>
-      <name>JDK_13_PREVIEW</name>
-      <name>JDK_12_PREVIEW</name>
-      <name>JDK_13</name>
-    </explicitly-accepted>
-  </component>
-</application>
