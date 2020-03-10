@@ -1,0 +1,9 @@
+<application>
+  <component name="ParameterNameHintsSettings">
+    <blacklists>
+      <blacklist language="Java">
+        <added pattern="javax.swing.JFrame.JFrame(title)" />
+      </blacklist>
+    </blacklists>
+  </component>
+</application>
