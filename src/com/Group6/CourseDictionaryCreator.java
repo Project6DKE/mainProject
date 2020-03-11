@@ -11,33 +11,16 @@ public class CourseDictionaryCreator {
     public static boolean autosave;
 
     public static void main(String args[]) throws FileNotFoundException {
-        String file = "Course2.txt";
+        String file = "src/com/Group6/Course2.txt";
         Scanner in = new Scanner(new File(file));
 
         while (in.hasNext()) {
             String key = in.next();
-            System.out.println(key);
             String value = in.next();
-            System.out.println(value);
 
+            System.out.println(key + ": " + value);
             courseDictionary.put(key, value);
         }
-
-        System.out.println(courseDictionary.get("g"));
-        System.out.println(courseDictionary.get("mass_of_ball"));
-        System.out.println(courseDictionary.get("mu"));
-        System.out.println(courseDictionary.get("vmax"));
-        System.out.println(courseDictionary.get("tol"));
-        System.out.println(courseDictionary.get("startX"));
-        System.out.println(courseDictionary.get("startY"));
-        System.out.println(courseDictionary.get("goalX"));
-        System.out.println(courseDictionary.get("goalY"));
-        System.out.println(courseDictionary.get("heightX"));
-        System.out.println(courseDictionary.get("heightX2"));
-        System.out.println(courseDictionary.get("heightY"));
-        System.out.println(courseDictionary.get("ballposX"));
-        System.out.println(courseDictionary.get("ballposY"));
-        System.out.println(courseDictionary.get("stroke"));
 
         if(courseDictionary.get("stroke").equals("0") ){
             autosave = false;
