@@ -9,6 +9,7 @@ public class CourseReader {
     private static double gravity;
     private static double mass_of_ball;
     private static double mu; //coefficient of friction
+    private static double vmax; //Maximum initial ball speed
     private static double tol; //distance from hole
     private static double startX;
     private static double startY;
@@ -25,6 +26,9 @@ public class CourseReader {
     public double getFriction(){
 
         return mu;
+    }
+    public double getVmax(){
+        return vmax;
     }
     public double getHoleDistance(){
 
@@ -78,7 +82,34 @@ public class CourseReader {
                                gravity = Double.parseDouble(word[j + 2]);
                             }
                         }
-                    break;
+                    case 1:
+                        for (int j = 0; j < word.length; j++) {
+                            if (word[j].equals("m")) {
+                                mass_of_ball = Double.parseDouble(word[j + 2]);
+                            }
+                        }
+
+                    case 2:
+                        for (int j = 0; j < word.length; j++) {
+                            if (word[j].equals("mu")) {
+                                mu = Double.parseDouble(word[j + 2]);
+                            }
+                        }
+
+                    case 3:
+                        for (int j = 0; j < word.length; j++) {
+                            if (word[j].equals("vmax")) {
+                                vmax = Double.parseDouble(word[j + 2]);
+                            }
+                        }
+                    case 4:
+                        for (int j = 0; j < word.length; j++) {
+                            if (word[j].equals("tol")) {
+                                tol = Double.parseDouble(word[j + 2]);
+                            }
+                        }
+
+                                break;
                 }
                 i++;
             }
