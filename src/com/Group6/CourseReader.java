@@ -18,6 +18,10 @@ public class CourseReader {
     private static double heightXcoeff;
     private static double heightX2coeff;
     private static double heightYcoeff;
+    private static double ballposX;
+    private static double ballposY;
+    private static int stroke;
+    private static boolean autosave;
 
     public static void main(String args[]) {
         String file = "Course1.txt"; // change the txt name here
@@ -90,9 +94,25 @@ public class CourseReader {
                             }
                         }
                     break;
+                    case 12:
+                        for(int j = 0; j<word.length; j++){
+                            if(word[j].equals("ballpos")){
+                                ballposX = Double.parseDouble(word[j + 3]);
+                                ballposY = Double.parseDouble(word[j + 5]);
+                            }
+                        }
+                    break;
+                    case 13:
+                        for(int j = 0; j<word.length; j++){
+                            if(word[j].equals("stroke")){
+                                stroke = Integer.parseInt(word[j + 2]);
+                            }
+                        }
+                    break;
             }
             i++;
-        }}
+        }
+    }
         catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -103,9 +123,17 @@ public class CourseReader {
         System.out.println(mass_of_ball);
         System.out.println(mu);
         System.out.println(vmax);
+        System.out.println(tol);
         System.out.println(startX + "   " + startY);
         System.out.println(goalX + "   " + goalY);
         System.out.println(heightXcoeff + "   " + heightX2coeff + "   " + heightYcoeff);
+        System.out.println(ballposX + "   " + ballposY);
+        System.out.println(stroke);
+        if(stroke==0){
+            autosave = false;
+        }
+        else{
+            autosave = true;
+        }
     }
-
 }
