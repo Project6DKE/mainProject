@@ -1,5 +1,5 @@
-g = 9.81 ;   // Gravitational acceleration 
-[m/s^2]m = 45.93 ;  // Mass of ball [g] 
+g = 9.81 ;   // Gravitational acceleration
+[m/s^2]m = 45.93 ;  // Mass of ball [g]
 mu = 0.131 ; // Coefficient of friction (rolling ball)// Typical 0.065<=mu<=0.196
 
 vmax = 3 ;    // Maximum initial ball speed [m/s]

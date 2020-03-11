@@ -1,3 +1,5 @@
+package com.Group6;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -5,7 +7,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class CourseReader {
-    
+
     private static double gravity;
     private static double mass_of_ball;
     private static double mu; //coefficient of friction
@@ -37,38 +39,38 @@ public class CourseReader {
                     case 0:
                         for (int j = 0; j < word.length; j++) {
                             if (word[j].equals("g")) {
-                               gravity = Double.parseDouble(word[j + 2]);
+                                gravity = Double.parseDouble(word[j + 2]);
                             }
                         }
-                    break;
+                        break;
                     case 1:
                         for (int j = 0; j < word.length; j++) {
                             if (word[j].equals("[m/s^2]m")) {
-                               mass_of_ball = Double.parseDouble(word[j + 2]);
+                                mass_of_ball = Double.parseDouble(word[j + 2]);
                             }
-                    }
-                    break;
+                        }
+                        break;
                     case 2:
                         for (int l = 0; l<word.length; l++) {
                             if (word[l].equals("mu")) {
                                 mu = Double.parseDouble(word[l + 2]);
                             }
-                    }
-                    break;
+                        }
+                        break;
                     case 4:
                         for(int j = 0; j<word.length; j++){
                             if(word[j].equals("vmax")){
                                 vmax = Double.parseDouble(word[j + 2]);
                             }
                         }
-                    break;
+                        break;
                     case 5:
                         for(int j = 0; j<word.length; j++){
                             if(word[j].equals("tol")){
                                 tol = Double.parseDouble(word[j + 2]);
                             }
                         }
-                    break;
+                        break;
                     case 7:
                         for(int j = 0; j<word.length; j++){
                             if(word[j].equals("start")){
@@ -76,7 +78,7 @@ public class CourseReader {
                                 startY = Double.parseDouble(word[j + 5]);
                             }
                         }
-                    break;
+                        break;
                     case 8:
                         for(int j = 0; j<word.length; j++){
                             if(word[j].equals("goal")){
@@ -84,7 +86,7 @@ public class CourseReader {
                                 goalY = Double.parseDouble(word[j + 5]);
                             }
                         }
-                    break;
+                        break;
                     case 10:
                         for(int j = 0; j<word.length; j++){
                             if(word[j].equals("height")){
@@ -93,7 +95,7 @@ public class CourseReader {
                                 heightYcoeff = Double.parseDouble(word[j + 10]);
                             }
                         }
-                    break;
+                        break;
                     case 12:
                         for(int j = 0; j<word.length; j++){
                             if(word[j].equals("ballpos")){
@@ -101,23 +103,23 @@ public class CourseReader {
                                 ballposY = Double.parseDouble(word[j + 5]);
                             }
                         }
-                    break;
+                        break;
                     case 13:
                         for(int j = 0; j<word.length; j++){
                             if(word[j].equals("stroke")){
                                 stroke = Integer.parseInt(word[j + 2]);
                             }
                         }
-                    break;
+                        break;
+                }
+                i++;
             }
-            i++;
         }
-    }
         catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         catch(IOException e){
-            e.printStackTrace(); 
+            e.printStackTrace();
         }
         System.out.println(gravity);
         System.out.println(mass_of_ball);
