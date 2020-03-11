@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class CourseDictionaryCreator {
-    public static Map<String, String> courseDictionary = new HashMap<>();
+    public static Map<String, Double> courseDictionary = new HashMap<>();
     public static boolean autosave;
 
     public static void main(String args[]) throws FileNotFoundException {
@@ -19,13 +19,13 @@ public class CourseDictionaryCreator {
             String value = in.next();
 
             System.out.println(key + ": " + value);
-            courseDictionary.put(key, value);
+            courseDictionary.put(key, Double.parseDouble(value));
         }
 
         if(courseDictionary.get("stroke").equals("0") ){
             autosave = false;
         }
-        else{
+        else {
             autosave = true;
         }
     }
