@@ -9,6 +9,7 @@ public class CourseReader {
     private static double gravity;
     private static double mass_of_ball;
     private static double mu; //coefficient of friction
+    private static double vmax;
     private static double tol; //distance from hole
     private static double startX;
     private static double startY;
@@ -36,10 +37,62 @@ public class CourseReader {
                             }
                         }
                     break;
-                }
-                i++;
+                    case 1:
+                        for (int j = 0; j < word.length; j++) {
+                            if (word[j].equals("[m/s^2]m")) {
+                               mass_of_ball = Double.parseDouble(word[j + 2]);
+                            }
+                    }
+                    break;
+                    case 2:
+                        for (int l = 0; l<word.length; l++) {
+                            if (word[l].equals("mu")) {
+                                mu = Double.parseDouble(word[l + 2]);
+                            }
+                    }
+                    break;
+                    case 4:
+                        for(int j = 0; j<word.length; j++){
+                            if(word[j].equals("vmax")){
+                                vmax = Double.parseDouble(word[j + 2]);
+                            }
+                        }
+                    break;
+                    case 5:
+                        for(int j = 0; j<word.length; j++){
+                            if(word[j].equals("tol")){
+                                tol = Double.parseDouble(word[j + 2]);
+                            }
+                        }
+                    break;
+                    case 7:
+                        for(int j = 0; j<word.length; j++){
+                            if(word[j].equals("start")){
+                                startX = Double.parseDouble(word[j + 3]);
+                                startY = Double.parseDouble(word[j + 5]);
+                            }
+                        }
+                    break;
+                    case 8:
+                        for(int j = 0; j<word.length; j++){
+                            if(word[j].equals("goal")){
+                                goalX = Double.parseDouble(word[j + 3]);
+                                goalY = Double.parseDouble(word[j + 5]);
+                            }
+                        }
+                    break;
+                    case 10:
+                        for(int j = 0; j<word.length; j++){
+                            if(word[j].equals("height")){
+                                heightXcoeff = Double.parseDouble(word[j + 2]);
+                                heightX2coeff = Double.parseDouble(word[j + 6]);
+                                heightYcoeff = Double.parseDouble(word[j + 10]);
+                            }
+                        }
+                    break;
             }
-        }
+            i++;
+        }}
         catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -47,6 +100,12 @@ public class CourseReader {
             e.printStackTrace(); 
         }
         System.out.println(gravity);
+        System.out.println(mass_of_ball);
+        System.out.println(mu);
+        System.out.println(vmax);
+        System.out.println(startX + "   " + startY);
+        System.out.println(goalX + "   " + goalY);
+        System.out.println(heightXcoeff + "   " + heightX2coeff + "   " + heightYcoeff);
     }
 
 }
