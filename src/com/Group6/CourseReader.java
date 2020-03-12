@@ -25,6 +25,61 @@ public class CourseReader {
     private static int stroke;
     private static boolean autosave;
 
+    public double getMass(){
+
+        return mass_of_ball;
+    }
+    public double getFriction(){
+
+        return mu;
+    }
+    public double getVmax(){
+        return vmax;
+    }
+    public double getHoleDistance(){
+
+        return tol;
+    }
+    public double getStartX(){
+
+        return startX;
+    }
+    public double getStartY(){
+
+        return startY;
+    }
+    public double getGoalX(){
+
+        return goalX;
+    }
+    public double getGoalY(){
+
+        return goalY;
+    }
+    public double getHeightXcoeff(){
+
+        return heightXcoeff;
+    }
+    public double getHeightX2coeff(){
+
+        return heightX2coeff;
+    }
+    public double getHeightYcoeff(){
+
+        return heightYcoeff;
+    }
+    public double getBallPosX(){
+        return ballposX;
+    }
+    public double getBallPosY(){
+        return ballposY;
+    }
+    public double getStroke(){
+        return stroke;
+    }
+    public boolean isAutosave(){
+        return autosave;
+    }
     public static void main(String args[]) {
         String file = "Course1.txt"; // change the txt name here
         Scanner in = new Scanner(System.in);
