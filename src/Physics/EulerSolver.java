@@ -8,6 +8,6 @@ public class EulerSolver implements PhysicsEngine {
 		double x=vector.get_x();
 		double y=vector.get_y();
 		
-		return null;
+		return new Vector2d(x,y);
 	}
 	}
