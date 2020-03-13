@@ -24,6 +24,15 @@ public class CourseReader {
     private static double ballposY;
     private static int stroke;
     private static boolean autosave;
+    private String file;
+
+    public CourseReader(String file){
+        this.file = file;
+    }
+
+    public String getFileName(){
+        return file;
+    }
 
     public double getMass(){
 
@@ -80,8 +89,7 @@ public class CourseReader {
     public boolean isAutosave(){
         return autosave;
     }
-    public static void main(String args[]) {
-        String file = "Course1.txt"; // change the txt name here
+    public void readFile() {
         Scanner in = new Scanner(System.in);
         String[] word = new String[1000];
         try {
@@ -176,16 +184,16 @@ public class CourseReader {
         catch(IOException e){
             e.printStackTrace();
         }
-        System.out.println(gravity);
-        System.out.println(mass_of_ball);
-        System.out.println(mu);
-        System.out.println(vmax);
-        System.out.println(tol);
-        System.out.println(startX + "   " + startY);
-        System.out.println(goalX + "   " + goalY);
-        System.out.println(heightXcoeff + "   " + heightX2coeff + "   " + heightYcoeff);
-        System.out.println(ballposX + "   " + ballposY);
-        System.out.println(stroke);
+        // System.out.println(gravity);
+        // System.out.println(mass_of_ball);
+        // System.out.println(mu);
+        // System.out.println(vmax);
+        // System.out.println(tol);
+        // System.out.println(startX + "   " + startY);
+        // System.out.println(goalX + "   " + goalY);
+        // System.out.println(heightXcoeff + "   " + heightX2coeff + "   " + heightYcoeff);
+        // System.out.println(ballposX + "   " + ballposY);
+        // System.out.println(stroke);
         if(stroke==0){
             autosave = false;
         }
