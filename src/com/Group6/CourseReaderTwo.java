@@ -1,16 +1,13 @@
 package com.Group6;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 public class CourseReaderTwo {
 
     private static int shotNr;
-    private static double velocity;
-    private static double direction; //coefficient of friction
+    private static double velocity; // m/s
+    private static double direction;// degrees
 
     public double getShotNr(){
 
@@ -25,7 +22,8 @@ public class CourseReaderTwo {
         return direction;
     }
     public static void main(String args[]) {
-        String file = "Speed_velocity.txt"; // change the txt name here
+
+        String file = "Speed_velocity1.txt"; // change the txt name here
         Scanner in = new Scanner(System.in);
         String[] word = new String[1000];
         try {
