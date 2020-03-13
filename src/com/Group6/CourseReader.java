@@ -184,16 +184,16 @@ public class CourseReader {
         catch(IOException e){
             e.printStackTrace();
         }
-        System.out.println(gravity);
-        System.out.println(mass_of_ball);
-        System.out.println(mu);
-        System.out.println(vmax);
-        System.out.println(tol);
-        System.out.println(startX + "   " + startY);
-        System.out.println(goalX + "   " + goalY);
-        System.out.println(heightXcoeff + "   " + heightX2coeff + "   " + heightYcoeff);
-        System.out.println(ballposX + "   " + ballposY);
-        System.out.println(stroke);
+        // System.out.println(gravity);
+        // System.out.println(mass_of_ball);
+        // System.out.println(mu);
+        // System.out.println(vmax);
+        // System.out.println(tol);
+        // System.out.println(startX + "   " + startY);
+        // System.out.println(goalX + "   " + goalY);
+        // System.out.println(heightXcoeff + "   " + heightX2coeff + "   " + heightYcoeff);
+        // System.out.println(ballposX + "   " + ballposY);
+        // System.out.println(stroke);
         if(stroke==0){
             autosave = false;
         }
