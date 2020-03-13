@@ -1,0 +1,7 @@
+Shot 1:
+Velocity = 12 m/s;
+Direction : 60 degrees.
+
+Shot 2:
+Velocity = 24 m/s;
+Direction : 15 degrees.
