@@ -24,6 +24,15 @@ public class CourseReader {
     private static double ballposY;
     private static int stroke;
     private static boolean autosave;
+    private String file;
+
+    public CourseReader(String file){
+        this.file = file;
+    }
+
+    public String getFileName(){
+        return file;
+    }
 
     public double getMass(){
 
@@ -80,8 +89,7 @@ public class CourseReader {
     public boolean isAutosave(){
         return autosave;
     }
-    public static void main(String args[]) {
-        String file = "Course1.txt"; // change the txt name here
+    public void readFile() {
         Scanner in = new Scanner(System.in);
         String[] word = new String[1000];
         try {
