@@ -93,11 +93,18 @@ public class CourseGenerator {
 
                 /*
                 1= land
+                2 = water;
                 This is more than all future proofing, as making it so that specific locations have a specific height would not be that difficult overall.
                  */
 
-                course[i][j][0] = currentheight;
-                course[i][j][1] = 1;
+                if(currentheight <= 0){
+                    course[i][j][0] = 0;
+                    course[i][j][1] = 2;
+
+                } else {
+                    course[i][j][0] = currentheight;
+                    course[i][j][1] = 1;
+                }
 
                 if(testing){
                     System.out.println("For point [" + (decimalX) + " , " + (decimalY)+ "] the height is " + course[i][j][0]);
