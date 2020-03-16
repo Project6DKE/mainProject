@@ -2,6 +2,7 @@ package com.mygdx.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.mygdx.game.Mesh3D;
 import com.mygdx.game.MyGdxGame;
 
 public class DesktopLauncher {
@@ -10,6 +11,6 @@ public class DesktopLauncher {
 		config.width = GolfMain.WIDTH;
 		config.height = GolfMain.HEIGHT;
 		config.title = GolfMain.frameTitle;
-		new LwjglApplication(new GolfMain(), config);
+		new LwjglApplication(new Mesh3D(), config);
 	}
 }

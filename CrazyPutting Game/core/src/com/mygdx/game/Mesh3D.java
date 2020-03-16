@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
@@ -8,6 +9,10 @@ public class Mesh3D extends ApplicationAdapter {
     // I used https://github.com/libgdx/libgdx/wiki/Meshes
 
     Mesh mesh;
+    String vertexShader = Gdx.files.internal("vertex.glsl").readString();
+    String fragmentShader = Gdx.files.internal("fragment.glsl").readString();
+    ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
+
 
     @Override
     public void create () {
@@ -50,7 +55,7 @@ public class Mesh3D extends ApplicationAdapter {
         // Got an error because my IDE doesn't recognize, GL10
 
         //mesh.render( GL10.GL_TRIANGLE_FAN );
-        mesh.render( null, GL20.GL_TRIANGLE_FAN);
+        mesh.render(shader, GL20.GL_TRIANGLE_FAN);
     }
 
     @Override
