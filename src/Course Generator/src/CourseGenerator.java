@@ -97,11 +97,13 @@ public class CourseGenerator {
                 This is more than all future proofing, as making it so that specific locations have a specific height would not be that difficult overall.
                  */
 
-                if(currentheight <= 0){
+                if(currentheight <= 0) {
+                    // This is supposed to be water
                     course[i][j][0] = 0;
                     course[i][j][1] = 2;
 
                 } else {
+                    // This is supposed to be land
                     course[i][j][0] = currentheight;
                     course[i][j][1] = 1;
                 }
