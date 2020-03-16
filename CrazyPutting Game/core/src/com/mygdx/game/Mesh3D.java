@@ -49,7 +49,8 @@ public class Mesh3D extends ApplicationAdapter {
     public void render () {
         // Got an error because my IDE doesn't recognize, GL10
 
-        mesh.render( GL10.GL_TRIANGLE_FAN );
+        //mesh.render( GL10.GL_TRIANGLE_FAN );
+        mesh.render( null, GL20.GL_TRIANGLE_FAN);
     }
 
     @Override
