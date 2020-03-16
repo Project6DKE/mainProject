@@ -9,13 +9,18 @@ public class Mesh3D extends ApplicationAdapter {
     // I used https://github.com/libgdx/libgdx/wiki/Meshes
 
     Mesh mesh;
-    String vertexShader = Gdx.files.internal("vertex.glsl").readString();
-    String fragmentShader = Gdx.files.internal("fragment.glsl").readString();
-    ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
+    String vertexShader;
+    String fragmentShader;
+    ShaderProgram shader;
 
 
     @Override
     public void create () {
+
+        vertexShader = Gdx.files.internal("vertex.glsl").readString();
+        fragmentShader = Gdx.files.internal("fragment.glsl").readString();
+        shader = new ShaderProgram(vertexShader, fragmentShader);
+        
         float[] verts = new float[20];
         int i = 0;
 
