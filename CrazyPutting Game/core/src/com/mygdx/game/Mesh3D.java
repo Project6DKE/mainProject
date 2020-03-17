@@ -7,15 +7,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
-public class Mesh3D extends ApplicationAdapter {
+public class Mesh3D {
     SpriteBatch batch;
     Texture texture;
     Sprite sprite;
     Mesh mesh;
     ShaderProgram shaderProgram;
 
-    @Override
-    public void create () {
+    public void create (float _x, float _y) {
         batch = new SpriteBatch();
         texture = new Texture("grass.jpg");
         sprite = new Sprite(texture);
@@ -27,7 +26,8 @@ public class Mesh3D extends ApplicationAdapter {
         float x,y; // Mesh location in the world
         float width,height; // Mesh width and height
 
-        x = y = 50f;
+        x = _x;
+        y = _y;
         width = height = 300f;
 
         //Top Left Vertex Triangle 1
@@ -85,7 +85,6 @@ public class Mesh3D extends ApplicationAdapter {
                 );
     }
 
-    @Override
     public void render () {
 
         Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
