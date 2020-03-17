@@ -5,6 +5,7 @@ public class PuttingCourse {
 	private Function2d height;
 	private Vector2d flag,start;
 	private double friction, maxV, tol, g, mass;
+	private double[][] water;
 	
 	public PuttingCourse(Function2d height,Vector2d flag, Vector2d start) {
 		this.height=height;
@@ -37,5 +38,10 @@ public class PuttingCourse {
 	public double get_ball_mass() {return mass;}
 	
 	public double get_gravity() {return g;}
+	
+	public boolean is_water(Vector2d p) {
+		
+		return false;
+	}
 	
 }
