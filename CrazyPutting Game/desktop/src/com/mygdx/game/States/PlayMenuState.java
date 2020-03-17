@@ -20,9 +20,9 @@ public class PlayMenuState extends State{
     public PlayMenuState(GameStateManager gsm){
         super(gsm); 
         background = new Texture("menu_bgd.jpeg");
-        mode1btn = new Texture("mode1.png");
-        mode2btn = new Texture("mode2.png");
-        returnbtn = new Texture("returnbtn.png");
+        mode1btn = new Texture("newmode1btn.png");
+        mode2btn = new Texture("newmode2btn.png");
+        returnbtn = new Texture("newreturnbtn.png");
     }
 
 
@@ -56,9 +56,9 @@ public class PlayMenuState extends State{
     public void render(SpriteBatch sb){
         sb.begin();
         sb.draw(background, 0, 0, WIDTH, HEIGHT);
-        sb.draw(mode1btn, WIDTH/2 - (512/2),HEIGHT/2,512,128);
-        sb.draw(mode2btn, WIDTH/2-(512/2), (HEIGHT/2) - 128, 512, 128);
-        sb.draw(returnbtn, WIDTH/2-(455/2), HEIGHT/2-(128*2), 455, 134);
+        sb.draw(mode1btn, WIDTH/2 - (679/2),HEIGHT/2,679,139);
+        sb.draw(mode2btn, WIDTH/2-(749/2), (HEIGHT/2) - 140, 749, 121);
+        sb.draw(returnbtn, WIDTH/2-(821/2), (HEIGHT/2)-(150*2), 821, 139);
         GolfMain.pe.update(Gdx.graphics.getDeltaTime());
         GolfMain.pe.draw(sb);
         sb.end();

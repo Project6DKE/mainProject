@@ -11,6 +11,6 @@ public class DesktopLauncher {
 		config.width = GolfMain.WIDTH;
 		config.height = GolfMain.HEIGHT;
 		config.title = GolfMain.frameTitle;
-		new LwjglApplication(new Mesh3D(), config);
+		new LwjglApplication(new GolfMain(), config);
 	}
 }
