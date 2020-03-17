@@ -89,16 +89,16 @@ public class CourseGenerator {
                 course[i][j][1] = 1;
 
 
-                if(testing){
+                //if(testing){
                     System.out.println("For point [" + (decimalX) + " , " + (decimalY)+ "] the height is " + course[i][j][0]);
 
-                    Mesh3D rectangle = new Mesh3D();
-                    rectangle.create(decimalX, decimalY);
+                    //Mesh3D rectangle = new Mesh3D();
+                    //rectangle.create(decimalX, decimalY);
 
                     lowest = Math.min(course[i][j][0], lowest);
                     highest = Math.max(course[i][j][0], highest);
 
-                }
+                //}
 
             }
 

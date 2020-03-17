@@ -6,28 +6,40 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 
-public class Mesh3D {
+public class Mesh3D extends ApplicationAdapter {
     SpriteBatch batch;
     Texture texture;
     Sprite sprite;
+    Sprite[][] spritearr = new Sprite[10][10];
     Mesh mesh;
     ShaderProgram shaderProgram;
+    OrthographicCamera cam;
+    final Matrix4 matrix = new Matrix4();	
 
-    public void create (float _x, float _y) {
+    @Override
+    public void create () {
         batch = new SpriteBatch();
         texture = new Texture("grass.jpg");
         sprite = new Sprite(texture);
         sprite.setSize(100, 100);
-        //sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        //cam = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth()));
+        cam = new OrthographicCamera(1920/20, 1080/20);			
+		cam.position.set(5, 5, 10);
+		cam.direction.set(-1, -1, -1);
+		cam.near = 1;
+        cam.far = 100;
+        matrix.setToRotation(new Vector3(1, 0, 0), 90);
 
         float[] verts = new float[30];
         int i = 0;
         float x,y; // Mesh location in the world
         float width,height; // Mesh width and height
 
-        x = _x;
-        y = _y;
+        x = y = 50f;
         width = height = 300f;
 
         //Top Left Vertex Triangle 1
@@ -72,6 +84,14 @@ public class Mesh3D {
         verts[i++] = 0f;
         verts[i] = 1f;
 
+        for(int k = 0; i<spritearr.length; i++){
+            for(int j = 0; j<spritearr[i].length; j++){
+                spritearr[k][j] = new Sprite(texture);
+				spritearr[k][j].setPosition(k,j);
+				spritearr[k][j].setSize(1, 1);
+            }
+        }
+
         // Create a mesh out of two triangles rendered clockwise without indices
         mesh = new Mesh( true, 6, 0,
                 new VertexAttribute( VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE ),
@@ -83,8 +103,10 @@ public class Mesh3D {
                 Gdx.files.internal("vertex.glsl").readString(),
                 Gdx.files.internal("fragment.glsl").readString()
                 );
+        //batch = new SpriteBatch();
     }
 
+    @Override
     public void render () {
 
         Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -96,13 +118,22 @@ public class Mesh3D {
 
         batch.begin();
         sprite.draw(batch);
-        batch.end();
+        cam.update();		
+				
+		batch.setProjectionMatrix(cam.combined);
+        batch.setTransformMatrix(matrix);
+		for(int z = 0; z < spritearr.length; z++) {
+			for(int x = 0; x < spritearr[z].length; x++) {
+				spritearr[x][z].draw(batch);
+			}
+		}
 
         texture.bind();
         shaderProgram.begin();
         shaderProgram.setUniformMatrix("u_projTrans", batch.getProjectionMatrix());
         shaderProgram.setUniformi("u_texture", 0);
         mesh.render(shaderProgram, GL20.GL_TRIANGLES);
+        batch.end();
         shaderProgram.end();
     }
 }
