@@ -19,7 +19,8 @@ public class Mesh3D extends ApplicationAdapter {
         batch = new SpriteBatch();
         texture = new Texture("grass.jpg");
         sprite = new Sprite(texture);
-        sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        sprite.setSize(100, 100);
+        //sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
         float[] verts = new float[30];
         int i = 0;
