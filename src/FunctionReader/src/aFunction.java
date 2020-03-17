@@ -1,8 +1,8 @@
-public class funcReader {
+public class aFunction {
 
     String function;
 
-    public funcReader(String aFunction){
+    public aFunction(String aFunction){
         this.function = aFunction;
     }
 
