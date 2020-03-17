@@ -65,7 +65,7 @@ public class CourseReader {
 
 
     
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         String file = "Course1.txt"; // change the txt name here
         Scanner in = new Scanner(System.in);
         String[] word = new String[1000];
