@@ -19,10 +19,23 @@ public class FunctionReader {
     private double ballposX;
     private double ballposY;
     private double stroke;
+    private double shotnr;
+    private double velocity;
+    private double direction;
 
 
     public String getHeight() {
         return height;
+    }
+
+    public double getShotnr() {
+        return shotnr;
+    }
+    public double getVelocity(){
+        return velocity;
+    }
+    public double getDirection(){
+        return direction;
     }
 
     public double getBallposX() {
@@ -95,7 +108,7 @@ public class FunctionReader {
         for (int i = 0; i < variable.size(); i++) {
             if (variable.get(i).equalsIgnoreCase("g "))
                 gravity = value.get(i);
-            if (variable.get(i).equalsIgnoreCase("m "))
+            if (variable.get(i).equalsIgnoreCase("m ") || variable.get(i).equalsIgnoreCase("[m/s^2]m "))
                 mass = value.get(i);
             if (variable.get(i).equalsIgnoreCase("mu "))
                 mu = value.get(i);
@@ -117,7 +130,14 @@ public class FunctionReader {
                 ballposY = value.get(i);
             if (variable.get(i).equalsIgnoreCase("stroke "))
                 stroke = value.get(i);
+            if (variable.get(i).equalsIgnoreCase("shot "))
+                shotnr = value.get(i);
+            if (variable.get(i).equalsIgnoreCase("velocity "))
+                velocity = value.get(i);
+            if (variable.get(i).equalsIgnoreCase("direction  "))
+                direction = value.get(i);
 
         }
+
     }
 }
