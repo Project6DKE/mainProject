@@ -1,4 +1,4 @@
-package FunctionReader.src;
+package Physics;
 
 import java.io.File;
 import java.io.FileWriter;

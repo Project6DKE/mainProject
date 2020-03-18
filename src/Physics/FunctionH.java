@@ -1,3 +1,5 @@
+package Physics;
+
 import java.util.*;
 
 public class FunctionH implements Function2d {
@@ -12,7 +14,8 @@ public class FunctionH implements Function2d {
         this.function = aFunction.trim();
         this.understand();
     }
-
+    
+   
     public void understand(){
         /*
         This is where the equation will be transformed into a search tree.
@@ -177,12 +180,13 @@ public class FunctionH implements Function2d {
     }
 
     public String toString(){
-        String res = "";
-        for(Something elem : themagic){
-            res += (elem.toString() + " ");
-        }
-        return res;
-
+    	return function;
+    	//        String res = "";
+//        for(Something elem : themagic){
+//            res += (elem.toString() + " ");
+//        }
+//        return res;
+//
     }
 
     /* Testing

@@ -2,7 +2,7 @@ package Physics;
 
 public class Tester {
 	public static void main(String[] args) {
-		Function2d height= new FunctionH();
+		Function2d height= new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
 		
 		Vector2d flag = new Vector2d(0,10);
 		Vector2d start = new Vector2d(0,0);
@@ -21,5 +21,7 @@ public class Tester {
 		s.take_shot(initial_ball_velocity);
 		
 		System.out.println(s.get_ball_position().toString());
+		
+		course.output_to_file("C:\\Users\\husam\\git\\mainProject\\course");
 	}
 }

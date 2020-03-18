@@ -1,3 +1,5 @@
+package Physics;
+
 public class Variables implements Something {
 
     double currentValue;
