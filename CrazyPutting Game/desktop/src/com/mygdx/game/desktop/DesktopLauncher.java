@@ -2,6 +2,8 @@ package com.mygdx.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.mygdx.game.Isometric;
+import com.mygdx.game.Isometric;
 import com.mygdx.game.Mesh3D;
 import com.mygdx.game.MyGdxGame;
 
@@ -11,6 +13,6 @@ public class DesktopLauncher {
 		config.width = GolfMain.WIDTH;
 		config.height = GolfMain.HEIGHT;
 		config.title = GolfMain.frameTitle;
-		new LwjglApplication(new Mesh3D(), config);
+		new LwjglApplication(new Isometric(), config);
 	}
 }

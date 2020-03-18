@@ -33,11 +33,11 @@ public class Mesh3D extends ApplicationAdapter {
         sprite.setSize(100, 100);
         //sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         //cam = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth()));
-        cam = new OrthographicCamera(1920/20, 1080/20);			
-		cam.position.set(5, 5, 10);
-		cam.direction.set(-1, -1, -1);
-		cam.near = 1;
-        cam.far = 100;
+        cam = new OrthographicCamera(1920, 1080);			
+		cam.position.set(1920/2, 1080/2, 10);
+		// cam.direction.set(-1, -1, -1);
+		// cam.near = 1;
+        // cam.far = 100;
         //matrix.setToRotation(new Vector3(1, 0, 0), 00);
 
         float[] verts = new float[30];
@@ -111,29 +111,29 @@ public class Mesh3D extends ApplicationAdapter {
 
         mesh.setVertices(verts);
 
-        shaderProgram = new ShaderProgram(
-                Gdx.files.internal("vertex.glsl").readString(),
-                Gdx.files.internal("fragment.glsl").readString()
-                );
+        // shaderProgram = new ShaderProgram(
+        //         Gdx.files.internal("vertex.glsl").readString(),
+        //         Gdx.files.internal("fragment.glsl").readString()
+        //         );
         batch = new SpriteBatch();
     }
 
     @Override
     public void render () {
         System.out.println("Rendered");
-        Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl20.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.gl20.glEnable(GL20.GL_TEXTURE_2D);
-        Gdx.gl20.glEnable(GL20.GL_BLEND);
-        Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        // Gdx.gl20.glEnable(GL20.GL_TEXTURE_2D);
+        // Gdx.gl20.glEnable(GL20.GL_BLEND);
+        // Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         batch.begin();
         sprite.draw(batch);
         cam.update();		
         
         //this is important:
-        //batch.setProjectionMatrix(cam.combined);
+        batch.setProjectionMatrix(cam.combined);
         
         //batch.setTransformMatrix(matrix);
 		for(int z = 0; z < spritearr.length; z++) {
