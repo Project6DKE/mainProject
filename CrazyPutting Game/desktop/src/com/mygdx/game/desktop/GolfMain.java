@@ -24,7 +24,7 @@ public class GolfMain extends ApplicationAdapter{
     private GameStateManager gsm;
 
     public static ParticleEffect pe;
-
+ 
     public void create(){
         batch = new SpriteBatch(); 
         gsm =new GameStateManager();

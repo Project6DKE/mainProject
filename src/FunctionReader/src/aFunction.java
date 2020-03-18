@@ -1,8 +1,6 @@
-package Physics;
-
 import java.util.*;
 
-public class FunctionH implements Function2d {
+public class aFunction {
 
     String function;
 
@@ -10,12 +8,11 @@ public class FunctionH implements Function2d {
 
     Something root;
 
-    public FunctionH(String aFunction){
+    public aFunction(String aFunction){
         this.function = aFunction.trim();
         this.understand();
     }
-    
-   
+
     public void understand(){
         /*
         This is where the equation will be transformed into a search tree.
@@ -125,24 +122,8 @@ public class FunctionH implements Function2d {
         assign(x,y,traverse);
 
         return root.solve();
-    }
-
-    public double evaluate(Vector2d p){
-        double x, y;
-        x=p.get_x();
-        y=p.get_y();
-
-        return evaluate(x, y);
 
     }
-    public Vector2d gradient(Vector2d p){
-        double del=0.001;
-        double initial=evaluate(p);
-        double x =(evaluate((new Vector2d(p.get_x()+del,p.get_y())))-initial)/del;
-        double y =(evaluate((new Vector2d(p.get_x(),p.get_y()+del)))-initial)/del;
-        return new Vector2d(x,y);
-    }
-
 
     /*
     I can probably modify the assign class to work better and automatically do the calculations, it wouldn't be all that difficult
@@ -180,13 +161,12 @@ public class FunctionH implements Function2d {
     }
 
     public String toString(){
-    	return function;
-    	//        String res = "";
-//        for(Something elem : themagic){
-//            res += (elem.toString() + " ");
-//        }
-//        return res;
-//
+        String res = "";
+        for(Something elem : themagic){
+            res += (elem.toString() + " ");
+        }
+        return res;
+
     }
 
     /* Testing

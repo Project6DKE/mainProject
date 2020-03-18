@@ -5,26 +5,36 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.mygdx.game.desktop.GolfMain;
 
-public class PlayMenuState extends State{
+
+public class CourseGeneratorState extends State{
 
     private Texture background;
-    private Texture mode1btn;
-    private Texture mode2btn;
-    private Texture returnbtn;
+    private Skin skin;
+    private Stage stage;
 
     private final int WIDTH = 1920;    
     private final int HEIGHT = 1110;    
 
-    public PlayMenuState(GameStateManager gsm){
+    public CourseGeneratorState(GameStateManager gsm){
         super(gsm); 
         background = new Texture("menu_bgd.jpeg");
-        mode1btn = new Texture("newmode1btn.png");
-        mode2btn = new Texture("newmode2btn.png");
-        returnbtn = new Texture("newreturnbtn.png");
+        
     }
 
+    public void create(){
+        skin = new Skin(Gdx.files.internal("glassy-ui.json"));
+        stage = new Stage();
+        final TextButton button = new TextButton("click me", skin);
+        button.setWidth(50);
+        button.setHeight(200);
+        stage.addActor(button);
+    }
 
     protected void handleInput(){
         if(Gdx.input.isTouched()){
@@ -56,19 +66,15 @@ public class PlayMenuState extends State{
     public void render(SpriteBatch sb){
         sb.begin();
         sb.draw(background, 0, 0, WIDTH, HEIGHT);
-        sb.draw(mode1btn, WIDTH/2 - (679/2),HEIGHT/2,679,139);
-        sb.draw(mode2btn, WIDTH/2-(749/2), (HEIGHT/2) - 140, 749, 121);
-        sb.draw(returnbtn, WIDTH/2-(821/2), (HEIGHT/2)-(150*2), 821, 139);
         GolfMain.pe.update(Gdx.graphics.getDeltaTime());
         GolfMain.pe.draw(sb);
         sb.end();
+ 
     }
 
     public void dispose(){
         background.dispose();
-        mode1btn.dispose();
-        mode2btn.dispose();
-        returnbtn.dispose();
     }
+
 
 }

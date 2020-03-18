@@ -22,10 +22,10 @@ public class MenuState extends State{
     public MenuState(GameStateManager gsm){
         super(gsm); 
         background = new Texture("menu_bgd.jpeg");
-        playbtn = new Texture("playbtn.png");
-        coursegeneratorbtn = new Texture("coursegeneratorbtn.png");
-        mutemusic = new Texture("mutemusic.png");
-        exitbtn = new Texture("exitbtn.png");
+        playbtn = new Texture("newplaybtn.png");
+        coursegeneratorbtn = new Texture("newcgbtn.png");
+        mutemusic = new Texture("newmsbtn.png");
+        exitbtn = new Texture("newexitbtn.png");
     }
 
 
@@ -36,16 +36,17 @@ public class MenuState extends State{
             long id = GolfMain.audioeffect.play(0.03f);
             GolfMain.audioeffect.setLooping(id, false);
             //System.out.println(x + "   " + y);
-            if(x>((WIDTH/2)-(291/2)) && x<((WIDTH/2)+291/2) && y>((HEIGHT/2)-(120*2)) && y<((HEIGHT/2)-120)){
+            if(x>((WIDTH/2)-(291/2)) && x<((WIDTH/2)+291/2) && y>((HEIGHT/2)-(140*2)) && y<((HEIGHT/2)-120)){
                 //in start button
                 System.out.println("IN PLAY");
                 gsm.set(new PlayMenuState(gsm));
             }
-            if(x>((WIDTH/2)-(1262/2)) && x<((WIDTH/2)+1262/2) && y>((HEIGHT/2) - 120) && y<((HEIGHT/2+20))){
+            if(x>((WIDTH/2)-(1262/2)) && x<((WIDTH/2)+1262/2) && y>((HEIGHT/2) - 140) && y<((HEIGHT/2+20))){
                 //in course generator button
+                gsm.set(new CourseGeneratorState(gsm));
                 System.out.println("in coursegenerator");
             }
-            if(x>((WIDTH/2)-(806/2)) && x<((WIDTH/2)+806/2) && y>((HEIGHT/2)) && y<((HEIGHT/2+120+20))){
+            if(x>((WIDTH/2)-(806/2)) && x<((WIDTH/2)+806/2) && y>((HEIGHT/2)) && y<((HEIGHT/2+140+20))){
                 //mute button
                 if(GolfMain.music.isPlaying()){
                     GolfMain.music.pause();
@@ -54,7 +55,7 @@ public class MenuState extends State{
                     GolfMain.music.play();
                 }
             }
-            if(x>((WIDTH/2)-(285/2)) && x<((WIDTH/2)+285/2) && y>((HEIGHT/2)+120) && y<((HEIGHT/2+(120*2)+20))){
+            if(x>((WIDTH/2)-(285/2)) && x<((WIDTH/2)+285/2) && y>((HEIGHT/2)+140) && y<((HEIGHT/2+(140*2)+20))){
                 //exit button
                 Gdx.app.exit();
             }
@@ -68,10 +69,10 @@ public class MenuState extends State{
     public void render(SpriteBatch sb){
         sb.begin();
         sb.draw(background, 0, 0, WIDTH, HEIGHT);
-        sb.draw(playbtn,WIDTH/2 - (291/2),HEIGHT/2,291,168);
-        sb.draw(coursegeneratorbtn, WIDTH/2-(1262/2), (HEIGHT/2) - 120, 1262, 134);
-        sb.draw(mutemusic, WIDTH/2-(806/2),HEIGHT/2 - (120*2), 806, 146);
-        sb.draw(exitbtn, WIDTH/2 - (285/2) , HEIGHT/2 - (120*3), 285, 131);
+        sb.draw(playbtn,WIDTH/2 - (523/2),HEIGHT/2,523,139);
+        sb.draw(coursegeneratorbtn, WIDTH/2-(1800/2), (HEIGHT/2) - 140, 1800, 139);
+        sb.draw(mutemusic, WIDTH/2-(1296/2),HEIGHT/2 - (140*2), 1296, 139);
+        sb.draw(exitbtn, WIDTH/2 - (465/2) , HEIGHT/2 - (140*3), 465, 139);
         GolfMain.pe.update(Gdx.graphics.getDeltaTime());
         GolfMain.pe.draw(sb);
         sb.end();

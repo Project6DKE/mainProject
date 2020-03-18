@@ -8,31 +8,37 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Mesh3D extends ApplicationAdapter {
     SpriteBatch batch;
     Texture texture;
     Sprite sprite;
     Sprite[][] spritearr = new Sprite[10][10];
+    Sprite[][] spritearr2 = new Sprite[10][10];
     Mesh mesh;
     ShaderProgram shaderProgram;
+
+
     OrthographicCamera cam;
-    final Matrix4 matrix = new Matrix4();	
+    //final Matrix4 matrix = new Matrix4();	
 
     @Override
     public void create () {
+        System.out.println("Created");
+
         batch = new SpriteBatch();
         texture = new Texture("grass.jpg");
         sprite = new Sprite(texture);
         sprite.setSize(100, 100);
-        sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        //sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         //cam = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth()));
-        cam = new OrthographicCamera(1920/20, 1080/20);			
-		// cam.position.set(5, 5, 10);
+        cam = new OrthographicCamera(1920, 1080);			
+		cam.position.set(1920/2, 1080/2, 10);
 		// cam.direction.set(-1, -1, -1);
-		cam.near = 1;
-        cam.far = 100;
-        //matrix.setToRotation(new Vector3(1, 0, 0), 90);
+		// cam.near = 1;
+        // cam.far = 100;
+        //matrix.setToRotation(new Vector3(1, 0, 0), 00);
 
         float[] verts = new float[30];
         int i = 0;
@@ -84,67 +90,66 @@ public class Mesh3D extends ApplicationAdapter {
         verts[i++] = 0f;
         verts[i] = 1f;
 
-        for(int k = 0; i<spritearr.length; i++){
-            for(int j = 0; j<spritearr[i].length; j++){
+        System.out.println(spritearr.length);
+        System.out.println(spritearr[0].length);
+
+        for(int k = 0; k < spritearr.length; k++){
+            for(int j = 0; j < spritearr[k].length; j++){
                 spritearr[k][j] = new Sprite(texture);
-				spritearr[k][j].setPosition(k,j);
-				spritearr[k][j].setSize(1, 1);
+                spritearr[k][j].setSize(100, 100);
+				spritearr[k][j].setPosition(k*100,j*100);
+                // spritearr2[k][j] = new Sprite(texture);
+                // spritearr2[k][j].setSize(100,100);
+                // spritearr2[k][j].setPosition(100-k,100-j);
             }
         }
 
-        // for(int z = 0; z < spritearr.length; z++) {
-		// 	for(int k = 0; x < spritearr[z].length; x++) {
-        //         sprite.setPosition(k*10, z*10);
-        //         mesh = new Mesh( true, 6, 0,
-        //         new VertexAttribute( VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE ),
-        //         new VertexAttribute( VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE+"0" ) );
-        //         mesh.setVertices(verts);
-		// 	}
-		// }
-
-        // Create a mesh out of two triangles rendered clockwise without indices
-        /*mesh = new Mesh( true, 6, 0,
+         //Create a mesh out of two triangles rendered clockwise without indices
+        mesh = new Mesh( true, 6, 0,
                 new VertexAttribute( VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE ),
                 new VertexAttribute( VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE+"0" ) );
 
-        mesh.setVertices(verts);*/
+        mesh.setVertices(verts);
 
-        shaderProgram = new ShaderProgram(
-                Gdx.files.internal("vertex.glsl").readString(),
-                Gdx.files.internal("fragment.glsl").readString()
-                );
-        //batch = new SpriteBatch();
+                // shaderProgram = new ShaderProgram(
+                //         Gdx.files.internal("vertex.glsl").readString(),
+                //         Gdx.files.internal("fragment.glsl").readString()
+                //         );
+        batch = new SpriteBatch();
     }
 
     @Override
     public void render () {
-
-        Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        System.out.println("Rendered");
+        // Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl20.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.gl20.glEnable(GL20.GL_TEXTURE_2D);
-        Gdx.gl20.glEnable(GL20.GL_BLEND);
-        Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        // Gdx.gl20.glEnable(GL20.GL_TEXTURE_2D);
+        // Gdx.gl20.glEnable(GL20.GL_BLEND);
+        // Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         batch.begin();
         sprite.draw(batch);
         cam.update();		
-				
-		//batch.setProjectionMatrix(cam.combined);
+        
+        //this is important:
+        batch.setProjectionMatrix(cam.combined);
+        
         //batch.setTransformMatrix(matrix);
-		 for(int z = 0; z < spritearr.length; z++) {
-		 	for(int x = 0; x < spritearr[z].length; x++) {
-                 sprite.setPosition(x*10, z*10);
-                 sprite.draw(batch);
-		 	}
-		 }
+		for(int z = 0; z < spritearr.length; z++) {
+			for(int x = 0; x < spritearr[z].length; x++) {
+                spritearr[x][z].draw(batch);
+                // spritearr2[x][z].draw(batch);
+			}
+		}
 
-        texture.bind();
-        shaderProgram.begin();
-        shaderProgram.setUniformMatrix("u_projTrans", batch.getProjectionMatrix());
-        shaderProgram.setUniformi("u_texture", 0);
+        //texture.bind();
+        //shaderProgram.begin();
+        //shaderProgram.setUniformMatrix("u_projTrans", batch.getProjectionMatrix());
+        //shaderProgram.setUniformi("u_texture", 0);
+
         //mesh.render(shaderProgram, GL20.GL_TRIANGLES);
         batch.end();
-        shaderProgram.end();
+        //shaderProgram.end();
     }
 }
