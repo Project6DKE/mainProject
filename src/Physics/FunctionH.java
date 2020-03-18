@@ -11,10 +11,7 @@ public class FunctionH implements Function2d{
 		double x, y;
 		x=p.get_x();
 		y=p.get_y();
-		
-		//return y+x;
-		// TODO Auto-generated method stub 
-		return 0;
+		return (-0.01*x + 0.003*x*x + 0.04 *y);
 	}
 
 	@Override
