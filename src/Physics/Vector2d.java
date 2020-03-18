@@ -10,4 +10,8 @@ public class Vector2d {
 	public double get_scalar(){
 		return Math.abs(Math.sqrt(x*x+y*y));
 	}
+	
+	public String toString() {
+		return "X: "+x+"\t Y: "+y+"\t Scalar: "+get_scalar();
+	}
 }

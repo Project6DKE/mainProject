@@ -3,7 +3,7 @@ package Physics;
 public class EulerSolver implements PhysicsEngine {
 	private double h;
 	
-	public EulerSolver() {this.h=1/30;}
+	public EulerSolver() {this.h=0.01;}
 	
 	public EulerSolver(double x) {this.h=x;}
 	

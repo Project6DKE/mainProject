@@ -8,7 +8,7 @@ public class PuttingSimulator {
 
 	public void set_ball_position(Vector2d p) {this.position=p;}
 	
-	public void get_ball_position() {}
+	public Vector2d get_ball_position() {return position;}
 	
 	public void take_shot(Vector2d initial_ball_velocity) {
 		this.velocity=initial_ball_velocity;
@@ -21,11 +21,22 @@ public class PuttingSimulator {
 				position=temp;
 				//SEND POSITION TO GRAPHICS
 				velocity=new Vector2d(0,0);
+				conti=false;
+				break;
+			}
+			else if(course.is_put(position)) {
+				//Activate put sequence
+				conti=false;
 				break;
 			}
 			//SEND POSITION TO GRAPHICS
 			velocity=engine.solve(velocity, acceleration);
-			if(velocity.get_scalar()==0 && acceleration.get_scalar()==0) conti=false;
+			if(velocity.get_scalar()<0.05 && velocity.get_scalar()>-0.05) conti=false;
+			
+			System.out.println("v "+velocity.toString());
+			System.out.println("acc "+acceleration.toString());
+			System.out.println(position.toString());
+			//conti=false;
 		}
 	}
 	

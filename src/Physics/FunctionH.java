@@ -4,9 +4,16 @@ import javax.script.*;
 
 public class FunctionH implements Function2d{
 	
+	public FunctionH(){}
+	
 	@Override
 	public double evaluate(Vector2d p) {
-		// TODO Auto-generated method stub
+		double x, y;
+		x=p.get_x();
+		y=p.get_y();
+		
+		//return y+x;
+		// TODO Auto-generated method stub 
 		return 0;
 	}
 
