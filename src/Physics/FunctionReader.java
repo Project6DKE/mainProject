@@ -22,6 +22,7 @@ public class FunctionReader {
     private double shotnr;
     private double velocity;
     private double direction;
+    private FunctionH aFunction;
 
 
     public String getHeight() {
@@ -108,34 +109,37 @@ public class FunctionReader {
         for (int i = 0; i < variable.size(); i++) {
             if (variable.get(i).equalsIgnoreCase("g "))
                 gravity = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("m ") || variable.get(i).equalsIgnoreCase("[m/s^2]m "))
+            else if (variable.get(i).equalsIgnoreCase("m ") || variable.get(i).equalsIgnoreCase("[m/s^2]m "))
                 mass = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("mu "))
+            else if (variable.get(i).equalsIgnoreCase("mu "))
                 mu = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("vmax "))
+            else if (variable.get(i).equalsIgnoreCase("vmax "))
                 ballspeed = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("tol "))
+            else if (variable.get(i).equalsIgnoreCase("tol "))
                 holeDistance = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("startX "))
+            else if (variable.get(i).equalsIgnoreCase("startX "))
                 startX = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("startY "))
+            else if (variable.get(i).equalsIgnoreCase("startY "))
                 startY = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("goalX "))
+            else if (variable.get(i).equalsIgnoreCase("goalX "))
                 goalX = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("goalY "))
+            else if (variable.get(i).equalsIgnoreCase("goalY "))
                 goalY = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("ballposX "))
+            else if (variable.get(i).equalsIgnoreCase("ballposX "))
                 ballposX = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("ballposY "))
+            else if (variable.get(i).equalsIgnoreCase("ballposY "))
                 ballposY = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("stroke "))
+            else if (variable.get(i).equalsIgnoreCase("stroke "))
                 stroke = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("shot "))
+            else if (variable.get(i).equalsIgnoreCase("shot "))
                 shotnr = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("velocity "))
+            else if (variable.get(i).equalsIgnoreCase("velocity "))
                 velocity = Double.parseDouble(value.get(i));
-            if (variable.get(i).equalsIgnoreCase("direction  "))
+            else if (variable.get(i).equalsIgnoreCase("direction  "))
                 direction = Double.parseDouble(value.get(i));
+            else if (variable.get(i).equalsIgnoreCase("height "))
+                aFunction = new FunctionH(value.get(i));
+
 
         }
         //PuttingCourse newCourse= new PuttingCourse(xx,xx,xx,mu,ballspeed,holeDistance,gravity,mass );
