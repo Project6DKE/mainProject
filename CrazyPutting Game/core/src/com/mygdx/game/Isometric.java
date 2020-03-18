@@ -21,17 +21,19 @@ public class Isometric extends ApplicationAdapter {
  
 	public void create() {
 		texture = new Texture(Gdx.files.internal("grass100x100.png"));		
-		cam = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth()));			
+		//cam = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth()));		
+		cam = new OrthographicCamera(10, 10);	
 		cam.position.set(5, 5, 10);
 		cam.direction.set(-1, -1, -1);
-		cam.near = 1;
-		cam.far = 100;	
+		cam.near = 0;
+		cam.far = 1000;	
+		cam.translate(5,5);
 		//cam = new OrthographicCamera(1920,1080);
 		//cam.position.set(1920/2, 1080/2,10);	
 		matrix.setToRotation(new Vector3(1, 0, 0), 90);
 		
-		for(int z = 0; z < 10; z++) {
-			for(int x = 0; x < 10; x++) {
+		for(int z = 0; z < 5; z++) {
+			for(int x = 0; x < 5; x++) {
 				sprites[x][z] = new Sprite(texture);
 				sprites[x][z].setPosition(x,z);
 				sprites[x][z].setSize(1, 1);
@@ -49,11 +51,20 @@ public class Isometric extends ApplicationAdapter {
     	batch.setProjectionMatrix(cam.combined);
     	batch.setTransformMatrix(matrix);
     	batch.begin();
-    	for(int z = 0; z < 10; z++) {
-            for(int x = 0; x < 10; x++) {
+    	for(int z = 0; z < 5; z++) {
+            for(int x = 0; x < 5; x++) {
                 sprites[x][z].draw(batch);
             }
-        }
-        batch.end();
+		}
+		handleInput();
+		batch.end();
+		
 	}   
+	protected void handleInput(){
+		// if(Gdx.input.isTouched()){
+		// 	cam.translate(1, 1);
+		// }
+	}
+		
+	
 }

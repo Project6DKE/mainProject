@@ -111,10 +111,10 @@ public class Mesh3D extends ApplicationAdapter {
 
         mesh.setVertices(verts);
 
-        // shaderProgram = new ShaderProgram(
-        //         Gdx.files.internal("vertex.glsl").readString(),
-        //         Gdx.files.internal("fragment.glsl").readString()
-        //         );
+                // shaderProgram = new ShaderProgram(
+                //         Gdx.files.internal("vertex.glsl").readString(),
+                //         Gdx.files.internal("fragment.glsl").readString()
+                //         );
         batch = new SpriteBatch();
     }
 
