@@ -1,6 +1,8 @@
 package FunctionReader.src;
 
+import Physics.FunctionH;
 import Physics.PuttingCourse;
+import Physics.Vector2d;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -140,6 +142,6 @@ public class FunctionReader {
                 direction = value.get(i);
 
         }
-        PuttingCourse newCourse= new PuttingCourse(xx,xx,xx,mu,ballspeed,holeDistance,gravity,mass );
+        PuttingCourse newCourse= new PuttingCourse(new FunctionH(),new Vector2d(startX, startY),new Vector2d(goalX, goalY),mu,ballspeed,holeDistance,gravity,mass );
     }
 }
