@@ -23,6 +23,7 @@ public FileCreator() throws IOException {
     writer.write("goalY ="+getGoalYFromUser()+"\n");
     writer.write("height ="+getHeightFuncFromUser()+"\n");
     writer.close();
+    FunctionReader newRead = new FunctionReader(getFileName());
 }
 
 }
