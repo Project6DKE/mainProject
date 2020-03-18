@@ -16,7 +16,7 @@ public class Tester {
 		
 		PuttingSimulator s= new PuttingSimulator(course,engine);
 		
-		Vector2d initial_ball_velocity= new Vector2d(02,0);
+		Vector2d initial_ball_velocity= new Vector2d(2,2);
 		
 		s.take_shot(initial_ball_velocity);
 		

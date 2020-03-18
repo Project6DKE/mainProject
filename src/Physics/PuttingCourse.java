@@ -39,7 +39,7 @@ public class PuttingCourse {
 	public double get_gravity() {return g;}
 	
 	public boolean is_water(Vector2d p) {
-		//Do this
+		if(height.evaluate(p)<0) return true;
 		return false;
 	}
 	

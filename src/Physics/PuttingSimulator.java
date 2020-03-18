@@ -31,12 +31,12 @@ public class PuttingSimulator {
 			}
 			//SEND POSITION TO GRAPHICS
 			velocity=engine.solve(velocity, acceleration);
-			if(velocity.get_scalar()<0.05 && velocity.get_scalar()>-0.05) conti=false;
+			if(velocity.get_scalar()<0.05 && velocity.get_scalar()>-0.05 && acceleration.get_scalar()<0.05 && acceleration.get_scalar()>-0.05) conti=false;
 			
-			System.out.println("v "+velocity.toString());
-			System.out.println("acc "+acceleration.toString());
-			System.out.println(position.toString());
-			//conti=false;
+//			System.out.println("v "+velocity.toString());
+//			System.out.println("acc "+acceleration.toString());
+//			System.out.println(position.toString());
+//			//conti=false;
 		}
 	}
 	
