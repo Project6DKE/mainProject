@@ -2,6 +2,7 @@ package com.mygdx.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.mygdx.game.Demo3D;
 import com.mygdx.game.Isometric;
 import com.mygdx.game.Mesh1;
 import com.mygdx.game.Isometric;
