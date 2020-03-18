@@ -9,7 +9,6 @@ import com.mygdx.game.Mesh1;
 import com.mygdx.game.Isometric;
 import com.mygdx.game.Mesh3D;
 import com.mygdx.game.MyGdxGame;
-import com.mygdx.game.States.PreferencesScreen;
 import com.mygdx.game.States.test;
 
 public class DesktopLauncher {
