@@ -4,8 +4,17 @@ public class Variables implements Something {
 
     boolean isitX;
 
+    boolean negative;
+
     public Variables(String aString){
-        if (aString.equalsIgnoreCase("x")){
+
+
+        if(aString.charAt(0) == '-'){
+            negative = true;
+        }
+
+
+        if (aString.contains("x")){
             this.isitX = true;
         } else {
             this.isitX = false;
@@ -13,7 +22,11 @@ public class Variables implements Something {
     }
 
     public void setValue(double aValue){
-        this.currentValue = aValue;
+        if (negative){
+            this.currentValue = -aValue;
+        } else {
+            this.currentValue = aValue;
+        }
     }
 
     public double solve() {
@@ -21,10 +34,16 @@ public class Variables implements Something {
     }
 
     public String toString(){
+        String a = "";
+
+        if (negative){
+            a+= "-";
+        }
+
         if(isitX){
-            return "x";
+            return a+"x";
         } else {
-            return "y";
+            return a+"y";
         }
     }
 

@@ -6,8 +6,11 @@ public class aFunction {
 
     ArrayDeque<Something> themagic;
 
+    Something root;
+
     public aFunction(String aFunction){
-        this.function = aFunction;
+        this.function = aFunction.trim();
+        this.understand();
     }
 
     public void understand(){
@@ -24,7 +27,10 @@ public class aFunction {
         for(int i=0; i<elements.length; i++){
             if (isNumeric(elements[i])){
                 outputStack.push(new Constants(elements[i]));
-            } else if(elements[i].equalsIgnoreCase("x") || elements[i].equalsIgnoreCase("y")){
+            } else if(elements[i].equalsIgnoreCase("x") ||
+                    elements[i].equalsIgnoreCase("y") ||
+                    elements[i].equalsIgnoreCase("-x") ||
+                    elements[i].equalsIgnoreCase("-y")){
                 outputStack.push(new Variables(elements[i]));
             } else if(elements[i].equals("(")){
                 operatorStack.push(new Operations(elements[i]));
@@ -38,38 +44,24 @@ public class aFunction {
             } else {
                 Operations op = new Operations(elements[i]);
 
-                while((!operatorStack.isEmpty()) &&
-                        operatorStack.peek().getPrecedence() >= op.getPrecedence()) {
-
-                    outputStack.push(operatorStack.pop());
-                }
-
-                operatorStack.push(op);
-
-                /*
-                if (!operatorStack.isEmpty()) {
-
-                    if ((operatorStack.peek().getPrecedence() > op.getPrecedence()) ||
-                            ((operatorStack.peek().getPrecedence() == op.getPrecedence()) && op.getLeftAss())
-                    ) {
-                        operatorStack.push(op);
-                        //outputStack.push(operatorStack.pop());
-                        /*
-                        SUPER FUCKING IMPORTANT
-                        I NEED TO FIND A WAY TO MAKE THESE PRECEDENCE CHECKS AGAIN AND AGAIN, I'M ASSUMING I'LL FIND THE PLACE AT ONCE
-                        THIS IS ACTUALLY DUMB, I HATE MYSELF
-
-                    } else if ((operatorStack.peek().getPrecedence() == op.getPrecedence())) {
-                        outputStack.push(operatorStack.pop());
-                        operatorStack.push(op);
-                    }
+                if(op.isFunction){
+                    operatorStack.push(op);
                 } else {
+
+                    while ((!operatorStack.isEmpty()) && (
+                                (operatorStack.peek().isFunction) ||
+                                        (operatorStack.peek().getPrecedence() > op.getPrecedence()) ||
+                                        ((operatorStack.peek().getPrecedence() == op.getPrecedence()) && (!op.getLeftAss()))
+                    ))
+                    {
+
+                        outputStack.push(operatorStack.pop());
+                    }
+
                     operatorStack.push(op);
                 }
-        */
-            }
 
-            this.themagic = outputStack;
+            }
 
         }
 
@@ -79,14 +71,84 @@ public class aFunction {
 
         this.themagic = outputStack;
 
-        this.toString();
+        this.createTree();
 
     }
 
+    public void createTree(){
+        ArrayDeque<Something> solvedTree = new ArrayDeque<Something>();
+
+        ArrayDeque<Something> invertedList = new ArrayDeque<Something>();
+
+        while(!this.themagic.isEmpty()){
+            invertedList.push(this.themagic.pop());
+        }
+
+        while(!invertedList.isEmpty()){
+            if(!(invertedList.peek() instanceof Operations)){
+                solvedTree.push(invertedList.pop());
+            } else {
+                /*
+                I need an extra check in case it's a function, but the function only needs one child
+                Still, it's a change that's gotta be done.
+                 */
+                Operations op = (Operations)invertedList.pop();
+
+                if (op.getIsFunction()){
+                    op.setLeft(solvedTree.pop());
+                } else {
+                    op.setRight(solvedTree.pop());
+                    op.setLeft(solvedTree.pop());
+                }
+
+                solvedTree.push(op);
+
+            }
+
+        }
+
+        if(solvedTree.size() != 1){
+            System.out.println("buggs");
+        }
+
+        this.root = solvedTree.pop();
+
+    }
+
+    public double evaluate(double x, double y){
+
+        Something traverse = this.root;
+
+        assign(x,y,traverse);
+
+        return root.solve();
+
+    }
+
+    /*
+    I can probably modify the assign class to work better and automatically do the calculations, it wouldn't be all that difficult
+     */
+
+    public void assign(double x, double y, Something aThing){
+
+        if(aThing instanceof Operations){
+            Operations op = (Operations)(aThing);
+
+            assign(x,y, op.left);
+            assign(x,y,op.right);
+
+        } else if (aThing instanceof Variables){
+            Variables var = (Variables) aThing;
 
 
-    public void evaluate(double x, double y){
+            if (var.isitX){
+                var.setValue(x);
+            } else {
+                var.setValue(y);
+            }
 
+
+        }
     }
 
     private static boolean isNumeric(String a) {
@@ -107,18 +169,13 @@ public class aFunction {
 
     }
 
-    // Testing
+    /* Testing
     public static void main(String[] args){
 
-        aFunction test = new aFunction("x ^ 2 + x + 10");
-        test.understand();
+        aFunction test = new aFunction(" 10 * cos ( x + y ) + 5");
 
-        System.out.println(test.toString());
-
-
+        System.out.println(test.evaluate(3.14,3.14));
     }
 
-
-
-
+     */
 }
