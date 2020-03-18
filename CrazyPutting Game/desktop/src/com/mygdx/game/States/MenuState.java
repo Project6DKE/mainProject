@@ -43,6 +43,7 @@ public class MenuState extends State{
             }
             if(x>((WIDTH/2)-(1262/2)) && x<((WIDTH/2)+1262/2) && y>((HEIGHT/2) - 140) && y<((HEIGHT/2+20))){
                 //in course generator button
+                gsm.set(new CourseGeneratorState(gsm));
                 System.out.println("in coursegenerator");
             }
             if(x>((WIDTH/2)-(806/2)) && x<((WIDTH/2)+806/2) && y>((HEIGHT/2)) && y<((HEIGHT/2+140+20))){
