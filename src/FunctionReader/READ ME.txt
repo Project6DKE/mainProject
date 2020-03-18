@@ -1,0 +1,8 @@
+For function parsing separate all of the elements with a space.
+So for example:
+"cos(x)+y" is wrong
+"cos ( x ) + y" is valid
+
+It also reads the decimal point, not a comma.
+So if you want to write down 1/10 in decimals, you'll have to write "0.1", not "0,1".
+It might depend on the operating system that you're using, so take this note with a grain of salt
