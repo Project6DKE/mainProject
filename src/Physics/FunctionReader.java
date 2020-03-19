@@ -112,6 +112,7 @@ public class FunctionReader {
         }
 
         for (int i = 0; i < variable.size(); i++) {
+            //System.out.println(variable.get(i)+"="+value.get(i));
             if (variable.get(i).equalsIgnoreCase("g "))
                 gravity = value.get(i);
             if (variable.get(i).equalsIgnoreCase("m ") || variable.get(i).equalsIgnoreCase("[m/s^2]m "))
@@ -144,10 +145,10 @@ public class FunctionReader {
                 direction = value.get(i);
 
         }
-        newCourse= new PuttingCourse(new FunctionH(height),new Vector2d(startX, startY),new Vector2d(goalX, goalY),mu,ballspeed,holeDistance,gravity,mass );
+        newCourse= new PuttingCourse(new FunctionH((height)),new Vector2d(startX, startY),new Vector2d(goalX, goalY),mu,ballspeed,holeDistance,gravity,mass );
     }
     
-    PuttingCourse newCourse;
+	PuttingCourse newCourse;
     
     public PuttingCourse get_Course() {return newCourse;}
 }

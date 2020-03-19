@@ -25,7 +25,7 @@ public class CourseFileReader {
 	         String[] line;
 	         while ((sCurrentLine = br.readLine()) != null) {
 	        	 sCurrentLine=sCurrentLine.replaceAll(";", "");
-	        	 sCurrentLine=sCurrentLine.replaceAll(" ", "");
+	        	 sCurrentLine=sCurrentLine.replaceAll("\\s", "");
 	        	 
 	        	 line=sCurrentLine.split("=");
 	        	 

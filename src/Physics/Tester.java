@@ -5,12 +5,12 @@ import java.io.IOException;
 public class Tester {
 	public static void main(String[] args) throws IOException {
 		
-//		String path="C:\\Users\\husam\\git\\mainProject\\Speed_velocity3.txt";
-//		
-//		FunctionReader xh= new FunctionReader(path);
-//		
-//		PuttingCourse course1 = xh.get_Course();
-//		System.out.println(course1.get_height().toString());
+		String path="C:\\Users\\husam\\git\\mainProject\\Speed_velocity3.txt";
+		
+		FunctionReader xh= new FunctionReader(path);
+		
+		PuttingCourse course1 = xh.get_Course();
+		System.out.println("dd"+course1.get_height().toString());
 		
 //		String path="C:\\Users\\husam\\git\\mainProject\\course1.txt";
 //		
