@@ -1,6 +1,8 @@
+package FunctionReader.src;
+
 import Physics.FunctionH;
 import Physics.PuttingCourse;
-import Physics.Vector2d;*/
+import Physics.Vector2d;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
