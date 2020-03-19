@@ -52,6 +52,24 @@ public class PuttingCourse {
 		return false;
 	}
 	
+	public String toString() {
+		String ff="<html>Course Details<br>";
+		ff+=("g = "+g+";<br>");
+		ff+=("m = "+mass+";<br>");
+		ff+=("mu = "+friction+";<br>");
+		ff+=("<br>");
+		ff+=("vmax = "+maxV+";<br>");
+		ff+=("tol = "+tol+";<br>");
+		ff+=("<br>");
+		ff+=("start = ("+start.get_x()+", "+start.get_y()+");<br>");
+		ff+=("goal = ("+flag.get_x()+", "+flag.get_y()+");<br>");
+		ff+=("<br>");
+		ff+=("height = "+height.toString()+";</html>");
+		
+		return ff;
+		
+	}
+	
 	public void output_to_file(String path) {
 		try {
 			FileWriter txtWriter = new FileWriter(path+".txt");

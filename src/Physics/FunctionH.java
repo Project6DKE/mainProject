@@ -181,21 +181,6 @@ public class FunctionH implements Function2d {
 
     public String toString(){
     	return function;
-    	//        String res = "";
-//        for(Something elem : themagic){
-//            res += (elem.toString() + " ");
-//        }
-//        return res;
-//
     }
 
-    /* Testing
-    public static void main(String[] args){
-
-        aFunction test = new aFunction(" 10 * cos ( x + y ) + 5");
-
-        System.out.println(test.evaluate(3.14,3.14));
-    }
-
-     */
 }

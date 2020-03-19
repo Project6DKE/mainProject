@@ -42,17 +42,23 @@ public class PuttingSimulator {
 //			System.out.println("pos: "+position.toString()+"\n");
 		}
 		
+		
+		
 		if(course.is_put(position)) {
 			//Activate put sequence
 			System.out.println("You have putted, number of shots: "+shot);
 		}
 	}
 	
+	public void take_shot(double x, double y) {
+		take_shot(new Vector2d(x,y));
+	}
+	
 	//Angle has to be in radians
 	public void take_angle_shot(double speed, double angle) {
 		double x = speed*Math.cos(angle);
 		double y = speed*Math.sin(angle);
-		take_shot(new Vector2d(x,y));
+		take_shot(x,y);
 	}
 	
 	
