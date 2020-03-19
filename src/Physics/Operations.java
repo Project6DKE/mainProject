@@ -187,6 +187,11 @@ public class Operations implements Something {
         return operViso;
     }
     
+    public void createSubstrings(String operType) {
+        leftOperString = operViso.substring(0, operationAtIndex);
+        rightOperString = operViso.substring(operationAtIndex + 1);
+    }
+    
     
     public int firstOccurrence(String operType) {
         // Later on we should replace cos, sin, tan...
