@@ -1,6 +1,10 @@
+import Physics.FunctionH;
+import Physics.PuttingCourse;
+import Physics.Vector2d;*/
 
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -90,54 +94,55 @@ public class FunctionReader {
         String file = filename; // change the txt name here
         Scanner in = new Scanner(System.in);
         ArrayList<String> variable = new ArrayList<>();
-        ArrayList<String> value = new ArrayList<>();
+        ArrayList<Double> value = new ArrayList<>();
 
         BufferedReader br = new BufferedReader(new FileReader(file));
         String st = " ";
 
         while ((st = br.readLine()) != null) {
-            String[] word = st.split("=", 2);
+            String[] word = st.split("=");
             if (word[0].equals("height ")) {
                 height = word[1];
             } else {
                 variable.add(word[0]);
-                value.add(word[1]);
+                value.add(Double.parseDouble(word[1]));
             }
         }
 
         for (int i = 0; i < variable.size(); i++) {
             if (variable.get(i).equalsIgnoreCase("g "))
-                gravity = Double.parseDouble(value.get(i));
+                gravity = value.get(i);
             if (variable.get(i).equalsIgnoreCase("m ") || variable.get(i).equalsIgnoreCase("[m/s^2]m "))
-                mass = Double.parseDouble(value.get(i));
+                mass = value.get(i);
             if (variable.get(i).equalsIgnoreCase("mu "))
-                mu = Double.parseDouble(value.get(i));
+                mu = value.get(i);
             if (variable.get(i).equalsIgnoreCase("vmax "))
-                ballspeed = Double.parseDouble(value.get(i));
+                ballspeed = value.get(i);
             if (variable.get(i).equalsIgnoreCase("tol "))
-                holeDistance = Double.parseDouble(value.get(i));
+                holeDistance = value.get(i);
             if (variable.get(i).equalsIgnoreCase("startX "))
-                startX = Double.parseDouble(value.get(i));
+                startX = value.get(i);
             if (variable.get(i).equalsIgnoreCase("startY "))
-                startY = Double.parseDouble(value.get(i));
+                startY = value.get(i);
             if (variable.get(i).equalsIgnoreCase("goalX "))
-                goalX = Double.parseDouble(value.get(i));
+                goalX = value.get(i);
             if (variable.get(i).equalsIgnoreCase("goalY "))
-                goalY = Double.parseDouble(value.get(i));
+                goalY = value.get(i);
             if (variable.get(i).equalsIgnoreCase("ballposX "))
-                ballposX = Double.parseDouble(value.get(i));
+                ballposX = value.get(i);
             if (variable.get(i).equalsIgnoreCase("ballposY "))
-                ballposY = Double.parseDouble(value.get(i));
+                ballposY = value.get(i);
             if (variable.get(i).equalsIgnoreCase("stroke "))
-                stroke = Double.parseDouble(value.get(i));
+                stroke = value.get(i);
             if (variable.get(i).equalsIgnoreCase("shot "))
-                shotnr = Double.parseDouble(value.get(i));
+                shotnr = value.get(i);
             if (variable.get(i).equalsIgnoreCase("velocity "))
-                velocity = Double.parseDouble(value.get(i));
+                velocity = value.get(i);
             if (variable.get(i).equalsIgnoreCase("direction  "))
-                direction = Double.parseDouble(value.get(i));
+                direction = value.get(i);
 
         }
-        //PuttingCourse newCourse= new PuttingCourse(xx,xx,xx,mu,ballspeed,holeDistance,gravity,mass );
+        PuttingCourse newCourse= new PuttingCourse(new FunctionH(height),new Vector2d(startX, startY),new Vector2d(goalX, goalY),mu,ballspeed,holeDistance,gravity,mass );
     }
+
 }
