@@ -67,7 +67,10 @@ public class Operations implements Something {
         Probably a lot of annoying if else statements.
          */
 
-        this.operViso = operType;
+        operViso = operType;
+        format();
+        operType = findOperType();
+        createSubstrings(operType);
 
         if (operType.equals("(")){
             this.operationType = 1;
@@ -139,6 +142,10 @@ public class Operations implements Something {
             this.operationType = 13;
             this.precedence = 5;
             this.isFunction = true;
+        } else if (operType.equals("a")){ // a =  absolute value
+            this.operationType = 14;
+            this.precedence = 5;
+            this.isFunction = true; // I'm not sure about this
         }
 
 
@@ -212,6 +219,8 @@ public class Operations implements Something {
             return Math.asin(left.solve());
         } else if (this.operationType == 13){
             return Math.atan(left.solve());
+        } else if (this.operationType == 14){
+            return Math.abs(left.solve());
         }
 
         return 0;
@@ -263,8 +272,10 @@ public class Operations implements Something {
         // I replaced cos, sin, tan, with a single but distinct letter
         // To simplify the search
 
-        String[] operTypeArray = {"C", "S", "T", "c", "s", "t", "^", "*", "/", "+", "-", "other_type"};
+        
+        String[] operTypeArray = {"a", "C", "S", "T", "c", "s", "t", "^", "*", "/", "+", "-", "other_type"};
 
+        
         int i = 0;
         while (firstOccurrence(operTypeArray[i]) == -1) {
             i++;
@@ -275,6 +286,8 @@ public class Operations implements Something {
     }
 
     public void format() {
+        operViso.replaceAll("abs", "a"); //Absolute value
+        
         operViso.replaceAll("cos", "c");
         operViso.replaceAll("sin", "s");
         operViso.replaceAll("tan", "t");
