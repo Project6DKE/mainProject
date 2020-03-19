@@ -15,9 +15,9 @@ public class CourseFileReader {
 		Scanner in= new Scanner(System.in);
 		
 		int xx;
-		double g,m,mu,vmax,tol,x,y;
-		Vector2d start, goal;
-		FunctionH height;
+		double g = 9.8,m = 0,mu = 0,vmax = 0,tol = 0,x,y;
+		Vector2d start = null, goal = null;
+		FunctionH height = null;
 		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(new File(path))); 
