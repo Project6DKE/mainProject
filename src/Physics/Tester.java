@@ -1,10 +1,27 @@
 package Physics;
 
+import java.io.IOException;
+
 public class Tester {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		
+		String path="C:\\Users\\husam\\git\\mainProject\\Speed_velocity3.txt";
+		
+		FunctionReader xh= new FunctionReader(path);
+		
+		PuttingCourse course1 = xh.get_Course();
+		System.out.println(course1.get_height().toString());
+		
+//		String path="C:\\Users\\husam\\git\\mainProject\\course1.txt";
+//		
+//		CourseFileReader xh= new CourseFileReader(path);
+//		
+//		PuttingCourse course1 = xh.readFile();
+//		System.out.println(course1.get_height().toString());
+		
 		Function2d height= new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
 		
-		Vector2d flag = new Vector2d(0,10);
+		Vector2d flag = new Vector2d(0,3);
 		Vector2d start = new Vector2d(0,0);
 		
 		double g,m,mu,vmax,tol;
