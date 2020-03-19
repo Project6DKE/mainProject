@@ -1,7 +1,10 @@
 package FunctionReader.src;
+<<<<<<< HEAD
 import Physics.FunctionH;
+=======
+
+>>>>>>> parent of 2fc6e8d... upd
 import Physics.PuttingCourse;
-import Physics.Vector2d;
 
 
 
@@ -145,6 +148,6 @@ public class FunctionReader {
                 direction = value.get(i);
 
         }
-        PuttingCourse newCourse= new PuttingCourse(new FunctionH(),new Vector2d(startX, startY),new Vector2d(goalX, goalY),mu,ballspeed,holeDistance,gravity,mass );
+        PuttingCourse newCourse= new PuttingCourse(xx,xx,xx,mu,ballspeed,holeDistance,gravity,mass );
     }
 }
