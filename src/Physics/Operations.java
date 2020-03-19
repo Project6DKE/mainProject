@@ -186,5 +186,41 @@ public class Operations implements Something {
     public String toString(){
         return operViso;
     }
+    
+    
+    public int firstOccurrence(String operType) {
+        // Later on we should replace cos, sin, tan...
+        // With a distinct letter with the replace function
+
+        // For cos and sin make sure opertype only contains one letter
+
+
+        char operTypeChar = operType.charAt(0);
+        if (operType == "end") {
+            return -1;
+        }
+
+        for (int i = 0; i < operViso.length(); i++) {
+            if (operViso.charAt(i) == operTypeChar) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public String findOperType() {
+        //The operType array needs to contain all the possible operation types
+
+        String[] operTypeArray = {"^", "end"};
+
+        int i = 0;
+        while (firstOccurrence(operTypeArray[i]) == -1) {
+            i++;
+        }
+
+        operationAtIndex = firstOccurrence(operTypeArray[i]);
+        return operTypeArray[i];
+    }
 
 }
