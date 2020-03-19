@@ -1,4 +1,6 @@
-package Physics;
+package Physics
+
+import jdk.dynalink.Operation;
 
 public class Operations implements Something {
 
@@ -26,18 +28,25 @@ public class Operations implements Something {
 
 
 
+
+
+
     /*
     Use operation Type to properly define what operation is being used, a pain in the ass but fuck it.
      */
     int operationType;
+    int operationAtIndex;
 
     String operViso;
+
 
     Something left;
     Something right;
 
     int precedence;
     /*
+    deg and rad have precendence 6
+    
     trigonometric functions (weird shit) are precedence 5
 
     Exponent is precedence 4
@@ -61,16 +70,26 @@ public class Operations implements Something {
      */
 
 
+    String leftOperString;
+    String rightOperString;
+
+
+
     public Operations(String operType) {
         /*
         Something annoying to create what kind of operation type it will be
         Probably a lot of annoying if else statements.
          */
 
+
+        // Find the first ^ and split
+            //Assign left and right
+
         operViso = operType;
         format();
         operType = findOperType();
         createSubstrings(operType);
+
 
         if (operType.equals("(")){
             this.operationType = 1;
@@ -146,7 +165,36 @@ public class Operations implements Something {
             this.operationType = 14;
             this.precedence = 5;
             this.isFunction = true; // I'm not sure about this
+        } else if (operType.equals("l")){ // l = log
+            this.operationType = 15;
+            this.precedence = 5;
+            this.isFunction = true;
+        } else if (operType.equals("L")){ // L = log10
+            this.operationType = 16;
+            this.precedence = 5;
+            this.isFunction = true;
+        } else if (operType.equals("r")){ // r = square root
+            this.operationType = 17;
+            this.precedence = 4;
+            this.isFunction = true;
+        } else if (operType.equals("R")){ // R = cube root
+            this.operationType = 18;
+            this.precedence = 4;
+            this.isFunction = true;
+        } else if (operType.equals("d")){ // d = degrees
+            this.operationType = 19;
+            this.precedence = 6;
+            this.isFunction = true;
+        } else if (operType.equals("D")){ // D = convert to radians
+            this.operationType = 20;
+            this.precedence = 6;
+            this.isFunction = true;
         }
+
+
+
+
+        operate(this.left, this.right);
 
 
     }
@@ -156,12 +204,12 @@ public class Operations implements Something {
     }
 
     public Operations(String operType, Something aLeft, Something aRight){
-
         this(operType);
 
         this.left = aLeft;
         this.right = aRight;
 
+        operate(this.left, this.right);
     }
 
     public int getOperationType(){
@@ -176,21 +224,23 @@ public class Operations implements Something {
         return precedence;
     }
 
-    public void setLeft(Something aThing){
-        this.left = aThing;
+    public void setLeft(E aThing){
+        // Still don't know how to connect this
+        this.left = (Something) aThing;
     }
 
-    public void setRight(Something aThing){
-        this.right = aThing;
+    public void setRight(E aThing){
+        // Still don't know how to connect this
+        this.right = (Something) aThing;
     }
 
 
     public double solve() {
-        return Operate(left, right);
+        return operate(left, right);
     }
 
 
-    public double Operate(Something left, Something right){
+    public double operate(Something left, Something right){
 
         /*
         This is where the eternally long if else loop would be used in order to process the type of operator that's being used.
@@ -204,7 +254,7 @@ public class Operations implements Something {
         } else if (this.operationType == 4){
             return left.solve() - right.solve();
         } else if (this.operationType == 5){
-            return left.solve()*right.solve();
+            return left.solve() * right.solve();
         } else if (this.operationType == 7){
             return Math.pow(left.solve(), right.solve());
         } else if (this.operationType == 8){
@@ -221,21 +271,29 @@ public class Operations implements Something {
             return Math.atan(left.solve());
         } else if (this.operationType == 14){
             return Math.abs(left.solve());
+        } else if (this.operationType == 15){
+            return Math.log(left.solve());
+        } else if (this.operationType == 16){
+            return Math.log10(left.solve());
+        } else if (this.operationType == 17){
+            return Math.sqrt(left.solve());
+        } else if (this.operationType == 18){
+            return Math.cbrt(left.solve());
+        } else if (this.operationType == 19){
+            return Math.toDegrees(left.solve());
+        } else if (this.operationType == 20){
+            return Math.toRadians(left.solve());
         }
 
+        // Maybe it should return 1 instead
         return 0;
     }
 
     public String toString(){
         return operViso;
     }
-    
+
     public void createSubstrings(String operType) {
-        leftOperString = operViso.substring(0, operationAtIndex);
-        rightOperString = operViso.substring(operationAtIndex + 1);
-    }
-    
-        public void createSubstrings(String operType) {
         leftOperString = operViso.substring(0, operationAtIndex);
         rightOperString = operViso.substring(operationAtIndex + 1);
     }
@@ -272,10 +330,8 @@ public class Operations implements Something {
         // I replaced cos, sin, tan, with a single but distinct letter
         // To simplify the search
 
-        
-        String[] operTypeArray = {"a", "C", "S", "T", "c", "s", "t", "^", "*", "/", "+", "-", "other_type"};
+        String[] operTypeArray = {"d", "D", "a", "C", "S", "T", "c", "s", "t", "l", "L", "^", "r", "R", "*", "/", "+", "-", "other_type"};
 
-        
         int i = 0;
         while (firstOccurrence(operTypeArray[i]) == -1) {
             i++;
@@ -286,8 +342,9 @@ public class Operations implements Something {
     }
 
     public void format() {
+        operViso.toLowerCase();
         operViso.replaceAll("abs", "a"); //Absolute value
-        
+
         operViso.replaceAll("cos", "c");
         operViso.replaceAll("sin", "s");
         operViso.replaceAll("tan", "t");
@@ -298,4 +355,5 @@ public class Operations implements Something {
         operViso.replaceAll("pi", "3.1415926536");
         operViso.replaceAll("e", "2.7182818285");
     }
+
 }
