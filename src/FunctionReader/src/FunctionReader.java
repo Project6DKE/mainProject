@@ -1,10 +1,13 @@
 package FunctionReader.src;
-
 import Physics.FunctionH;
 import Physics.PuttingCourse;
 import Physics.Vector2d;
 
-import java.io.*;
+
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 

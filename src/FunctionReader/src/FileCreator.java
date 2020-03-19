@@ -5,25 +5,29 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileCreator {
-public FileCreator() throws IOException {
-    File newFile = new File(getFileName());
+    public FileCreator(String fileName, String mass, String friction, String holeDist, String startX, String startY, String ballSpeed, String goalX, String goalY, String height, String gravity) throws IOException {
+
+    File newFile = new File(fileName);
     if (newFile.createNewFile()) {
         System.out.println("File created: " + newFile.getName());
     } else {
         System.out.println("File already exists.");
     }
-    FileWriter writer = new FileWriter(getFileName());
-    writer.write("m ="+ getMassFromUser()+"\n");
-    writer.write("mu ="+getMuFromUser()+"\n");
-    writer.write("vmax ="+getVmaxFromUser()+"\n");
-    writer.write("tol ="+getTolFromUser()+"\n");
-    writer.write("startX ="+getStartXFromUser()+"\n");
-    writer.write("startY ="+getStartYFromUser()+"\n");
-    writer.write("goalX ="+getGoalXFromUser()+"\n");
-    writer.write("goalY ="+getGoalYFromUser()+"\n");
-    writer.write("height ="+getHeightFuncFromUser()+"\n");
+    FileWriter writer = new FileWriter(fileName);
+    writer.write("m ="+ mass+"\n");
+    writer.write("g ="+ gravity+"\n");
+    writer.write("mu ="+friction+"\n");
+    writer.write("vmax ="+ballSpeed+"\n");
+    writer.write("tol ="+holeDist+"\n");
+    writer.write("startX ="+startX+"\n");
+    writer.write("startY ="+startY+"\n");
+    writer.write("goalX ="+goalX+"\n");
+    writer.write("goalY ="+goalY+"\n");
+    writer.write("height ="+height+"\n");
     writer.close();
-    FunctionReader newRead = new FunctionReader(getFileName());
+    FunctionReader newRead = new FunctionReader(fileName);
 }
+
+
 
 }
