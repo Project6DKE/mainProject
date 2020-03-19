@@ -107,7 +107,7 @@ public class Operations implements Something {
             this.leftAss = true;
             this.isFunction = false;
 
-        } else if (operType.equals("cos")){
+        } else if (operType.equalsIgnoreCase("cos")){
             this.operationType = 8;
             this.isFunction = true;
 
@@ -116,6 +116,33 @@ public class Operations implements Something {
             this.isFunction = true;
         } else if (operType.equalsIgnoreCase("tan")){
             this.operationType = 10;
+            this.isFunction = true;
+        } else if (operType.equalsIgnoreCase("acos")){
+            this.operationType = 11;
+            this.isFunction = true;
+        } else if (operType.equalsIgnoreCase("acos")){
+            this.operationType = 12;
+            this.isFunction = true;
+        } else if (operType.equalsIgnoreCase("atan")){
+            this.operationType = 13;
+            this.isFunction = true;
+        } else if (operType.equalsIgnoreCase("abs")){
+            this.operationType = 14;
+            this.isFunction = true;
+        } else if (operType.equalsIgnoreCase("log")){
+            this.operationType = 15;
+            this.isFunction = true;
+        } else if (operType.equalsIgnoreCase("log10")){
+            this.operationType = 16;
+            this.isFunction = true;
+        } else if (operType.equalsIgnoreCase("cosh")){
+            this.operationType = 17;
+            this.isFunction = true;
+        } else if (operType.equalsIgnoreCase("sinh")){
+            this.operationType = 18;
+            this.isFunction = true;
+        } else if (operType.equalsIgnoreCase("tanh")){
+            this.operationType = 19;
             this.isFunction = true;
         }
 
@@ -176,11 +203,37 @@ public class Operations implements Something {
             return left.solve() - right.solve();
         } else if (this.operationType == 5){
             return left.solve()*right.solve();
+        } else if (this.operationType == 6) {
+            return left.solve()/right.solve();
         } else if (this.operationType == 7){
             return Math.pow(left.solve(), right.solve());
         } else if (this.operationType == 8){
             return Math.cos(left.solve());
+        } else if (this.operationType == 9){
+            return Math.sin(left.solve());
+        } else if (this.operationType == 10){
+            return Math.tan(left.solve());
+        } else if (this.operationType == 11){
+            return Math.acos(left.solve());
+        } else if (this.operationType == 12){
+            return Math.asin(left.solve());
+        } else if (this.operationType == 13){
+            return Math.atan(left.solve());
+        } else if (this.operationType == 14){
+            return Math.abs(left.solve());
+        } else if (this.operationType == 15){
+            return Math.log(left.solve());
+        } else if (this.operationType == 16){
+            return Math.log10(left.solve());
+        } else if (this.operationType == 17){
+            return Math.cosh(left.solve());
+        } else if (this.operationType == 18){
+            return Math.sinh(left.solve());
+        } else if (this.operationType == 19) {
+            return Math.tanh(left.solve());
         }
+
+        System.out.println("Invalid function");
 
         return 0;
     }
