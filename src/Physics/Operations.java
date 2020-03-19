@@ -111,10 +111,34 @@ public class Operations implements Something {
             this.leftAss = true;
             this.isFunction = false;
 
-        } else if (operType.equals("cos")){
+        } else if (operType.equals("c")){ // c =  cos
             this.operationType = 8;
+            this.precedence = 5;
             this.isFunction = true;
 
+        } else if (operType.equals("s")){ // s =  sin
+            this.operationType = 9;
+            this.precedence = 5;
+            this.isFunction = true;
+
+        } else if (operType.equals("t")){ // t =  tan
+            this.operationType = 10;
+            this.precedence = 5;
+            this.isFunction = true;
+        } else if (operType.equals("C")){ // C =  acos
+            this.operationType = 11;
+            this.precedence = 5;
+            this.isFunction = true;
+
+        } else if (operType.equals("S")){ // S =  asin
+            this.operationType = 12;
+            this.precedence = 5;
+            this.isFunction = true;
+
+        } else if (operType.equals("T")){ // T =  atan
+            this.operationType = 13;
+            this.precedence = 5;
+            this.isFunction = true;
         }
 
 
@@ -178,6 +202,16 @@ public class Operations implements Something {
             return Math.pow(left.solve(), right.solve());
         } else if (this.operationType == 8){
             return Math.cos(left.solve());
+        } else if (this.operationType == 9){
+            return Math.sin(left.solve());
+        } else if (this.operationType == 10){
+            return Math.tan(left.solve());
+        } else if (this.operationType == 11){
+            return Math.acos(left.solve());
+        } else if (this.operationType == 12){
+            return Math.asin(left.solve());
+        } else if (this.operationType == 13){
+            return Math.atan(left.solve());
         }
 
         return 0;
@@ -192,7 +226,11 @@ public class Operations implements Something {
         rightOperString = operViso.substring(operationAtIndex + 1);
     }
     
-    
+        public void createSubstrings(String operType) {
+        leftOperString = operViso.substring(0, operationAtIndex);
+        rightOperString = operViso.substring(operationAtIndex + 1);
+    }
+
     public int firstOccurrence(String operType) {
         // Later on we should replace cos, sin, tan...
         // With a distinct letter with the replace function
@@ -201,9 +239,11 @@ public class Operations implements Something {
 
 
         char operTypeChar = operType.charAt(0);
-        if (operType == "end") {
-            return -1;
+        if (operType == "other_type") {
+            return -3;
         }
+
+        // There may be a more efficient way
 
         for (int i = 0; i < operViso.length(); i++) {
             if (operViso.charAt(i) == operTypeChar) {
@@ -215,9 +255,15 @@ public class Operations implements Something {
     }
 
     public String findOperType() {
-        //The operType array needs to contain all the possible operation types
+        //The operType array needs to contain all the possible operation type
+        // The sequence of the operTypeArray is also the sequence
+        // In which the operations are identified
+        // We can use this in our advantage
 
-        String[] operTypeArray = {"^", "end"};
+        // I replaced cos, sin, tan, with a single but distinct letter
+        // To simplify the search
+
+        String[] operTypeArray = {"C", "S", "T", "c", "s", "t", "^", "*", "/", "+", "-", "other_type"};
 
         int i = 0;
         while (firstOccurrence(operTypeArray[i]) == -1) {
@@ -228,4 +274,15 @@ public class Operations implements Something {
         return operTypeArray[i];
     }
 
+    public void format() {
+        operViso.replaceAll("cos", "c");
+        operViso.replaceAll("sin", "s");
+        operViso.replaceAll("tan", "t");
+
+        operViso.replaceAll("acos", "C");
+        operViso.replaceAll("asin", "S");
+        operViso.replaceAll("atan", "T");
+        operViso.replaceAll("pi", "3.1415926536");
+        operViso.replaceAll("e", "2.7182818285");
+    }
 }
