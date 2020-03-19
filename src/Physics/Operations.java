@@ -111,6 +111,12 @@ public class Operations implements Something {
             this.operationType = 8;
             this.isFunction = true;
 
+        } else if (operType.equalsIgnoreCase("sin")){
+            this.operationType = 9;
+            this.isFunction = true;
+        } else if (operType.equalsIgnoreCase("tan")){
+            this.operationType = 10;
+            this.isFunction = true;
         }
 
 
