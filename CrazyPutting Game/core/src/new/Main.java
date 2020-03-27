@@ -49,12 +49,12 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Golf");
-        String musicFile = "golf_music_full.mp3";     // For example
-        Media sound = new Media(new File(musicFile).toURI().toString());
-        mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.setVolume(0.5);
-        mediaPlayer.setAutoPlay(true); 
-        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); 
+        //String musicFile = "golf_music_full.mp3";     // For example
+        //Media sound = new Media(new File(musicFile).toURI().toString());
+        //mediaPlayer = new MediaPlayer(sound);
+        //mediaPlayer.setVolume(0.5);
+        //mediaPlayer.setAutoPlay(true); 
+        //mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); 
         Group group = new Group();
         playGolf = false;
         scene = new Scene(group, scene_width, scene_height, true);
@@ -398,7 +398,7 @@ public class Main extends Application {
             { 
   
                 //System.out.println("value: " + newValue);
-                mediaPlayer.setVolume((double) newValue);
+                //mediaPlayer.setVolume((double) newValue);
             } 
         }); 
 
