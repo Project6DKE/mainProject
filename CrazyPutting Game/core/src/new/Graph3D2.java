@@ -2,10 +2,7 @@ package sample;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import javafx.application.Application;
-import javafx.scene.Group;
-import javafx.scene.PerspectiveCamera;
-import javafx.scene.Scene;
-import javafx.scene.SceneAntialiasing;
+import javafx.scene.*;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -36,12 +33,20 @@ public class Graph3D2 extends Application {
     }
 
     public void start(Stage primaryStage) {
-        Group model = loadModel(getClass().getResource("trees.obj"));
-        model.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
-        model.getTransforms().add(new Scale(20, 20, 20));
-        model.getTransforms().add(new Translate(1, 11, 10));
+        Group trees = loadModel(getClass().getResource("trees.obj"));
+        trees.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        trees.getTransforms().add(new Scale(20, 20, 20));
+        trees.getTransforms().add(new Translate(1, 11, 10));
 
-        this.cube = new Group(model);
+        Group flag = loadModel(getClass().getResource("flag.obj"));
+        flag.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        flag.getTransforms().add(new Scale(30, 30, 30));
+        flag.getTransforms().add(new Translate(-10, 7, -10));
+
+        this.cube = new Group();
+
+        cube.getChildren().add(trees);
+        cube.getChildren().add(flag);
 
         this.cube.getTransforms().addAll(this.rotateY);
         this.cube.getTransforms().addAll(this.rotateX);
@@ -138,7 +143,6 @@ public class Graph3D2 extends Application {
         });
 
         this.cube.getChildren().add(this.ball);
-        //this.cube.getChildren().add(this.ball);
 
         makeZoomable(this.cube);    //we zoom on the cube (that i made invisible, supposed to be closed to the middle of the field)
 
