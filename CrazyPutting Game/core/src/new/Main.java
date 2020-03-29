@@ -1,4 +1,5 @@
 import java.io.File;
+
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -9,11 +10,12 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.Slider; 
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -47,12 +49,12 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Golf");
-        //String musicFile = "golf_music_full.mp3";     // For example
+        String musicFile = "golf_music_full.mp3";     // For example
         //Media sound = new Media(new File(musicFile).toURI().toString());
         //mediaPlayer = new MediaPlayer(sound);
         //mediaPlayer.setVolume(0.5);
-        //mediaPlayer.setAutoPlay(true);
-        //mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        //mediaPlayer.setAutoPlay(true); 
+        //mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); 
         Group group = new Group();
         playGolf = false;
         scene = new Scene(group, scene_width, scene_height, true);
@@ -76,30 +78,32 @@ public class Main extends Application {
 
     private VBox createMenuView(){
         VBox box = new VBox();
-        box.setPrefWidth(250);
+        box.setPrefWidth(200);
         box.setPrefHeight(scene_height);
-        //box.setBackground(new Background(new BackgroundFill(Color.LIGHTYELLOW, null, null)));
-        BackgroundImage backgroundTexture= new BackgroundImage(new Image("/new/images/leaves.jpg",100,75,false,true),
-                BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT);
-
-        box.setBackground(new Background(backgroundTexture));
-
+        box.setBackground(new Background(new BackgroundFill(Color.LIGHTYELLOW, null, null)));
+        
         Button addspace = new Button(" ");
         addspace.setPrefHeight(235);
         addspace.setVisible(false);
 
+        Button play_btn = new Button("Play");
+        play_btn.setFont(Font.font("Helvetica", 15));
+        play_btn.setMinWidth(150);
 
-        Button play_btn = newImageButton("play", 50, 130, "000000");
+        Button cg_btn = new Button("Course Generator");
+        cg_btn.setFont(Font.font("Helvetica", 15));
+        cg_btn.setMinWidth(150);
 
-        Button cg_btn = newImageButton("course", 40, 170, "000000");
+        Button setting_btn = new Button("Settings");
+        setting_btn.setFont(Font.font("Helvetica", 15));
+        setting_btn.setMinWidth(150);
 
-        Button setting_btn = newImageButton("settings", 40, 185, "000000");
-
-        Button exit_btn = newImageButton("exit", 50, 130, "000000");
+        Button exit_btn = new Button("Exit");
+        exit_btn.setFont(Font.font("Helvetica",15));
+        exit_btn.setMinWidth(150);
 
         play_btn.setOnAction(new EventHandler<ActionEvent>(){
-
+        
             public void handle(ActionEvent event) {
                 mainBox.getChildren().remove(1);
                 mainBox.getChildren().add(playView());
@@ -107,7 +111,7 @@ public class Main extends Application {
         });
 
         cg_btn.setOnAction(new EventHandler<ActionEvent>(){
-
+        
             public void handle(ActionEvent event) {
                 mainBox.getChildren().remove(1);
                 mainBox.getChildren().add(cgView());
@@ -115,7 +119,7 @@ public class Main extends Application {
         });
 
         setting_btn.setOnAction(new EventHandler<ActionEvent>(){
-
+        
             public void handle(ActionEvent event) {
                 mainBox.getChildren().remove(1);
                 mainBox.getChildren().add(settingView());
@@ -142,7 +146,7 @@ public class Main extends Application {
 
 
         return box;
-    }
+    }   
 
     private VBox introView(){
         VBox box = new VBox();
@@ -153,10 +157,10 @@ public class Main extends Application {
 
         Label iLabel = new Label("Welcome to group 6 project");
         iLabel.setFont(Font.font("Verdana", 50));
-
+        
         Label cLabel = new Label("By Husam, Kristian, Vladislav, Tiphanie, Nicolás, Thibault");
         cLabel.setFont(Font.font("Verdana",FontPosture.ITALIC, 30));
-
+        
         VBox box2 = new VBox();
         box2.setPrefWidth(scene_width-200);
         box2.getChildren().add(empty);
@@ -257,7 +261,7 @@ public class Main extends Application {
         box1.getChildren().add(file_name);
         box1.setAlignment(Pos.CENTER_LEFT);
         box1.setSpacing(30);
-
+        
         TextField massT = new TextField();
         massT.setPromptText("Enter mass");
         TextField frictionT = new TextField();
@@ -323,7 +327,7 @@ public class Main extends Application {
         box4.setSpacing(30);
 
         run.setOnAction(new EventHandler<ActionEvent>(){
-
+        
             public void handle(ActionEvent event) {
                 massV = Double.parseDouble(massT.getText());
                 frictionV = Double.parseDouble(frictionT.getText());
@@ -363,16 +367,6 @@ public class Main extends Application {
         return mainbox1;
     }
 
-    private Button newImageButton(String imageName, int h, int w, String backgroundColor) {
-        Image image = new Image("/new/images/" + imageName + ".png");
-        ImageView newImageView = new ImageView(image);
-        newImageView.setFitHeight(h); newImageView.setFitWidth(w);
-        Button newButton = new Button("", newImageView);
-        newButton.setStyle("-fx-background-color: #" + backgroundColor + ";");
-
-        return newButton;
-    }
-
     private VBox settingView(){
         VBox box = new VBox();
 
@@ -396,19 +390,19 @@ public class Main extends Application {
         musicvol.setShowTickMarks(true);
         musicvol.setMajorTickUnit(0.25);
         musicvol.setBlockIncrement(0.1);
-        musicvol.valueProperty().addListener(
-                new ChangeListener<Number>() {
+        musicvol.valueProperty().addListener( 
+             new ChangeListener<Number>() { 
+  
+            public void changed(ObservableValue <? extends Number >  
+                      observable, Number oldValue, Number newValue) 
+            { 
+  
+                //System.out.println("value: " + newValue);
+                //mediaPlayer.setVolume((double) newValue);
+            } 
+        }); 
 
-                    public void changed(ObservableValue <? extends Number >
-                                                observable, Number oldValue, Number newValue)
-                    {
-
-                        //System.out.println("value: " + newValue);
-                        //mediaPlayer.setVolume((double) newValue);
-                    }
-                });
-
-
+        
         VBox box2 = new VBox();
         box2.setPrefWidth(scene_width-200);
         box2.getChildren().add(empty);
@@ -431,5 +425,5 @@ public class Main extends Application {
     public static void main(String[] args){
         launch(args);
     }
-
+    
 }
