@@ -1,5 +1,4 @@
-package sample;
-
+import java.io.File;
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import javafx.application.Application;
 import javafx.scene.*;

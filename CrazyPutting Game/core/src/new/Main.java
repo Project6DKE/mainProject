@@ -1,5 +1,4 @@
 import java.io.File;
-
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -69,7 +68,17 @@ public class Main extends Application {
         mainBox.getChildren().add(createMenuView());
         mainBox.getChildren().add(introView());
         if(playGolf){
-            dim3 = new Game3D1(this);
+        	//Function2d height= new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
+        	Function2d height= new FunctionH("0");
+    		
+    		Vector2d flag = new Vector2d(0,3);
+    		Vector2d start = new Vector2d(0,0);
+    		
+    		double g,m,mu,vmax,tol;
+    		g=9.81;m=45.93/1000;mu=0.131;vmax=3;tol=0.02;
+    		
+    		PuttingCourse course = new PuttingCourse(height,flag, start, mu, vmax,tol,g,m );
+            dim3 = new Game3D1(this, course);
             primaryStage.setScene(scene2);
             return mainBox;
         }
@@ -157,8 +166,9 @@ public class Main extends Application {
 
         Label iLabel = new Label("Welcome to group 6 project");
         iLabel.setFont(Font.font("Verdana", 50));
+        iLabel.setUnderline(true);
         
-        Label cLabel = new Label("By Husam, Kristian, Vladislav, Tiphanie, Nicolás, Thibault");
+        Label cLabel = new Label("By Husam, Kristian, Vladislav, Tiphanie, Nicolas, Thibault");
         cLabel.setFont(Font.font("Verdana",FontPosture.ITALIC, 30));
         
         VBox box2 = new VBox();
