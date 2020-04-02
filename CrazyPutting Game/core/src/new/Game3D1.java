@@ -1,7 +1,8 @@
-
-
-//import CrazyPuttingGame.core.src.Physics.*;
 import javafx.application.Application;
+
+import java.net.URL;
+
+import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import javafx.scene.Camera;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
@@ -10,12 +11,15 @@ import javafx.scene.SceneAntialiasing;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -55,7 +59,24 @@ public class Game3D1 extends StackPane{
     }
 
     public void createVisualization() {
+    	Group trees = loadModel(getClass().getResource("trees.obj"));
+        trees.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        trees.getTransforms().add(new Scale(20, 20, 20));
+        trees.getTransforms().add(new Translate(1, 11, 10));
+
+        Group flag = loadModel(getClass().getResource("flag.obj"));
+        flag.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        flag.getTransforms().add(new Scale(30, 30, 30));
+        //flag.getTransforms().add(new Translate(-10, 7, -10));
+
+    	
         this.cube = new Group();
+        
+        //cube.getChildren().add(trees);
+        cube.getChildren().add(flag);
+        
+        Vector2d flagpos = PS.course.get_flag_position();
+        flag.getTransforms().add(new Translate(flagpos.get_x(), flagpos.get_y()-5, PS.course.get_height().evaluate(flagpos)));
 
         this.cube.getTransforms().addAll(this.rotateY);
         this.cube.getTransforms().addAll(this.rotateX);
@@ -79,7 +100,7 @@ public class Game3D1 extends StackPane{
         
         ballPosition();
         
-        int size = 100; //scale
+        int size = 5; //scale
 
 
         for (double x = -area; x <= area; x+=((area*2)-0.0001)/((float)(size-1))) {
@@ -137,7 +158,30 @@ public class Game3D1 extends StackPane{
         //this.cube.getChildren().addAll(waterView);
 
         this.cube.getChildren().add(this.ball);
-        makeZoomable(this.cube);
+        //makeZoomable(this.cube);
+        this.cube.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            switch(event.getCode()) {
+            case O:double delta = 1.2;
+            	double scale = this.cube.getScaleX();
+            	scale/= delta;
+            	scale = clamp(scale);
+            	this.cube.setScaleX(scale);
+            	this.cube.setScaleY(scale);
+            	event.consume();
+            	break;
+            }
+//        	double delta = 1.2;
+//            double scale = this.cube.getScaleX();
+//
+//            /*if (event.getDeltaY() < 0)*/ scale /= delta;
+//            else scale *= delta;
+//
+//            scale = clamp(scale);
+//            this.cube.setScaleX(scale);
+//            this.cube.setScaleY(scale);
+//
+//            event.consume();
+        });
         
         VBox control = new VBox();
         control.setSpacing(20);
@@ -217,7 +261,7 @@ public class Game3D1 extends StackPane{
         control.getChildren().add(angle);
         control.getChildren().add(btn_shot);
         
-        VBox cubebox = new VBox();
+        HBox cubebox = new HBox();
         cubebox.getChildren().add(this.cube);
         
         VBox mainbox = new VBox();
@@ -318,9 +362,21 @@ public class Game3D1 extends StackPane{
     public void ballPosition() {
     	Vector2d ballpos = PS.get_ball_position();
         this.ball.setTranslateX(ballpos.get_x());
-        this.ball.setTranslateY(ballpos.get_y() - (ball_radius));
-        this.ball.setTranslateZ(PS.course.get_height().evaluate(ballpos));
+        this.ball.setTranslateZ(ballpos.get_y() /*- (ball_radius)*/);
+        this.ball.setTranslateY(PS.course.get_height().evaluate(ballpos));
         System.out.println("ball updated : " + ballpos.toString());
+    }
+    private Group loadModel(URL url) {
+        Group modelRoot = new Group();
+
+        ObjModelImporter importer = new ObjModelImporter();
+        importer.read(url);
+
+        for (MeshView view : importer.getImport()) {
+            modelRoot.getChildren().add(view);
+        }
+
+        return modelRoot;
     }
 
     //scale the zoom value
