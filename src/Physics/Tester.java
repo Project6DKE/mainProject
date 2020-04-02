@@ -4,13 +4,22 @@ import java.io.IOException;
 
 public class Tester {
 	public static void main(String[] args) throws IOException {
+<<<<<<< HEAD
 		long startT = System.currentTimeMillis();
 		String path="C:\\Users\\husam\\git\\mainProject\\Speed_velocity3.txt";
 		
+=======
+		/*
+		String path="Course1.txt";
+		// "C:\\Users\\husam\\git\\mainProject\\TestCourse.txt"
+
+>>>>>>> da9e7f9c1024b79de99eedbcabc3b459b5ea2f56
 		FunctionReader xh= new FunctionReader(path);
-		
+
 		PuttingCourse course1 = xh.get_Course();
 		System.out.println("dd"+course1.get_height().toString());
+
+		 */
 		
 //		String path="C:\\Users\\husam\\git\\mainProject\\course1.txt";
 //		
@@ -39,9 +48,12 @@ public class Tester {
 		
 		System.out.println(s.get_ball_position().toString());
 		
+<<<<<<< HEAD
 		long endT = System.currentTimeMillis();
 		System.out.println(" " + ((endT - startT) / 1000.) + " seconds ");
 		
+=======
+>>>>>>> da9e7f9c1024b79de99eedbcabc3b459b5ea2f56
 		//course.output_to_file("C:\\Users\\husam\\git\\mainProject\\course");
 	}
 }

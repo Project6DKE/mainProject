@@ -10,6 +10,20 @@ public class Vector2d {
 	public double get_scalar(){
 		return Math.abs(Math.sqrt(x*x+y*y));
 	}
+
+	public double get_distance(Vector2d aVec){
+		return Math.sqrt(Math.pow((this.x-aVec.x),2)+Math.pow((this.y-aVec.y),2));
+	}
+
+	// I think the angle is in radians, but I need to test it out later
+	public double get_angle(Vector2d aVec){
+		double firstOp = this.get_dotProduct(aVec)/(this.get_scalar()*aVec.get_scalar());
+		return Math.acos(firstOp);
+	}
+
+	public double get_dotProduct(Vector2d aVec){
+		return this.x*aVec.get_x()+this.y*aVec.get_y();
+	}
 	
 	public String toString() {
 		return "X: "+x+"\t Y: "+y+"\t Scalar: "+get_scalar();

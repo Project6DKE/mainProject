@@ -1,11 +1,8 @@
-g = 9.81 ;   // Gravitational acceleration 
-m = 45.93;  // Mass of ball [g] [m/s^2]
-mu = 0.131; // Coefficient of friction (rolling ball)// Typical 0.065<=mu<=0.196
-
-vmax = 3;   // Maximum initial ball speed [m/s]
-tol = 0.02; // Distance from hole for a successful putt [m]
-
+g = 9.81 
+m = 45.93
+mu = 0.131
+vmax = 3
+tol = 0.02
 start = (0.0, 0.0);
 goal = (0.0, 10.0);
-
 height = -0.01*x + 0.003*x^2 + 0.04 * y;

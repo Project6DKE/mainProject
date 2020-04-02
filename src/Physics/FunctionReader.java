@@ -1,8 +1,5 @@
 package Physics;
 
-import Physics.FunctionH;
-import Physics.PuttingCourse;
-import Physics.Vector2d;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -145,10 +142,12 @@ public class FunctionReader {
                 direction = value.get(i);
 
         }
-        newCourse= new PuttingCourse(new FunctionH((height)),new Vector2d(startX, startY),new Vector2d(goalX, goalY),mu,ballspeed,holeDistance,gravity,mass );
+
+        this.newCourse = new PuttingCourse(new FunctionH((height)),new Vector2d(startX, startY),new Vector2d(goalX, goalY),mu,ballspeed,holeDistance,gravity,mass );
     }
     
 	PuttingCourse newCourse;
     
-    public PuttingCourse get_Course() {return newCourse;}
+    public PuttingCourse get_Course() {
+        return newCourse;}
 }

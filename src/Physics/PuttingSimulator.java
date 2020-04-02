@@ -7,9 +7,17 @@ public class PuttingSimulator {
 	PuttingCourse course; EulerSolver engine;
 	Vector2d position, velocity, acceleration;
 	int shot=0;
+<<<<<<< HEAD
 	private Vector2d stopV= new Vector2d(0.1,0.1);
+=======
+	private Vector2d stopV= new Vector2d(0.01,0.01);
+
+	boolean FinishedCourse;
+>>>>>>> da9e7f9c1024b79de99eedbcabc3b459b5ea2f56
 	
-	public PuttingSimulator(PuttingCourse course, EulerSolver engine) {this.course=course; this.engine=engine;position=course.get_start_position();}
+	public PuttingSimulator(PuttingCourse course, EulerSolver engine) {this.course=course; this.engine=engine;position=course.get_start_position();
+	this.FinishedCourse = false;
+	}
 
 	public void set_ball_position(Vector2d p) {this.position=p;}
 	
@@ -45,6 +53,7 @@ public class PuttingSimulator {
 		
 		
 		if(course.is_put(position)) {
+			FinishedCourse = true;
 			//Activate put sequence
 			System.out.println("You have putted, number of shots: "+shot);
 		}
@@ -79,10 +88,14 @@ public class PuttingSimulator {
 	         System.out.println("File not found or error while reading the file.");
 	      }
 	}
+
+	public boolean isFinishedCourse(){
+		return FinishedCourse;
+	}
 	
 	
 	
-	private Vector2d calculate_acceleration(Vector2d vv){
+	public Vector2d calculate_acceleration(Vector2d vv){
 		double Ax, Ay, mu, g;
 		g=course.get_gravity();mu=course.get_friction_coefficient();
 		Vector2d gradient=course.get_height().gradient(position);
