@@ -7,7 +7,7 @@ public class PuttingSimulator {
 	PuttingCourse course; EulerSolver engine;
 	Vector2d position, velocity, acceleration;
 	int shot=0;
-	private Vector2d stopV= new Vector2d(0.01,0.01);
+	private Vector2d stopV= new Vector2d(0.1,0.1);
 	
 	public PuttingSimulator(PuttingCourse course, EulerSolver engine) {this.course=course; this.engine=engine;position=course.get_start_position();}
 
@@ -34,12 +34,12 @@ public class PuttingSimulator {
 			
 			//SEND POSITION TO GRAPHICS
 			velocity=engine.solve(velocity, acceleration);
-//			if(velocity.get_scalar()<stopV.get_scalar() && acceleration.get_scalar()< calculate_acceleration(stopV).get_scalar()) conti=false;
-			if(velocity.get_scalar()<0.01 && acceleration.get_scalar()< 0.05) conti=false;
+			if(velocity.get_scalar()<stopV.get_scalar() && acceleration.get_scalar()< calculate_acceleration(stopV).get_scalar()) conti=false;
+//			if(velocity.get_scalar()<0.01 && acceleration.get_scalar()< 0.05) conti=false;
 			
-//			System.out.println("vel: "+velocity.toString());
-//			System.out.println("acc: "+acceleration.toString());
-//			System.out.println("pos: "+position.toString()+"\n");
+			System.out.println("vel: "+velocity.toString());
+			System.out.println("acc: "+acceleration.toString());
+			System.out.println("pos: "+position.toString()+"\n");
 		}
 		
 		

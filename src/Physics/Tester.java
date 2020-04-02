@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class Tester {
 	public static void main(String[] args) throws IOException {
-		
+		long startT = System.currentTimeMillis();
 		String path="C:\\Users\\husam\\git\\mainProject\\Speed_velocity3.txt";
 		
 		FunctionReader xh= new FunctionReader(path);
@@ -19,7 +19,7 @@ public class Tester {
 //		PuttingCourse course1 = xh.readFile();
 //		System.out.println(course1.get_height().toString());
 		
-		Function2d height= new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
+		Function2d height= new FunctionH("0");
 		
 		Vector2d flag = new Vector2d(0,3);
 		Vector2d start = new Vector2d(0,0);
@@ -33,12 +33,15 @@ public class Tester {
 		
 		PuttingSimulator s= new PuttingSimulator(course,engine);
 		
-		Vector2d initial_ball_velocity= new Vector2d(2,2);
+		Vector2d initial_ball_velocity= new Vector2d(1.5,0);
 		
 		s.take_shot(initial_ball_velocity);
 		
 		System.out.println(s.get_ball_position().toString());
 		
-		course.output_to_file("C:\\Users\\husam\\git\\mainProject\\course");
+		long endT = System.currentTimeMillis();
+		System.out.println(" " + ((endT - startT) / 1000.) + " seconds ");
+		
+		//course.output_to_file("C:\\Users\\husam\\git\\mainProject\\course");
 	}
 }
