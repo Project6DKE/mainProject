@@ -8,8 +8,17 @@ public class PuttingSimulator {
 	Vector2d position, velocity, acceleration;
 	int shot=0;
 	private Vector2d stopV= new Vector2d(0.01,0.01);
+	double maxV;
 	
-	public PuttingSimulator(PuttingCourse course, EulerSolver engine) {this.course=course; this.engine=engine;position=course.get_start_position();}
+	boolean isShotPut;
+	
+	public PuttingSimulator(PuttingCourse course, EulerSolver engine) {
+		this.course=course; 
+		this.engine=engine;
+		position=course.get_start_position();
+		this.isShotPut = false;
+		this.maxV = this.course.get_maximum_velocity();
+	}
 
 	public void set_ball_position(Vector2d p) {this.position=p;}
 	
@@ -17,6 +26,24 @@ public class PuttingSimulator {
 	
 	public void take_shot(Vector2d initial_ball_velocity) {
 		System.out.println("This is shot #"+(++shot));
+		
+		/*
+		 * This is a system to make sure that a given shot is always going to be less than maxV
+		 * Not hard to implement, kind of weird.
+		 * Assumes that the new value should have the same relation between x and y (so if x is twice y then this new value will do that as well)
+		 * This is done to give a focus to direction when taking a shot that's too strong.
+		 */
+		
+		if(initial_ball_velocity.get_scalar()> maxV) {
+			double temp = initial_ball_velocity.get_x()/initial_ball_velocity.get_y();
+			double newX = Math.sqrt( (maxV*maxV)/(temp*temp +1));
+			double newY = newX/temp;
+			
+			initial_ball_velocity.set_x(newX);
+			initial_ball_velocity.set_y(newY);
+			
+		}
+		
 		this.velocity=initial_ball_velocity;
 		Vector2d temp= position;
 		boolean conti=true;
@@ -45,6 +72,7 @@ public class PuttingSimulator {
 		
 		
 		if(course.is_put(position)) {
+			this.isShotPut = true;
 			//Activate put sequence
 			System.out.println("You have putted, number of shots: "+shot);
 		}
@@ -82,13 +110,19 @@ public class PuttingSimulator {
 	
 	
 	
-	private Vector2d calculate_acceleration(Vector2d vv){
+	public Vector2d calculate_acceleration(Vector2d vv){
 		double Ax, Ay, mu, g;
-		g=course.get_gravity();mu=course.get_friction_coefficient();
+		g=course.get_gravity();
+		mu=course.get_friction_coefficient();
 		Vector2d gradient=course.get_height().gradient(position);
 		
 		Ax=(-g*gradient.get_x())-((mu*g*vv.get_x())/vv.get_scalar());
 		Ay=(-g*gradient.get_y())-((mu*g*vv.get_y())/vv.get_scalar());
 		return new Vector2d(Ax,Ay);
 	}
+	
+	public boolean getIsShotPut(){
+		return this.isShotPut;
+	}
+	
 }
