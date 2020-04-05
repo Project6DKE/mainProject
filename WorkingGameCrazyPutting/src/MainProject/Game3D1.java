@@ -313,6 +313,12 @@ public class Game3D1 extends StackPane{
         main.scene2.setOnMouseDragged(event -> {
             rotateY.setAngle(rotateY.getAngle() + (anchorX - event.getSceneX()) / 250);
         });
+        
+        
+        main.scene2.addEventHandler(ScrollEvent.SCROLL, event -> {
+            double delta = event.getDeltaY();
+            cube.translateZProperty().set(cube.getTranslateZ() + delta);
+        });
     }
     
     
