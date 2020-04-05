@@ -62,12 +62,18 @@ public class Game3D1 extends StackPane{
     }
 
     public void createVisualization() {
-    	Group trees = loadModel(getClass().getResource("trees.obj"));
+    	Group trees = loadModel(getClass().getResource("Objects/trees.obj"));
         trees.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
-        trees.getTransforms().add(new Scale(20, 20, 20));
+        trees.getTransforms().add(new Scale(3000, 3000, 3000));
         trees.getTransforms().add(new Translate(1, 11, 10));
 
-        Group flag = loadModel(getClass().getResource("flag.obj"));
+
+        Group chicken = loadModel(getClass().getResource("Objects/chicken.obj"));
+        chicken.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        chicken.getTransforms().add(new Scale(10, 10, 10));
+        chicken.getTransforms().add(new Translate(0, 0, 0));
+
+        Group flag = loadModel(getClass().getResource("Objects/flag.obj"));
         flag.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
         flag.getTransforms().add(new Scale(30, 30, 30));
         //flag.getTransforms().add(new Translate(-10, 7, -10));
@@ -75,6 +81,7 @@ public class Game3D1 extends StackPane{
     	
         this.cube = new Group();
         
+        //cube.getChildren().add(chicken);
         //cube.getChildren().add(trees);
         cube.getChildren().add(flag);
         
