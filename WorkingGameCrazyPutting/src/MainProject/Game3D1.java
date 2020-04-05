@@ -67,11 +67,46 @@ public class Game3D1 extends StackPane{
         trees.getTransforms().add(new Scale(3000, 3000, 3000));
         trees.getTransforms().add(new Translate(1, 11, 10));
 
-
         Group chicken = loadModel(getClass().getResource("Objects/chicken.obj"));
         chicken.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
         chicken.getTransforms().add(new Scale(10, 10, 10));
         chicken.getTransforms().add(new Translate(0, 0, 0));
+        
+        Group grass = loadModel(getClass().getResource("Objects/bunchOfGrass.obj"));
+        grass.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        grass.getTransforms().add(new Scale(3, 3, 3));
+        grass.getTransforms().add(new Translate(-30, 3, 50));
+
+        Group grass2 = loadModel(getClass().getResource("Objects/bunchOfGrass.obj"));
+        grass2.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        grass2.getTransforms().add(new Scale(3, 3, 3));
+        grass2.getTransforms().add(new Translate(-60, 3, 50));
+
+        Group grass3 = loadModel(getClass().getResource("Objects/bunchOfGrass.obj"));
+        grass3.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        grass3.getTransforms().add(new Scale(3, 3, 3));
+        grass3.getTransforms().add(new Translate(-30, 3, 70));
+
+        Group grass4 = loadModel(getClass().getResource("Objects/bunchOfGrass.obj"));
+        grass4.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        grass4.getTransforms().add(new Scale(3, 3, 3));
+        grass4.getTransforms().add(new Translate(-45, 3, 40));
+
+        Group grass5 = loadModel(getClass().getResource("Objects/bunchOfGrass.obj"));
+        grass5.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        grass5.getTransforms().add(new Scale(3, 3, 3));
+        grass5.getTransforms().add(new Translate(-10, 3, 50));
+
+        Group grass6 = loadModel(getClass().getResource("Objects/bunchOfGrass.obj"));
+        grass6.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        grass6.getTransforms().add(new Scale(3, 3, 3));
+        grass6.getTransforms().add(new Translate(-40, 3, 50));
+
+        Group grass7 = loadModel(getClass().getResource("Objects/bunchOfGrass.obj"));
+        grass7.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        grass7.getTransforms().add(new Scale(3, 3, 3));
+        grass7.getTransforms().add(new Translate(-35, 3, 40));
+        
 
         Group flag = loadModel(getClass().getResource("Objects/flag.obj"));
         flag.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
@@ -80,6 +115,11 @@ public class Game3D1 extends StackPane{
 
     	
         this.cube = new Group();
+        
+        cube.getChildren().add(grass);  cube.getChildren().add(grass2);
+        cube.getChildren().add(grass3); cube.getChildren().add(grass4);
+        cube.getChildren().add(grass5); cube.getChildren().add(grass6);
+        cube.getChildren().add(grass7);
         
         //cube.getChildren().add(chicken);
         //cube.getChildren().add(trees);
