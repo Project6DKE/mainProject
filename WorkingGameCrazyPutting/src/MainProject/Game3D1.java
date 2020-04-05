@@ -320,8 +320,26 @@ public class Game3D1 extends StackPane{
         
         
         main.scene2.addEventHandler(ScrollEvent.SCROLL, event -> {
-            double delta = event.getDeltaY();
-            cube.translateZProperty().set(cube.getTranslateZ() + delta);
+            final double delta = event.getDeltaY();
+            final double translateZ = cube.getTranslateZ();
+            final double minZoom = -900;
+            final double maxZoom = -100;
+
+            if (translateZ < minZoom) {
+                if (delta > 0) {
+                    cube.translateZProperty().set(translateZ + delta * 0.5);
+                }
+                return;
+            }
+
+            if (translateZ > maxZoom) {
+                if (delta < 0) {
+                    cube.translateZProperty().set(translateZ + delta * 0.5);
+                }
+                return;
+            }
+
+            cube.translateZProperty().set(translateZ + delta * 0.5);
         });
     }
     
