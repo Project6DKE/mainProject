@@ -47,6 +47,7 @@ public class Game3D1 extends StackPane{
     private Camera cam;
     private PuttingSimulator PS;
     private final int ball_radius = 10;
+    private double anchorX;
 
     public Game3D1(Main main, PuttingCourse PC){
         this.main = main;
@@ -302,6 +303,15 @@ public class Game3D1 extends StackPane{
                 	System.out.println("Stroke : " + stroke);
                 	updateStrokeLabel();
             }
+        });
+
+
+        main.scene2.setOnMousePressed(event -> {
+            anchorX = event.getSceneX();
+        });
+
+        main.scene2.setOnMouseDragged(event -> {
+            rotateY.setAngle(rotateY.getAngle() + (anchorX - event.getSceneX()) / 250);
         });
     }
     
