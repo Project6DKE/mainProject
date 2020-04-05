@@ -308,6 +308,10 @@ public class Game3D1 extends StackPane{
 
         main.scene2.setOnMousePressed(event -> {
             anchorX = event.getSceneX();
+
+            if(event.getClickCount() == 2){
+                cube.setTranslateX(cube.getTranslateX() - ((event.getSceneX() - (main.scene2.getWidth() / 2)) * 0.5));
+            }
         });
 
         main.scene2.setOnMouseDragged(event -> {
