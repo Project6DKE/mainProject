@@ -47,6 +47,7 @@ public class Game3D1 extends StackPane{
     private Camera cam;
     private PuttingSimulator PS;
     private final int ball_radius = 10;
+    private double anchorX;
 
     public Game3D1(Main main, PuttingCourse PC){
         this.main = main;
@@ -302,6 +303,43 @@ public class Game3D1 extends StackPane{
                 	System.out.println("Stroke : " + stroke);
                 	updateStrokeLabel();
             }
+        });
+
+
+        main.scene2.setOnMousePressed(event -> {
+            anchorX = event.getSceneX();
+
+            if(event.getClickCount() == 2){
+                cube.setTranslateX(cube.getTranslateX() - ((event.getSceneX() - (main.scene2.getWidth() / 2)) * 0.5));
+            }
+        });
+
+        main.scene2.setOnMouseDragged(event -> {
+            rotateY.setAngle(rotateY.getAngle() + (anchorX - event.getSceneX()) / 250);
+        });
+        
+        
+        main.scene2.addEventHandler(ScrollEvent.SCROLL, event -> {
+            final double delta = event.getDeltaY();
+            final double translateZ = cube.getTranslateZ();
+            final double minZoom = -900;
+            final double maxZoom = -100;
+
+            if (translateZ < minZoom) {
+                if (delta > 0) {
+                    cube.translateZProperty().set(translateZ + delta * 0.5);
+                }
+                return;
+            }
+
+            if (translateZ > maxZoom) {
+                if (delta < 0) {
+                    cube.translateZProperty().set(translateZ + delta * 0.5);
+                }
+                return;
+            }
+
+            cube.translateZProperty().set(translateZ + delta * 0.5);
         });
     }
     
