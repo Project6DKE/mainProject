@@ -1,5 +1,7 @@
 package MainProject;
 
+import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 
 import java.awt.*;
@@ -47,11 +49,15 @@ public class Game3D1 extends StackPane{
     private PuttingSimulator PS;
     private final int ball_radius = 10;
     private double startX;
+    private int direction = -1;
+    private int skip = 0;
+
 
     public Game3D1(Main main, PuttingCourse PC){
         this.main = main;
         PS = new PuttingSimulator(PC, new EulerSolver());
         createVisualization();
+
         
     }
 
@@ -61,6 +67,7 @@ public class Game3D1 extends StackPane{
     }
 
     public void createVisualization() {
+
     	Group trees = createObject("trees", 1, 11, 10, 10);
         Group chicken = createObject("chicken", 0, 0, 0, 10);
 
@@ -73,9 +80,31 @@ public class Game3D1 extends StackPane{
         Group grass7 = createObject("bunchOfGrass", -35, 3, 40, 3);
 
         Group flag = createObject("flag", 0, 0, 0, 30);
-        Group arrow = createObject("arrow", 0, -33, 3.5, 5);
+        Group arrow = createObject("arrow", 0, -33, 3.3, 5);
         arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
 
+        // This timer can alsi be used for the physics engine
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                double translateY = arrow.getTranslateY();
+
+                if (arrow.getTranslateY() < -30) {
+                    direction = 1;
+                }
+                if (arrow.getTranslateY() > -10) {
+                    direction = -1;
+                }
+
+
+                arrow.setTranslateY(translateY + (direction * 0.2));
+                // Camera seems the move along
+                // So a correction is needed
+                cam.setTranslateY(cam.getTranslateY() - (direction  * 0.2));
+            }
+        };
+
+        timer.start();
 
         Group blenderObjects = new Group();
 
