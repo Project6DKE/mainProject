@@ -2,17 +2,16 @@ package MainProject;
 
 import javafx.application.Application;
 
+import java.awt.*;
 import java.net.URL;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
-import javafx.scene.Camera;
-import javafx.scene.Group;
-import javafx.scene.PerspectiveCamera;
-import javafx.scene.Scene;
-import javafx.scene.SceneAntialiasing;
+import javafx.scene.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
@@ -62,7 +61,7 @@ public class Game3D1 extends StackPane{
     }
 
     public void createVisualization() {
-    	Group trees = createObject("trees", 1, 11, 10, 3000);
+    	Group trees = createObject("trees", 1, 11, 10, 10);
         Group chicken = createObject("chicken", 0, 0, 0, 10);
 
         Group grass = createObject("bunchOfGrass", -30, 3, 50, 3);
@@ -74,14 +73,29 @@ public class Game3D1 extends StackPane{
         Group grass7 = createObject("bunchOfGrass", -35, 3, 40, 3);
 
         Group flag = createObject("flag", 0, 0, 0, 30);
+        Group arrow = createObject("arrow", 0, -33, 3.5, 5);
+        arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
 
-    	
+
+        Group blenderObjects = new Group();
+
+        blenderObjects.getChildren().addAll(arrow);
+
+        blenderObjects.getChildren().addAll(grass);  blenderObjects.getChildren().addAll(grass2);
+        blenderObjects.getChildren().addAll(grass3); blenderObjects.getChildren().addAll(grass4);
+        blenderObjects.getChildren().addAll(grass5); blenderObjects.getChildren().addAll(grass6);
+        blenderObjects.getChildren().addAll(grass7);
+
+
+        PointLight pointLight1 = new PointLight();
+        pointLight1.setColor(Color.GRAY);
+        pointLight1.setTranslateY(pointLight1.getTranslateY() - 100);
+        pointLight1.setOpacity(0.4);
+
+        blenderObjects.getChildren().add(pointLight1);
+
         this.cube = new Group();
-        
-        cube.getChildren().add(grass);  cube.getChildren().add(grass2);
-        cube.getChildren().add(grass3); cube.getChildren().add(grass4);
-        cube.getChildren().add(grass5); cube.getChildren().add(grass6);
-        cube.getChildren().add(grass7);
+        cube.getChildren().addAll(blenderObjects);
         
         //cube.getChildren().add(chicken);
         //cube.getChildren().add(trees);
@@ -138,6 +152,7 @@ public class Game3D1 extends StackPane{
             }
         }
 
+
         // texture
         addTextureMesh(mesh, size);
         addTextureMesh(water, size);
@@ -167,7 +182,14 @@ public class Game3D1 extends StackPane{
         meshView.setCullFace(CullFace.NONE);
         meshView.setDrawMode(DrawMode.FILL);
 
-        this.cube.getChildren().addAll(meshView);
+        Group surface = new Group();
+        AmbientLight pointLight2 = new AmbientLight();
+        pointLight2.setTranslateY(-1000);
+        surface.getChildren().add(pointLight2);
+
+        surface.getChildren().addAll(meshView);
+
+        this.cube.getChildren().addAll(surface);
         //this.cube.getChildren().addAll(waterView);
 
         this.cube.getChildren().add(this.ball);
@@ -198,7 +220,7 @@ public class Game3D1 extends StackPane{
         
         VBox control = new VBox();
         control.setSpacing(20);
-        
+
         Label lbl = createStandardLabel("Control", 20, 250);
         lbl.setUnderline(true);
         Label lbl_speed = createStandardLabel("Speed", 20, 250);
@@ -247,7 +269,7 @@ public class Game3D1 extends StackPane{
         btn_shot.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event){
-                System.out.println("Speed : " + speed_value + " Angke : " + angle_value);
+                System.out.println("Speed : " + speed_value + " Angle : " + angle_value);
             }
         });
         
@@ -264,13 +286,19 @@ public class Game3D1 extends StackPane{
         cubebox.getChildren().add(this.cube);
         
         VBox mainbox = new VBox();
+
         mainbox.getChildren().add(cubebox);
         mainbox.getChildren().add(control);
-        
+
+
         //Scene scene = new Scene(this.cube, 800, 600, true, SceneAntialiasing.BALANCED);
+
+
+
         main.scene2 = new Scene(mainbox, 1200,800,true, SceneAntialiasing.BALANCED);
         main.scene2.setFill(Color.WHITE);
         main.scene2.setCamera(cam);
+
 
 
         // To rotate controls around the X and Y axis and to launch the ball
@@ -325,8 +353,6 @@ public class Game3D1 extends StackPane{
 
             // Functions constrains the zoom
 
-            System.out.println(translateZ);
-
             if (translateZ < minZoom) {
                 if (delta > 0) {
                     cube.translateZProperty().set(translateZ + delta * 0.5);
@@ -363,7 +389,7 @@ public class Game3D1 extends StackPane{
         });
     }
 
-    public Group createObject(String pathName, int x, int y, int z, int scalingFactor) {
+    public Group createObject(String pathName, double x, double y, double z, double scalingFactor) {
         Group object = loadModel(getClass().getResource("Objects/" + pathName + ".obj"));
         object.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
         object.getTransforms().add(new Scale(scalingFactor, scalingFactor, scalingFactor));
