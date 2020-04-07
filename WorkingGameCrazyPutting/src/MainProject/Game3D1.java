@@ -92,6 +92,7 @@ public class Game3D1 extends StackPane{
 
         this.cube.getTransforms().addAll(this.rotateY);
         this.cube.getTransforms().addAll(this.rotateX);
+        this.cube.setTranslateZ(-600);
 
         cam = new PerspectiveCamera();
         cam.setNearClip(0.1);
@@ -320,7 +321,7 @@ public class Game3D1 extends StackPane{
         main.scene2.addEventHandler(ScrollEvent.SCROLL, event -> {
             final double delta = event.getDeltaY();
             final double translateZ = cube.getTranslateZ();
-            final double minZoom = -900, maxZoom = -100;
+            final double minZoom = -900, maxZoom = -450;
 
             // Functions constrains the zoom
 
