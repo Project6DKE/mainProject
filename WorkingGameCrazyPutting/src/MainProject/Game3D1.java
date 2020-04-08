@@ -1,18 +1,19 @@
 package MainProject;
 
+import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 
+import java.awt.*;
 import java.net.URL;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
-import javafx.scene.Camera;
-import javafx.scene.Group;
-import javafx.scene.PerspectiveCamera;
-import javafx.scene.Scene;
-import javafx.scene.SceneAntialiasing;
+import javafx.scene.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
@@ -47,12 +48,16 @@ public class Game3D1 extends StackPane{
     private Camera cam;
     private PuttingSimulator PS;
     private final int ball_radius = 10;
-    private double anchorX;
+    private double startX;
+    private int direction = -1;
+    private int skip = 0;
+
 
     public Game3D1(Main main, PuttingCourse PC){
         this.main = main;
         PS = new PuttingSimulator(PC, new EulerSolver());
         createVisualization();
+
         
     }
 
@@ -62,19 +67,66 @@ public class Game3D1 extends StackPane{
     }
 
     public void createVisualization() {
-    	Group trees = loadModel(getClass().getResource("trees.obj"));
-        trees.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
-        trees.getTransforms().add(new Scale(20, 20, 20));
-        trees.getTransforms().add(new Translate(1, 11, 10));
 
-        Group flag = loadModel(getClass().getResource("flag.obj"));
-        flag.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
-        flag.getTransforms().add(new Scale(30, 30, 30));
-        //flag.getTransforms().add(new Translate(-10, 7, -10));
+    	Group trees = createObject("trees", 1, 11, 10, 10);
+        Group chicken = createObject("chicken", 0, 0, 0, 10);
 
-    	
+        Group grass = createObject("bunchOfGrass", -30, 3, 50, 3);
+        Group grass2 = createObject("bunchOfGrass", -60, 3, 50, 3);
+        Group grass3 = createObject("bunchOfGrass", -30, 3, 70, 3);
+        Group grass4 = createObject("bunchOfGrass", -45, 3, 40, 3);
+        Group grass5 = createObject("bunchOfGrass", -10, 3, 50, 3);
+        Group grass6 = createObject("bunchOfGrass", -40, 3, 50, 3);
+        Group grass7 = createObject("bunchOfGrass", -35, 3, 40, 3);
+
+        Group flag = createObject("flag", 0, 0, 0, 30);
+        Group arrow = createObject("arrow", 0, -33, 3.3, 5);
+        arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
+
+        // This timer can alsi be used for the physics engine
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                double translateY = arrow.getTranslateY();
+
+                if (arrow.getTranslateY() < -30) {
+                    direction = 1;
+                }
+                if (arrow.getTranslateY() > -10) {
+                    direction = -1;
+                }
+
+
+                arrow.setTranslateY(translateY + (direction * 0.2));
+                // Camera seems the move along
+                // So a correction is needed
+                cam.setTranslateY(cam.getTranslateY() - (direction  * 0.2));
+            }
+        };
+
+        timer.start();
+
+        Group blenderObjects = new Group();
+
+        blenderObjects.getChildren().addAll(arrow);
+
+        blenderObjects.getChildren().addAll(grass);  blenderObjects.getChildren().addAll(grass2);
+        blenderObjects.getChildren().addAll(grass3); blenderObjects.getChildren().addAll(grass4);
+        blenderObjects.getChildren().addAll(grass5); blenderObjects.getChildren().addAll(grass6);
+        blenderObjects.getChildren().addAll(grass7);
+
+
+        PointLight pointLight1 = new PointLight();
+        pointLight1.setColor(Color.GRAY);
+        pointLight1.setTranslateY(pointLight1.getTranslateY() - 100);
+        pointLight1.setOpacity(0.4);
+
+        blenderObjects.getChildren().add(pointLight1);
+
         this.cube = new Group();
+        cube.getChildren().addAll(blenderObjects);
         
+        //cube.getChildren().add(chicken);
         //cube.getChildren().add(trees);
         cube.getChildren().add(flag);
         
@@ -83,6 +135,7 @@ public class Game3D1 extends StackPane{
 
         this.cube.getTransforms().addAll(this.rotateY);
         this.cube.getTransforms().addAll(this.rotateX);
+        this.cube.setTranslateZ(-600);
 
         cam = new PerspectiveCamera();
         cam.setNearClip(0.1);
@@ -128,6 +181,7 @@ public class Game3D1 extends StackPane{
             }
         }
 
+
         // texture
         addTextureMesh(mesh, size);
         addTextureMesh(water, size);
@@ -157,7 +211,14 @@ public class Game3D1 extends StackPane{
         meshView.setCullFace(CullFace.NONE);
         meshView.setDrawMode(DrawMode.FILL);
 
-        this.cube.getChildren().addAll(meshView);
+        Group surface = new Group();
+        AmbientLight pointLight2 = new AmbientLight();
+        pointLight2.setTranslateY(-1000);
+        surface.getChildren().add(pointLight2);
+
+        surface.getChildren().addAll(meshView);
+
+        this.cube.getChildren().addAll(surface);
         //this.cube.getChildren().addAll(waterView);
 
         this.cube.getChildren().add(this.ball);
@@ -188,27 +249,13 @@ public class Game3D1 extends StackPane{
         
         VBox control = new VBox();
         control.setSpacing(20);
-        
-        Label lbl = new Label("Control");
-        lbl.setFont(Font.font("Helvetica", 40));
-        lbl.setPrefWidth(250);
-        lbl.setAlignment(Pos.CENTER);
+
+        Label lbl = createStandardLabel("Control", 20, 250);
         lbl.setUnderline(true);
-        
-        Label lbl_speed = new Label("Speed");
-        lbl_speed.setPrefWidth(250);
-        lbl_speed.setAlignment(Pos.CENTER);
-        lbl.setFont(Font.font("Helvetica", 20));
-        
-        Label lbl_angle = new Label("Angle");
-        lbl_angle.setPrefWidth(250);
-        lbl_angle.setAlignment(Pos.CENTER);
-        lbl.setFont(Font.font("Helvetica", 20));
-        
-        lbl_stroke.setText("Stroke : " + stroke);
-        lbl_stroke.setPrefWidth(250);
-        lbl_stroke.setAlignment(Pos.CENTER);
-        lbl_stroke.setFont(Font.font("Helvetica", 20));
+        Label lbl_speed = createStandardLabel("Speed", 20, 250);
+        Label lbl_angle = createStandardLabel("Angle", 20, 250);
+        String strokeString = "Stroke : " + stroke;
+        lbl_stroke = createStandardLabel(strokeString, 20, 250);
         
         Slider speed = new Slider(0.0, 100.0, 50.0);
         speed.setMaxWidth(250);
@@ -251,7 +298,7 @@ public class Game3D1 extends StackPane{
         btn_shot.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event){
-                System.out.println("Speed : " + speed_value + " Angke : " + angle_value);
+                System.out.println("Speed : " + speed_value + " Angle : " + angle_value);
             }
         });
         
@@ -268,62 +315,72 @@ public class Game3D1 extends StackPane{
         cubebox.getChildren().add(this.cube);
         
         VBox mainbox = new VBox();
+
         mainbox.getChildren().add(cubebox);
         mainbox.getChildren().add(control);
-        
+
+
         //Scene scene = new Scene(this.cube, 800, 600, true, SceneAntialiasing.BALANCED);
+
+
+
         main.scene2 = new Scene(mainbox, 1200,800,true, SceneAntialiasing.BALANCED);
         main.scene2.setFill(Color.WHITE);
         main.scene2.setCamera(cam);
 
-        main.scene2.setOnKeyPressed(t -> {        //Listener
+
+
+        // To rotate controls around the X and Y axis and to launch the ball
+        keyboardControlListener();
+
+        // To scale all object, for a zoom effect
+        scrollListener();
+
+        // To teleport by double clicking
+        mousePressedListener();
+
+        // To rotate all objects in the scene around the Y axis
+        mouseDraggedListener();
+    }
+
+    public void keyboardControlListener() {
+        main.scene2.setOnKeyPressed(t -> {
             switch (t.getCode()){
-                case LEFT: 
-                    this.rotateY.setAngle(this.rotateY.getAngle() - 10); 
+                case LEFT:
+                    this.rotateY.setAngle(this.rotateY.getAngle() - 10);
                     break;
-                case RIGHT: 
-                    this.rotateY.setAngle(this.rotateY.getAngle() + 10); 
+                case RIGHT:
+                    this.rotateY.setAngle(this.rotateY.getAngle() + 10);
                     break;
-                case W: 
-                    this.rotateX.setAngle(this.rotateX.getAngle() - 10); 
+                case W:
+                    this.rotateX.setAngle(this.rotateX.getAngle() - 10);
                     break;
-                case S: 
-                    this.rotateX.setAngle(this.rotateX.getAngle() + 10); 
+                case S:
+                    this.rotateX.setAngle(this.rotateX.getAngle() + 10);
                     break;
                 case R:
-                	System.out.println("Reset the angle");
-                	this.rotateX.setAngle(0);
-                	this.rotateY.setAngle(0);
+                    System.out.println("Reset the angle");
+                    this.rotateX.setAngle(0);
+                    this.rotateY.setAngle(0);
                 case ENTER:
-                	System.out.println("Speed : " + speed_value + " Angle : "+ angle_value);
-                	System.out.println("Stroke : " + stroke);
-                	PS.take_angle_shot(speed_value, angle_value*Math.PI/180);
-                	ballPosition();
-                	stroke = PS.shot;
-                	System.out.println("Stroke : " + stroke);
-                	updateStrokeLabel();
+                    System.out.println("Speed : " + speed_value + " Angle : "+ angle_value);
+                    System.out.println("Stroke : " + stroke);
+                    PS.take_angle_shot(speed_value, angle_value*Math.PI/180);
+                    ballPosition();
+                    stroke = PS.shot;
+                    System.out.println("Stroke : " + stroke);
+                    updateStrokeLabel();
             }
         });
+    }
 
-
-        main.scene2.setOnMousePressed(event -> {
-            anchorX = event.getSceneX();
-
-            if(event.getClickCount() == 2){
-                cube.setTranslateX(cube.getTranslateX() - ((event.getSceneX() - (main.scene2.getWidth() / 2)) * 0.5));
-            }
-        });
-
-        main.scene2.setOnMouseDragged(event -> {
-            rotateY.setAngle(rotateY.getAngle() + (anchorX - event.getSceneX()) / 250);
-        });
-        
-        
+    public void scrollListener() {
         main.scene2.addEventHandler(ScrollEvent.SCROLL, event -> {
             final double delta = event.getDeltaY();
             final double translateZ = cube.getTranslateZ();
-            final double minZoom = -900;
-            final double maxZoom = -100;
+            final double minZoom = -900, maxZoom = -450;
+
+            // Functions constrains the zoom
 
             if (translateZ < minZoom) {
                 if (delta > 0) {
@@ -341,6 +398,42 @@ public class Game3D1 extends StackPane{
 
             cube.translateZProperty().set(translateZ + delta * 0.5);
         });
+    }
+
+    public void mousePressedListener() {
+        main.scene2.setOnMousePressed(event -> {
+            // Find starting point
+            // To measure distance when starting to drag
+            startX = event.getSceneX();
+
+            if(event.getClickCount() == 2){
+                cube.setTranslateX(cube.getTranslateX() - ((event.getSceneX() - (main.scene2.getWidth() / 2)) * 0.5));
+            }
+        });
+    }
+
+    public void mouseDraggedListener() {
+        main.scene2.setOnMouseDragged(event -> {
+            rotateY.setAngle(rotateY.getAngle() + (startX - event.getSceneX()) / 250);
+        });
+    }
+
+    public Group createObject(String pathName, double x, double y, double z, double scalingFactor) {
+        Group object = loadModel(getClass().getResource("Objects/" + pathName + ".obj"));
+        object.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
+        object.getTransforms().add(new Scale(scalingFactor, scalingFactor, scalingFactor));
+        object.getTransforms().add(new Translate(x, y, z));
+
+        return object;
+    }
+
+    public Label createStandardLabel(String text, int size, int prefWidth) {
+        Label label = new Label(text);
+        label.setPrefWidth(prefWidth);
+        label.setAlignment(Pos.CENTER);
+        label.setFont(Font.font("Helvetica", size));
+
+        return label;
     }
     
     
