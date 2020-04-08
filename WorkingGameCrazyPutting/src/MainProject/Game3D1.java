@@ -1,4 +1,4 @@
-package MainProject;
+package WorkingGameCrazyPutting.src.MainProject;
 
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
