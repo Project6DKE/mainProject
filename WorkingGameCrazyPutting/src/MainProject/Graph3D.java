@@ -1,4 +1,4 @@
-package WorkingGameCrazyPutting.src.MainProject;
+package MainProject;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;

@@ -170,13 +170,16 @@ public class Game3D1 extends StackPane{
                 if(z > max_height) {
                     z = max_height;    //limit so the different of height in the field is not too big
                 }   
+                if(z<0) {
+                	z = max_height;
+                }
                 mesh.getPoints().addAll(
                     (int)(x * 100), 
                     (int)(z * 100),
                     (int)(y * 100));
                 water.getPoints().addAll(
                     (int)(x * 100), 
-                    (int)(251),
+                    (int)(1),
                     (int)(y * 100));
             }
         }
@@ -217,6 +220,7 @@ public class Game3D1 extends StackPane{
         surface.getChildren().add(pointLight2);
 
         surface.getChildren().addAll(meshView);
+        surface.getChildren().addAll(waterView);
 
         this.cube.getChildren().addAll(surface);
         //this.cube.getChildren().addAll(waterView);
