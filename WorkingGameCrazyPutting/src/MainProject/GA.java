@@ -1,4 +1,7 @@
-package WorkingGameCrazyPutting.src.MainProject;
+package MainProject;
+
+import readingOfFunctions.Function2d;
+import readingOfFunctions.FunctionH;
 
 public class GA {
 	private static int number_of_gen = 2;

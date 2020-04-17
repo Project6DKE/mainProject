@@ -1,4 +1,4 @@
-package WorkingGameCrazyPutting.src.MainProject;
+package MainProject;
 
 public class BasicAI {
 

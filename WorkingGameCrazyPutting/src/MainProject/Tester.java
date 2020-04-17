@@ -2,6 +2,9 @@ package MainProject;
 
 import java.io.IOException;
 
+import readingOfFunctions.Function2d;
+import readingOfFunctions.FunctionH;
+
 public class Tester {
 	public static void main(String[] args) throws IOException {
 		

@@ -1,4 +1,4 @@
-package WorkingGameCrazyPutting.src.MainProject;
+package MainProject;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

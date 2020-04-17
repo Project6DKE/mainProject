@@ -22,6 +22,9 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import readingOfFunctions.Function2d;
+import readingOfFunctions.FunctionH;
+
 
 public class UI {
 	private JFrame frame;

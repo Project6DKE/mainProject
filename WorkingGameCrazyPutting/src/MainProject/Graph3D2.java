@@ -1,4 +1,4 @@
-package WorkingGameCrazyPutting.src.MainProject;
+package MainProject;
 
 import java.io.File;
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;

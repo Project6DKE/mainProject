@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import readingOfFunctions.FunctionH;
+
 public class FunctionReader {
 
     private double gravity;

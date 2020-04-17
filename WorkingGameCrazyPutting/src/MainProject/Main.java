@@ -1,6 +1,5 @@
-package WorkingGameCrazyPutting.src.MainProject;
+package MainProject;
 
-import java.io.File;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,6 +22,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.stage.Stage;
+import readingOfFunctions.Function2d;
+import readingOfFunctions.FunctionH;
 
 public class Main extends Application {
     public Stage primaryStage;

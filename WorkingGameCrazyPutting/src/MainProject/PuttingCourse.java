@@ -1,7 +1,9 @@
-package WorkingGameCrazyPutting.src.MainProject;
+package MainProject;
 
 import java.io.FileWriter;
 import java.io.IOException;
+
+import readingOfFunctions.Function2d;
 
 public class PuttingCourse {
 	

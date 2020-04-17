@@ -1,4 +1,4 @@
-package WorkingGameCrazyPutting.src.MainProject;
+package MainProject;
 
 public class EulerSolver implements PhysicsEngine {
 	private double h;
