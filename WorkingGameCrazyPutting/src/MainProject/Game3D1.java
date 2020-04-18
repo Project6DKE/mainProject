@@ -71,40 +71,56 @@ public class Game3D1 extends StackPane{
     	Group trees = createObject("trees", 1, 11, 10, 10);
         Group chicken = createObject("chicken", 0, 0, 0, 10);
 
-        Group grass = createObject("bunchOfGrass", -30, 3, 50, 3);
-        Group grass2 = createObject("bunchOfGrass", -60, 3, 50, 3);
-        Group grass3 = createObject("bunchOfGrass", -30, 3, 70, 3);
-        Group grass4 = createObject("bunchOfGrass", -45, 3, 40, 3);
-        Group grass5 = createObject("bunchOfGrass", -10, 3, 50, 3);
-        Group grass6 = createObject("bunchOfGrass", -40, 3, 50, 3);
-        Group grass7 = createObject("bunchOfGrass", -35, 3, 40, 3);
+        double translateGrassX = -50;
+        double translateGrassY = 75;
+        double translateGrassZ = 50;
+
+        Group grass = createObject("bunchOfGrass", -30 + translateGrassX, translateGrassY, 50 + translateGrassZ, 3);
+        Group grass2 = createObject("bunchOfGrass", -60 + translateGrassX, translateGrassY, 50 + translateGrassZ, 3);
+        Group grass3 = createObject("bunchOfGrass", -30 + translateGrassX, translateGrassY, 70 + translateGrassZ, 3);
+        Group grass4 = createObject("bunchOfGrass", -45 + translateGrassX, translateGrassY, 40 + translateGrassZ, 3);
+        Group grass5 = createObject("bunchOfGrass", -10 + translateGrassX, translateGrassY, 50 + translateGrassZ, 3);
+        Group grass6 = createObject("bunchOfGrass", -40 + translateGrassX, translateGrassY, 50 + translateGrassZ, 3);
+        Group grass7 = createObject("bunchOfGrass", -35 + translateGrassX, translateGrassY, 40 + translateGrassZ, 3);
 
         Group flag = createObject("flag", 0, 0, 0, 30);
         Group arrow = createObject("arrow", 0, -33, 3.3, 5);
         arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
 
-        // This timer can alsi be used for the physics engine
+
+        // This timer can also be used for the physics engine
+
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                double translateY = arrow.getTranslateY();
+                if (cam.getTranslateY() == 0) {
+                    // Initialise camera
+                    cam.setTranslateY(800);
+                } else {
 
-                if (arrow.getTranslateY() < -30) {
-                    direction = 1;
+                    if (arrow.getTranslateY() < -30) {
+                        direction = 1;
+                    }
+                    if (arrow.getTranslateY() > -10) {
+                        direction = -1;
+                    }
+
+                    if (skip == 2) {
+                        skip = 0;
+                        // Camera seems the move along
+                        // So a correction is needed
+                        arrow.setTranslateY(arrow.getTranslateY() + direction);
+                        cam.setTranslateY(cam.getTranslateY() - direction );
+                    } else {
+                        skip += 1;
+                    }
                 }
-                if (arrow.getTranslateY() > -10) {
-                    direction = -1;
-                }
-
-
-                arrow.setTranslateY(translateY + (direction * 0.2));
-                // Camera seems the move along
-                // So a correction is needed
-                cam.setTranslateY(cam.getTranslateY() - (direction  * 0.2));
             }
         };
 
         timer.start();
+
+
 
         Group blenderObjects = new Group();
 
@@ -161,6 +177,7 @@ public class Game3D1 extends StackPane{
 
         for (double x = -area; x <= area; x+=((area*2)-0.0001)/((float)(size-1))) {
             for (double y = -area; y <= area; y+=((area*2)-0.0001)/((float)(size-1))) {
+
                 //double z = Math.pow(x, 2) + y;  //insert here the function (height)
             	//double z = 2.5;
             	double z = PS.course.get_height().evaluate(new Vector2d(x,y));
@@ -171,15 +188,27 @@ public class Game3D1 extends StackPane{
                     z = max_height;    //limit so the different of height in the field is not too big
                 }   
                 if(z<0) {
-                	z = max_height;
+                    z = max_height;
                 }
-                mesh.getPoints().addAll(
-                    (int)(x * 100), 
-                    (int)(z * 100),
-                    (int)(y * 100));
+
+                // Maybe there is a better constant than 0.5 to detect water
+                if (z > 0.5) {
+                    mesh.getPoints().addAll(
+                            (int) (x * 100),
+                            (int) (z * 100),
+                            (int) (y * 100));
+                } else {
+                    // Move below water mesh
+                    mesh.getPoints().addAll(
+                            (int) (x * 100),
+                            (int) (z * 60),
+                            (int) (y * 100));
+                }
+
+
                 water.getPoints().addAll(
                     (int)(x * 100), 
-                    (int)(1),
+                    (int)(20),
                     (int)(y * 100));
             }
         }
@@ -215,6 +244,7 @@ public class Game3D1 extends StackPane{
         meshView.setDrawMode(DrawMode.FILL);
 
         Group surface = new Group();
+
         AmbientLight pointLight2 = new AmbientLight();
         pointLight2.setTranslateY(-1000);
         surface.getChildren().add(pointLight2);
@@ -222,7 +252,10 @@ public class Game3D1 extends StackPane{
         surface.getChildren().addAll(meshView);
         surface.getChildren().addAll(waterView);
 
+        surface.setRotate(180);
+
         this.cube.getChildren().addAll(surface);
+
         //this.cube.getChildren().addAll(waterView);
 
         this.cube.getChildren().add(this.ball);
@@ -314,13 +347,22 @@ public class Game3D1 extends StackPane{
         control.getChildren().add(lbl_angle);
         control.getChildren().add(angle);
         control.getChildren().add(btn_shot);
+        control.setAlignment(Pos.TOP_LEFT);
+        control.setTranslateX(0);
+        control.setTranslateY(0);
+
         
         HBox cubebox = new HBox();
+
+        cube.setTranslateY(1100);
+        control.setTranslateY(500);
+
         cubebox.getChildren().add(this.cube);
         
         VBox mainbox = new VBox();
 
         mainbox.getChildren().add(cubebox);
+
         mainbox.getChildren().add(control);
 
 
@@ -329,7 +371,6 @@ public class Game3D1 extends StackPane{
 
 
         main.scene2 = new Scene(mainbox, 1200,800,true, SceneAntialiasing.BALANCED);
-        main.scene2.setFill(Color.WHITE);
         main.scene2.setCamera(cam);
 
 
@@ -382,7 +423,7 @@ public class Game3D1 extends StackPane{
         main.scene2.addEventHandler(ScrollEvent.SCROLL, event -> {
             final double delta = event.getDeltaY();
             final double translateZ = cube.getTranslateZ();
-            final double minZoom = -900, maxZoom = -450;
+            final double minZoom = -900, maxZoom = 0;
 
             // Functions constrains the zoom
 
