@@ -364,6 +364,8 @@ public class Main extends Application {
                 System.out.println(goalYV);
                 System.out.println(functionV);
                 System.out.println(gravityV);
+                PuttingCourse course = new PuttingCourse(new FunctionH(functionV), new Vector2d(goalXV,goalYV), new Vector2d(startXV,startYV),frictionV,ballSpeedV,holeDistV,gravityV,massV);
+                 
             }
         });
 
