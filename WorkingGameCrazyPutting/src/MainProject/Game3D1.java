@@ -371,6 +371,12 @@ public class Game3D1 extends StackPane{
 
 
         main.scene2 = new Scene(mainbox, 1200,800,true, SceneAntialiasing.BALANCED);
+        
+        Stop[] stops = new Stop[] { new Stop(0, Color.LIGHTBLUE), new Stop(1, Color.LIGHTYELLOW)};
+        LinearGradient lg1 = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+
+        main.scene2.setFill(lg1);
+        
         main.scene2.setCamera(cam);
 
 
