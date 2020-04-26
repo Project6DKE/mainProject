@@ -25,6 +25,8 @@ import javafx.stage.Stage;
 import readingOfFunctions.Function2d;
 import readingOfFunctions.FunctionH;
 
+import java.io.File;
+
 public class Main extends Application {
     public Stage primaryStage;
     public Scene scene, scene2;
@@ -34,6 +36,7 @@ public class Main extends Application {
     private final int scene_height = 750;
     private static Main thismain;
     public Game3D1 dim3;
+    public double volume = 0.5;
 
     private double massV;
     private double frictionV;
@@ -52,12 +55,12 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Golf");
-        String musicFile = "golf_music_full.mp3";     // For example
+        //String musicFile = "golf_music_full.mp3";     // For example
         //Media sound = new Media(new File(musicFile).toURI().toString());
         //mediaPlayer = new MediaPlayer(sound);
         //mediaPlayer.setVolume(0.5);
-        //mediaPlayer.setAutoPlay(true); 
-        //mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); 
+        //mediaPlayer.setAutoPlay(true);
+        //mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         Group group = new Group();
         playGolf = false;
 
@@ -479,7 +482,8 @@ public class Main extends Application {
   
             public void changed(ObservableValue <? extends Number >  
                       observable, Number oldValue, Number newValue) 
-            { 
+            {
+                volume = (double) newValue;
   
                 //System.out.println("value: " + newValue);
                 //mediaPlayer.setVolume((double) newValue);
