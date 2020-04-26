@@ -4,9 +4,11 @@ import javafx.animation.*;
 import javafx.application.Application;
 
 import java.awt.*;
+import java.io.File;
 import java.net.URL;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,6 +18,9 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
@@ -56,6 +61,15 @@ public class Game3D1 extends StackPane{
     public Game3D1(Main main, PuttingCourse PC){
         this.main = main;
         PS = new PuttingSimulator(PC, new EulerSolver());
+
+        AudioClip music = new AudioClip(getClass().getResource("Sound/2sec_silent_intro_horn.wav").toExternalForm());
+        music.setVolume(main.volume);
+        music.play();
+
+        AudioClip music2 = new AudioClip(getClass().getResource("Sound/13sec_silent_golf_music.wav").toExternalForm());
+        music2.setVolume(main.volume);
+        music2.play();
+
         createVisualization();
     }
 
@@ -83,12 +97,12 @@ public class Game3D1 extends StackPane{
 
         Group flag = createObject("flag", 0, 0, 0, 30);
         Group arrow = createObject("arrow", 0, -40, 3.3, 5);
+
         arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
 
         cam = new PerspectiveCamera();
         cam.setNearClip(0.1);
         cam.setFarClip(100000.0);
-        cam.setTranslateY(800);
 
         TranslateTransition transition2 = new TranslateTransition();
         transition2.setDuration(Duration.seconds(3));
@@ -335,11 +349,12 @@ public class Game3D1 extends StackPane{
 
         control.setTranslateY(1300);
 
+
         RotateTransition rotateTransition = new RotateTransition();
         rotateTransition.setAxis(Rotate.Y_AXIS);
         rotateTransition.setFromAngle(-40);
         rotateTransition.setToAngle(0);
-        rotateTransition.setDuration(Duration.seconds(4));
+        rotateTransition.setDuration(Duration.seconds(5.5));
         rotateTransition.setAutoReverse(true);
         rotateTransition.setCycleCount(1);
         rotateTransition.setNode(cube);
