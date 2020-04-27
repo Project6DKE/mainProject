@@ -1,13 +1,14 @@
 package MainProject;
 
-import javafx.animation.Animation;
-import javafx.animation.AnimationTimer;
+import javafx.animation.*;
 import javafx.application.Application;
 
 import java.awt.*;
+import java.io.File;
 import java.net.URL;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,8 +18,11 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
@@ -32,6 +36,7 @@ import javafx.event.EventHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 public class Game3D1 extends StackPane{
     private final Rotate rotateY = new Rotate(-145, Rotate.Y_AXIS);
@@ -56,9 +61,16 @@ public class Game3D1 extends StackPane{
     public Game3D1(Main main, PuttingCourse PC){
         this.main = main;
         PS = new PuttingSimulator(PC, new EulerSolver());
-        createVisualization();
 
-        
+        AudioClip music = new AudioClip(getClass().getResource("Sound/2sec_silent_intro_horn.wav").toExternalForm());
+        music.setVolume(main.volume);
+        music.play();
+
+        AudioClip music2 = new AudioClip(getClass().getResource("Sound/13sec_silent_golf_music.wav").toExternalForm());
+        music2.setVolume(main.volume);
+        music2.play();
+
+        createVisualization();
     }
 
 
@@ -68,7 +80,7 @@ public class Game3D1 extends StackPane{
 
     public void createVisualization() {
 
-    	Group trees = createObject("trees", 1, 11, 10, 10);
+        Group trees = createObject("trees", 1, 11, 10, 10);
         Group chicken = createObject("chicken", 0, 0, 0, 10);
 
         double translateGrassX = -50;
@@ -84,46 +96,24 @@ public class Game3D1 extends StackPane{
         Group grass7 = createObject("bunchOfGrass", -35 + translateGrassX, translateGrassY, 40 + translateGrassZ, 3);
 
         Group flag = createObject("flag", 0, 0, 0, 30);
-        Group arrow = createObject("arrow", 0, -33, 3.3, 5);
+        Group arrow = createObject("arrow", 0, -40, 3.3, 5);
+
         arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
 
+        cam = new PerspectiveCamera();
+        cam.setNearClip(0.1);
+        cam.setFarClip(100000.0);
 
-        // This timer can also be used for the physics engine
-
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                if (cam.getTranslateY() == 0) {
-                    // Initialise camera
-                    cam.setTranslateY(800);
-                } else {
-
-                    if (arrow.getTranslateY() < -30) {
-                        direction = 1;
-                    }
-                    if (arrow.getTranslateY() > -10) {
-                        direction = -1;
-                    }
-
-                    if (skip == 2) {
-                        skip = 0;
-                        // Camera seems the move along
-                        // So a correction is needed
-                        arrow.setTranslateY(arrow.getTranslateY() + direction);
-                        cam.setTranslateY(cam.getTranslateY() - direction );
-                    } else {
-                        skip += 1;
-                    }
-                }
-            }
-        };
-
-        timer.start();
-
-
+        TranslateTransition transition2 = new TranslateTransition();
+        transition2.setDuration(Duration.seconds(3));
+        transition2.setFromY(800);
+        transition2.setToY(1600);
+        transition2.setAutoReverse(true);
+        transition2.setCycleCount(1);
+        transition2.setNode(cam);
+        transition2.play();
 
         Group blenderObjects = new Group();
-
         blenderObjects.getChildren().addAll(arrow);
 
         blenderObjects.getChildren().addAll(grass);  blenderObjects.getChildren().addAll(grass2);
@@ -149,14 +139,7 @@ public class Game3D1 extends StackPane{
         Vector2d flagpos = PS.course.get_flag_position();
         flag.getTransforms().add(new Translate(flagpos.get_x(), flagpos.get_y()-5, PS.course.get_height().evaluate(flagpos)));
 
-        this.cube.getTransforms().addAll(this.rotateY);
-        this.cube.getTransforms().addAll(this.rotateX);
-        this.cube.setTranslateZ(-600);
 
-        cam = new PerspectiveCamera();
-        cam.setNearClip(0.1);
-        cam.setFarClip(100000.0);
-        
         TriangleMesh mesh = new TriangleMesh();
         TriangleMesh water = new TriangleMesh();
 
@@ -222,8 +205,8 @@ public class Game3D1 extends StackPane{
         addFacesMesh(mesh, size);
         addFacesMesh(water, size);
 
-        this.cube.setTranslateY(400);   //where we rotate
-        this.cube.setTranslateX(400);   //where we rotate
+        this.cube.getTransforms().addAll(this.rotateY);
+        this.cube.getTransforms().addAll(this.rotateX);
 
         PhongMaterial fieldMaterial = new PhongMaterial();  //color
         fieldMaterial.setSpecularColor(Color.GREEN);
@@ -283,6 +266,8 @@ public class Game3D1 extends StackPane{
 //
 //            event.consume();
         });
+
+
         
         VBox control = new VBox();
         control.setSpacing(20);
@@ -329,8 +314,11 @@ public class Game3D1 extends StackPane{
                
                } 
            }); 
-        
+
         Button btn_shot = new Button("Shot");
+
+
+
         btn_shot.setMinWidth(250);
         btn_shot.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -338,6 +326,7 @@ public class Game3D1 extends StackPane{
                 System.out.println("Speed : " + speed_value + " Angle : " + angle_value);
             }
         });
+
         
         
         control.getChildren().add(lbl);
@@ -354,8 +343,22 @@ public class Game3D1 extends StackPane{
         
         HBox cubebox = new HBox();
 
-        cube.setTranslateY(1100);
-        control.setTranslateY(500);
+        cube.setTranslateY(1900);
+        this.cube.setTranslateX(400);
+        cube.setTranslateZ(-100);
+
+        control.setTranslateY(1300);
+
+
+        RotateTransition rotateTransition = new RotateTransition();
+        rotateTransition.setAxis(Rotate.Y_AXIS);
+        rotateTransition.setFromAngle(-40);
+        rotateTransition.setToAngle(0);
+        rotateTransition.setDuration(Duration.seconds(5.5));
+        rotateTransition.setAutoReverse(true);
+        rotateTransition.setCycleCount(1);
+        rotateTransition.setNode(cube);
+        rotateTransition.play();
 
         cubebox.getChildren().add(this.cube);
         
@@ -371,6 +374,11 @@ public class Game3D1 extends StackPane{
 
 
         main.scene2 = new Scene(mainbox, 1200,800,true, SceneAntialiasing.BALANCED);
+
+        Stop[] stops = new Stop[] { new Stop(0, Color.LIGHTBLUE), new Stop(1, Color.LIGHTYELLOW)};
+        LinearGradient lg1 = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+
+        main.scene2.setFill(lg1);
         main.scene2.setCamera(cam);
 
 
@@ -386,6 +394,7 @@ public class Game3D1 extends StackPane{
 
         // To rotate all objects in the scene around the Y axis
         mouseDraggedListener();
+
     }
 
     public void keyboardControlListener() {
@@ -423,7 +432,7 @@ public class Game3D1 extends StackPane{
         main.scene2.addEventHandler(ScrollEvent.SCROLL, event -> {
             final double delta = event.getDeltaY();
             final double translateZ = cube.getTranslateZ();
-            final double minZoom = -900, maxZoom = 0;
+            final double minZoom = -900, maxZoom = -100;
 
             // Functions constrains the zoom
 

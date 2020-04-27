@@ -25,6 +25,8 @@ import javafx.stage.Stage;
 import readingOfFunctions.Function2d;
 import readingOfFunctions.FunctionH;
 
+import java.io.File;
+
 public class Main extends Application {
     public Stage primaryStage;
     public Scene scene, scene2;
@@ -34,6 +36,8 @@ public class Main extends Application {
     private final int scene_height = 750;
     private static Main thismain;
     public Game3D1 dim3;
+    public double volume = 0.5;
+
     private double massV;
     private double frictionV;
     private double holeDistV;
@@ -51,42 +55,53 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Golf");
-        String musicFile = "golf_music_full.mp3";     // For example
+        //String musicFile = "golf_music_full.mp3";     // For example
         //Media sound = new Media(new File(musicFile).toURI().toString());
         //mediaPlayer = new MediaPlayer(sound);
         //mediaPlayer.setVolume(0.5);
-        //mediaPlayer.setAutoPlay(true); 
-        //mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); 
+        //mediaPlayer.setAutoPlay(true);
+        //mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         Group group = new Group();
         playGolf = false;
+
         scene = new Scene(group, scene_width, scene_height, true);
         scene.setFill(Color.LIGHTCORAL);
         group.getChildren().add(createView());
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    private HBox createView(){
+    private HBox createView() {
         mainBox = new HBox();
         mainBox.getChildren().add(createMenuView());
         mainBox.getChildren().add(introView());
-        if(playGolf){
-        	Function2d height= new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
-        	//Function2d height= new FunctionH("0");
-    		
-    		Vector2d flag = new Vector2d(0,3);
-    		Vector2d start = new Vector2d(0,0);
-    		
-    		double g,m,mu,vmax,tol;
-    		g=9.81;m=45.93/1000;mu=0.131;vmax=3;tol=0.02;
-    		
-    		PuttingCourse course = new PuttingCourse(height,flag, start, mu, vmax,tol,g,m );
+        if (playGolf) {
+            Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
+            //Function2d height= new FunctionH("0");
+
+            Vector2d flag = new Vector2d(0, 3);
+            Vector2d start = new Vector2d(0, 0);
+
+            double g, m, mu, vmax, tol;
+            g = 9.81;
+            m = 45.93 / 1000;
+            mu = 0.131;
+            vmax = 3;
+            tol = 0.02;
+
+            PuttingCourse course = new PuttingCourse(height, flag, start, mu, vmax, tol, g, m);
+
             dim3 = new Game3D1(this, course);
+
             primaryStage.setScene(scene2);
             return mainBox;
         }
+
+
         return mainBox;
     }
+
 
     private VBox createMenuView(){
         VBox box = new VBox();
@@ -188,6 +203,54 @@ public class Main extends Application {
 
     }
 
+    private VBox botCreationView(){
+        VBox box1 = new VBox();
+        box1.prefWidth(scene_width-200);
+        HBox box2 = new HBox();
+        box2.setPrefWidth(scene_width-200);
+        HBox box3 = new HBox();
+        box2.setPrefWidth(scene_width-200);
+        HBox box4 = new HBox();
+        box2.setPrefWidth(scene_width-200);
+
+        Label title = new Label("Select difficulty");
+        title.setFont(Font.font("Helvetica", 50));
+
+        Label empty2 = new Label("");
+        empty2.setFont(Font.font("Helvetica", 50));
+
+        Button level1_btn = new Button("Easy");
+        level1_btn.setFont(Font.font("Helvetica", 40));
+        level1_btn.setPrefWidth(500);
+
+        Button level2_btn = new Button("Expert");
+        level2_btn.setFont(Font.font("Helvetica", 40));
+        level2_btn.setPrefWidth(500);
+
+        Button level3_btn = new Button("Impossible");
+        level3_btn.setFont(Font.font("Helvetica", 40));
+        level3_btn.setPrefWidth(500);
+
+        box2.getChildren().add(level1_btn);
+        box2.setAlignment(Pos.CENTER);
+
+        box3.getChildren().add(level2_btn);
+        box3.setAlignment(Pos.CENTER);
+
+        box4.getChildren().add(level3_btn);
+        box4.setAlignment(Pos.CENTER);
+
+        box1.getChildren().add(title);
+        box1.getChildren().add(empty2);
+        box1.getChildren().add(box2);
+        box1.getChildren().add(box3);
+        box1.getChildren().add(box4);
+        box1.setAlignment(Pos.CENTER);
+        box1.setSpacing(20);
+
+        return box1;
+    }
+
     private VBox playView(){
         VBox box1 = new VBox();
         box1.prefWidth(scene_width-200);
@@ -219,6 +282,15 @@ public class Main extends Application {
         Button AI_btn = new Button("Bot Play");
         AI_btn.setFont(Font.font("Helvetica", 40));
         AI_btn.setPrefWidth(500);
+
+        AI_btn.setOnAction(new EventHandler<ActionEvent>(){
+
+            public void handle(ActionEvent event) {
+                mainBox.getChildren().remove(1);
+                mainBox.getChildren().add(botCreationView());
+            }
+        });
+
 
         box.getChildren().add(human_btn);
         box.getChildren().add(empty);
@@ -364,6 +436,8 @@ public class Main extends Application {
                 System.out.println(goalYV);
                 System.out.println(functionV);
                 System.out.println(gravityV);
+                PuttingCourse course = new PuttingCourse(new FunctionH(functionV), new Vector2d(goalXV,goalYV), new Vector2d(startXV,startYV),frictionV,ballSpeedV,holeDistV,gravityV,massV);
+                 
             }
         });
 
@@ -408,7 +482,8 @@ public class Main extends Application {
   
             public void changed(ObservableValue <? extends Number >  
                       observable, Number oldValue, Number newValue) 
-            { 
+            {
+                volume = (double) newValue;
   
                 //System.out.println("value: " + newValue);
                 //mediaPlayer.setVolume((double) newValue);
