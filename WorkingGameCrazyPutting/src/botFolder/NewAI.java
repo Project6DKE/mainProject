@@ -12,15 +12,17 @@ public class NewAI {
     Vector2d flag;
     Vector2d lastBallPosition;
     Vector2d currentBallPosition;
-    static final Vector2d STOPPING = new Vector2d(0,0);
+    static final Vector2d STOPPING = new Vector2d(0.00001,0.00001);
     static final double STEPSIZE = 10;
-    EulerSolver odeSolver;
+    //EulerSolver odeSolver;
+    RungeKutta odeSolver;
 
     public NewAI(PuttingSimulator simulator){
         this.theGame = simulator;
         this.flag = simulator.getCourse().get_flag_position();
         this.currentBallPosition = simulator.get_ball_position();
-        this.odeSolver = new EulerSolver();
+        //this.odeSolver = new EulerSolver();
+        this.odeSolver = new RungeKutta();
     }
     
     public void takeShot() {
@@ -52,9 +54,9 @@ public class NewAI {
     		
     		Vector2d newPos = new Vector2d(newX,newY);
     		
-    		//Vector2d accelStep = theGame.accelerationAtPoint(velocity, newPos);
+    		Vector2d accelStep = theGame.calculate_acceleration(newPos, velocity);
     		
-    		//velocity = odeSolver.solve(velocity, accelStep);
+    		velocity = odeSolver.solve(velocity, accelStep);
     		
     		
     		

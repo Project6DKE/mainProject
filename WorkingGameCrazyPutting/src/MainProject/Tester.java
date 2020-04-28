@@ -24,7 +24,7 @@ public class Tester {
 //		PuttingCourse course1 = xh.readFile();
 //		System.out.println(course1.get_height().toString());
 		
-		Function2d height= new FunctionH("x / 4");
+		Function2d height= new FunctionH("2");
 		
 		Vector2d flag = new Vector2d(2,2);
 		Vector2d start = new Vector2d(1,1);
@@ -34,12 +34,13 @@ public class Tester {
 		
 		PuttingCourse course = new PuttingCourse(height,flag, start, mu, vmax,tol,g,m );
 		
-		EulerSolver engine= new EulerSolver();
+		//EulerSolver engine= new EulerSolver();
+		RungeKutta engine = new RungeKutta();
 		
 		PuttingSimulator s= new PuttingSimulator(course,engine);
 		
-		//BasicAI ai = new BasicAI(s);
-		NewAI ai = new NewAI(s);
+		BasicAI ai = new BasicAI(s);
+		//NewAI ai = new NewAI(s);
 		
 		while(!s.course_put) {
 			ai.takeShot();

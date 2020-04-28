@@ -84,7 +84,10 @@ public class PuttingSimulator {
 			
 			velocity=engine.solve(velocity, acceleration);
 //			if(velocity.get_scalar()<stopV.get_scalar() && acceleration.get_scalar()< course.calculate_acceleration(position, stopV).get_scalar()) conti=false;
-			if(velocity.get_scalar()<0.01 && acceleration.get_scalar()< 0.05) conti=false;
+			if(velocity.get_scalar()<0.01// && acceleration.get_scalar()< 0.05
+					) {
+				conti=false;
+			}
 			
 //			System.out.println("vel: "+velocity.toString());
 //			System.out.println("acc: "+acceleration.toString());
