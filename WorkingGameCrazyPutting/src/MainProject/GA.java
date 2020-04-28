@@ -4,9 +4,9 @@ import readingOfFunctions.Function2d;
 import readingOfFunctions.FunctionH;
 
 public class GA {
-	private static int number_of_gen = 1;
+	private static int number_of_gen = 3;
     private static double middle;
-    private static int size_initpopulation = 30;
+    private static int size_initpopulation = 10;
     private static final int param = 2;
     private int stroke;
     private double mutationrate = 0.01;    
@@ -22,7 +22,7 @@ public class GA {
     private Vector2d holepos;
     
     public GA(PuttingCourse PC){
-        PS = new PuttingSimulator(PC, new EulerSolver());
+        PS = new PuttingSimulator(PC, new RungeKutta());
         this.maxspeed = PS.getCourse().get_maximum_velocity();
         this.maxangle = 360 * Math.PI / 180;
         this.holepos = PS.getCourse().get_flag_position();
@@ -50,21 +50,18 @@ public class GA {
         		ballpos = PS.get_ball_position();
         		backup_ballpos = ballpos;
         		PS.take_angle_shot(initpopulation[i][0], initpopulation[i][1]);
-//        		System.out.println("Taking a shot : " + PS.get_ball_position().toString());
-//        		System.out.println("Interest in this : " + PS.get_ball_position());
         		double getTheX = PS.get_ball_position().get_x();
         		double getTheY = PS.get_ball_position().get_y();
-                //distancefromhole = squareroot((holex-ballx)^2+(holey-bally)^2) + 0.0001
         		double xshot = holepos.get_x()-getTheX;
         		double yshot = holepos.get_y()-getTheY;
-        		System.out.println("xshot : " + xshot);
-        		System.out.println("yshot : " + yshot);
+        		//System.out.println("xshot : " + xshot);
+        		//System.out.println("yshot : " + yshot);
                 distancefromhole = Math.sqrt((Math.pow(xshot, 2) + Math.pow(yshot, 2)));
-//                double rounded = Math.round(distancefromhole * 1000);
                 System.out.println("Distance from hole is : " + distancefromhole);
                 fitness[i] = 1/distancefromhole;
                 fitness[i] = fitness[i] * 100;
                 middle = (middle + fitness[i]) / 2;
+                System.out.println("Fitness of the element is : " + fitness[i]);
                 PS.set_ball_position(backup_ballpos);
         }
     }
@@ -145,11 +142,11 @@ public class GA {
         int nbr_gen = 0;
        test.encoding();
         while(nbr_gen<number_of_gen){
-            test.setFitness();
-           test.newgen();
-           test.mutation();
+        	test.setFitness();
+        	test.newgen();
+        	test.mutation();
             System.out.println(nbr_gen);
-           nbr_gen++;
+            nbr_gen++;
        }
        test.setFitness();
        int best = test.bestelement();
