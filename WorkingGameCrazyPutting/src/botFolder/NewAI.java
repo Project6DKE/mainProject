@@ -63,7 +63,34 @@ public class NewAI {
     	
     	
     }
-        
+    
+    public static Vector2d findV0(Vector2d vf, Vector2d accel, Vector2d dist) {
+    	
+    	/*
+    	 *  Equation is based off kinematic equations, Vf^2 = Vo^2 + 2ad
+    	 *  Modified the variables so that it's Vo what's being looked for
+    	 *  Additional change so that it can take into account to what direction the velocity is going
+    	 */
+    	double tempx = Math.pow(vf.get_x(), 2)-2*accel.get_x()*dist.get_x();
+    	double tempy = Math.pow(vf.get_y(), 2)-2*accel.get_y()*dist.get_y();
+    	
+    	double vx,vy;
+    	
+    	if (tempx<0) {
+    		vx = -Math.sqrt(-tempx);
+    	} else {
+    		vx = Math.sqrt(tempx);
+    	}
+    	
+    	if (tempy<0) {
+    		vy = -Math.sqrt(-tempy);
+    	} else {
+    		vy = Math.sqrt(tempy);
+    	}
+    	
+    	return new Vector2d(vx,vy);
+    	
+    }
     
 	
 }
