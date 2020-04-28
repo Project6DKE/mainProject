@@ -83,10 +83,10 @@ public class Game3D1 extends StackPane{
         createVisualization();
     }
 
-    public void playAudio(String path) {
-        AudioClip music2 = new AudioClip(getClass().getResource("Sound/" + path).toExternalForm());
-        music2.setVolume(main.volume);
-        music2.play();
+    private void playAudio(String path) {
+        AudioClip music = new AudioClip(getClass().getResource("Sound/" + path).toExternalForm());
+        music.setVolume(main.volume);
+        music.play();
     }
 
 
