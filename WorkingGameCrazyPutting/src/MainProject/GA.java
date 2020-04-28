@@ -4,9 +4,9 @@ import readingOfFunctions.Function2d;
 import readingOfFunctions.FunctionH;
 
 public class GA {
-	private static int number_of_gen = 3;
+	private static int number_of_gen = 10;
     private static double middle;
-    private static int size_initpopulation = 10;
+    private static int size_initpopulation = 250;
     private static final int param = 2;
     private int stroke;
     private double mutationrate = 0.01;    
@@ -150,7 +150,7 @@ public class GA {
        }
        test.setFitness();
        int best = test.bestelement();
-       System.out.println("Best element has fitness : " + fitness[best]);    
+       System.out.println("Best element has fitness : " + fitness[best] + " with a distance to the hole of : ");    
     }
     
 }
