@@ -54,23 +54,39 @@ public class Game3D1 extends StackPane{
     private PuttingSimulator PS;
     private final int ball_radius = 10;
     private double startX;
-    private int direction = -1;
-    private int skip = 0;
+    private int level;
 
 
-    public Game3D1(Main main, PuttingCourse PC){
+
+    public Game3D1(Main main, PuttingCourse PC, int level) {
         this.main = main;
+        this.level = level;
         PS = new PuttingSimulator(PC, new EulerSolver());
 
-        AudioClip music = new AudioClip(getClass().getResource("Sound/2sec_silent_intro_horn.wav").toExternalForm());
-        music.setVolume(main.volume);
-        music.play();
+        switch (level) {
+            case 0:
+                playAudio("2sec_silent_intro_horn.wav");
+                break;
+            case 1:
+                playAudio("2sec_silent_harp.wav");
+                break;
+            case 2:
+                playAudio("2sec_silent_vibes.wav");
+                break;
+            case 3:
+                playAudio("2sec_silent_rithmic_hits.wav");
+                break;
+        }
 
-        AudioClip music2 = new AudioClip(getClass().getResource("Sound/13sec_silent_golf_music.wav").toExternalForm());
-        music2.setVolume(main.volume);
-        music2.play();
+        playAudio("13sec_silent_golf_music.wav");
 
         createVisualization();
+    }
+
+    public void playAudio(String path) {
+        AudioClip music2 = new AudioClip(getClass().getResource("Sound/" + path).toExternalForm());
+        music2.setVolume(main.volume);
+        music2.play();
     }
 
 
@@ -80,7 +96,7 @@ public class Game3D1 extends StackPane{
 
     public void createVisualization() {
 
-        Group trees = createObject("trees", 1, 11, 10, 10);
+        Group trees = createObject("trees", 20, 1, 13, 25);
         Group chicken = createObject("chicken", 0, 0, 0, 10);
 
         double translateGrassX = -50;
@@ -115,6 +131,7 @@ public class Game3D1 extends StackPane{
 
         Group blenderObjects = new Group();
         blenderObjects.getChildren().addAll(arrow);
+        blenderObjects.getChildren().addAll(trees);
 
         blenderObjects.getChildren().addAll(grass);  blenderObjects.getChildren().addAll(grass2);
         blenderObjects.getChildren().addAll(grass3); blenderObjects.getChildren().addAll(grass4);
@@ -343,8 +360,8 @@ public class Game3D1 extends StackPane{
         
         HBox cubebox = new HBox();
 
-        cube.setTranslateY(1900);
-        this.cube.setTranslateX(400);
+        cube.setTranslateY(1800);
+        cube.setTranslateX(400);
         cube.setTranslateZ(-100);
 
         control.setTranslateY(1300);
@@ -417,13 +434,17 @@ public class Game3D1 extends StackPane{
                     this.rotateX.setAngle(0);
                     this.rotateY.setAngle(0);
                 case ENTER:
-                    System.out.println("Speed : " + speed_value + " Angle : "+ angle_value);
-                    System.out.println("Stroke : " + stroke);
-                    PS.take_angle_shot(speed_value, angle_value*Math.PI/180);
-                    ballPosition();
-                    stroke = PS.shot;
-                    System.out.println("Stroke : " + stroke);
-                    updateStrokeLabel();
+                    if (level == 0) {
+                        System.out.println("Speed : " + speed_value + " Angle : " + angle_value);
+                        System.out.println("Stroke : " + stroke);
+                        PS.take_angle_shot(speed_value, angle_value * Math.PI / 180);
+                        ballPosition();
+                        stroke = PS.shot;
+                        System.out.println("Stroke : " + stroke);
+                        updateStrokeLabel();
+                    } else {
+                        System.out.println("Bot move");
+                    }
             }
         });
     }
