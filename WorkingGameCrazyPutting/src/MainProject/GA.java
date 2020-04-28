@@ -23,9 +23,9 @@ public class GA {
     
     public GA(PuttingCourse PC){
         PS = new PuttingSimulator(PC, new EulerSolver());
-        this.maxspeed = PS.course.get_maximum_velocity();
+        this.maxspeed = PS.getCourse().get_maximum_velocity();
         this.maxangle = 360 * Math.PI / 180;
-        this.holepos = PS.course.get_flag_position();
+        this.holepos = PS.getCourse().get_flag_position();
     }
     
     public void encoding(){

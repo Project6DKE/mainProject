@@ -136,8 +136,8 @@ public class Game3D1 extends StackPane{
         //cube.getChildren().add(trees);
         cube.getChildren().add(flag);
         
-        Vector2d flagpos = PS.course.get_flag_position();
-        flag.getTransforms().add(new Translate(flagpos.get_x(), flagpos.get_y()-5, PS.course.get_height().evaluate(flagpos)));
+        Vector2d flagpos = PS.getCourse().get_flag_position();
+        flag.getTransforms().add(new Translate(flagpos.get_x(), flagpos.get_y()-5, PS.getCourse().get_height().evaluate(flagpos)));
 
 
         TriangleMesh mesh = new TriangleMesh();
@@ -163,7 +163,7 @@ public class Game3D1 extends StackPane{
 
                 //double z = Math.pow(x, 2) + y;  //insert here the function (height)
             	//double z = 2.5;
-            	double z = PS.course.get_height().evaluate(new Vector2d(x,y));
+            	double z = PS.getCourse().get_height().evaluate(new Vector2d(x,y));
                 if(z < -max_height){
                     z = -max_height;     //limit so the different of height in the field is not too big
                 } 
@@ -291,7 +291,7 @@ public class Game3D1 extends StackPane{
                public void changed(ObservableValue <? extends Number >  
                          observable, Number oldValue, Number newValue) 
                { 
-            	   	speed_value = (Double) newValue * PS.course.get_maximum_velocity()/100;
+            	   	speed_value = (Double) newValue * PS.getCourse().get_maximum_velocity()/100;
                
                } 
            }); 
@@ -550,7 +550,7 @@ public class Game3D1 extends StackPane{
     	Vector2d ballpos = PS.get_ball_position();
         this.ball.setTranslateX(ballpos.get_x());
         this.ball.setTranslateZ(ballpos.get_y() /*- (ball_radius)*/);
-        this.ball.setTranslateY(PS.course.get_height().evaluate(ballpos));
+        this.ball.setTranslateY(PS.getCourse().get_height().evaluate(ballpos));
         System.out.println("ball updated : " + ballpos.toString());
     }
     private Group loadModel(URL url) {
