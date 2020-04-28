@@ -52,9 +52,10 @@ public class NewAI {
     		
     		Vector2d newPos = new Vector2d(newX,newY);
     		
-    		Vector2d accelStep = theGame.accelerationAtPoint(velocity, newPos);
+    		//Vector2d accelStep = theGame.accelerationAtPoint(velocity, newPos);
     		
-    		velocity = odeSolver.solve(velocity, accelStep);
+    		//velocity = odeSolver.solve(velocity, accelStep);
+    		
     		
     		
     	}

@@ -41,7 +41,7 @@ public class Tester {
 		//BasicAI ai = new BasicAI(s);
 		NewAI ai = new NewAI(s);
 		
-		while(!s.isShotPut) {
+		while(!s.course_put) {
 			ai.takeShot();
 			System.out.println(s.get_ball_position().toString());
 			
