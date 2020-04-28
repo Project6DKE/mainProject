@@ -50,7 +50,6 @@ public class Main extends Application {
     private String functionV;
     private double gravityV;
     private boolean playGolf;
-    private int level = 0;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -93,7 +92,7 @@ public class Main extends Application {
 
             PuttingCourse course = new PuttingCourse(height, flag, start, mu, vmax, tol, g, m);
 
-            dim3 = new Game3D1(this, course, level);
+            dim3 = new Game3D1(this, course);
 
             primaryStage.setScene(scene2);
             return mainBox;
@@ -248,34 +247,6 @@ public class Main extends Application {
         box1.getChildren().add(box4);
         box1.setAlignment(Pos.CENTER);
         box1.setSpacing(20);
-
-
-        level1_btn.setOnAction(new EventHandler<ActionEvent>() {
-
-            public void handle(ActionEvent event){
-                level = 1;
-                playGolf = true;
-                createView();
-            }
-        });
-
-        level2_btn.setOnAction(new EventHandler<ActionEvent>() {
-
-            public void handle(ActionEvent event){
-                level = 2;
-                playGolf = true;
-                createView();
-            }
-        });
-
-        level3_btn.setOnAction(new EventHandler<ActionEvent>() {
-
-            public void handle(ActionEvent event){
-                level = 3;
-                playGolf = true;
-                createView();
-            }
-        });
 
         return box1;
     }
