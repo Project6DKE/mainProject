@@ -2,6 +2,8 @@ package MainProject;
 
 import java.io.IOException;
 
+import botFolder.BasicAI;
+import botFolder.NewAI;
 import readingOfFunctions.Function2d;
 import readingOfFunctions.FunctionH;
 
@@ -22,7 +24,7 @@ public class Tester {
 //		PuttingCourse course1 = xh.readFile();
 //		System.out.println(course1.get_height().toString());
 		
-		Function2d height= new FunctionH("1");
+		Function2d height= new FunctionH("x / 4");
 		
 		Vector2d flag = new Vector2d(2,2);
 		Vector2d start = new Vector2d(1,1);
@@ -36,7 +38,8 @@ public class Tester {
 		
 		PuttingSimulator s= new PuttingSimulator(course,engine);
 		
-		BasicAI ai = new BasicAI(s);
+		//BasicAI ai = new BasicAI(s);
+		NewAI ai = new NewAI(s);
 		
 		while(!s.isShotPut) {
 			ai.takeShot();
