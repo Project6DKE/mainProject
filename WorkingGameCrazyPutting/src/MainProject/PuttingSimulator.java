@@ -4,25 +4,49 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 public class PuttingSimulator {
-	private PuttingCourse course; EulerSolver engine;
+	private PuttingCourse course;
+	RungeKutta engine;
 	Vector2d position, velocity, acceleration;
+	boolean course_put=false;
+	
 	int shot=0;
 	private Vector2d stopV= new Vector2d(0.01,0.01);
+	
 	double maxV;
 	
-	boolean isShotPut;
+	/*
+	 * Old code for the sake of bugtesting, should be deleted soon-ish
+	 */
 	
-	public PuttingSimulator(PuttingCourse course, EulerSolver engine) {
-		this.setCourse(course); 
+	EulerSolver engineOld;
+	
+	public PuttingSimulator(PuttingCourse course, RungeKutta engine) {
+		this.course=course;
 		this.engine=engine;
+		engine.setCourse(course);
 		position=course.get_start_position();
-		this.isShotPut = false;
-		this.maxV = this.getCourse().get_maximum_velocity();
+		this.maxV = this.course.get_maximum_velocity();
+		}
+
+	public PuttingSimulator(PuttingCourse pC, EulerSolver eulerSolver) {
+		this.course = pC;
+		this.engineOld = eulerSolver;
+		this.maxV = this.course.get_maximum_velocity();
+		this.position = course.get_start_position();
+		
 	}
 
-	public void set_ball_position(Vector2d p) {this.position=p;}
+	public void set_ball_position(Vector2d p) {
+		this.position=p;
+	}
 	
-	public Vector2d get_ball_position() {return position;}
+	public Vector2d get_ball_position() {
+		return position;
+	}
+	
+	public boolean get_put_state() {
+		return course_put;
+	}
 	
 	public void take_shot(Vector2d initial_ball_velocity) {
 		System.out.println("This is shot #"+(++shot));
@@ -48,34 +72,57 @@ public class PuttingSimulator {
 		Vector2d temp= position;
 		boolean conti=true;
 		while(conti) {
-			acceleration=calculate_acceleration(velocity);
+			acceleration=course.calculate_acceleration(position, velocity);
 			position=engine.solve(position, velocity);
-			if(getCourse().is_water(position)) {
+			if(course.is_water(position)) {
 				System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
 				position=temp;
-				//SEND POSITION TO GRAPHICS
 				velocity=new Vector2d(0,0);
 				conti=false;
 				break;
 			}
 			
-			//SEND POSITION TO GRAPHICS
 			velocity=engine.solve(velocity, acceleration);
-//			if(velocity.get_scalar()<stopV.get_scalar() && acceleration.get_scalar()< calculate_acceleration(stopV).get_scalar()) conti=false;
-			if(velocity.get_scalar()<0.01 /*&& acceleration.get_scalar()< 0.05*/) conti=false;
+//			if(velocity.get_scalar()<stopV.get_scalar() && acceleration.get_scalar()< course.calculate_acceleration(position, stopV).get_scalar()) conti=false;
+			if(velocity.get_scalar()<0.01 && acceleration.get_scalar()< 0.05) conti=false;
 			
 //			System.out.println("vel: "+velocity.toString());
 //			System.out.println("acc: "+acceleration.toString());
 //			System.out.println("pos: "+position.toString()+"\n");
 		}
 		
-		
-		
-		if(getCourse().is_put(position)) {
-			this.isShotPut = true;
-			//Activate put sequence
+		if(course.is_put(position)) {
+			put();
 			System.out.println("You have putted, number of shots: "+shot);
 		}
+	}
+	
+	public void take_shot_RK(Vector2d initial_ball_velocity) {
+		System.out.println("This is shot #"+(++shot));
+		this.velocity=initial_ball_velocity;
+		Vector2d temp= position;
+		boolean conti=true;
+		while(conti) {
+			Vector2d[] data=engine.solve_RK(position, velocity);
+			position=data[0];
+			velocity=data[1];
+			if(course.is_water(position)) {
+				System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
+				position=temp;
+				velocity=new Vector2d(0,0);
+				conti=false;
+				break;
+			}
+		}
+		
+		if(course.is_put(position)) {
+			put();
+			System.out.println("You have putted, number of shots: "+shot);
+		}
+	}
+		
+	public void put() {
+		course_put=true;
 	}
 	
 	public void take_shot(double x, double y) {
@@ -89,6 +136,13 @@ public class PuttingSimulator {
 		take_shot(x,y);
 	}
 	
+	public Vector2d calculate_acceleration(Vector2d vv) {
+		return calculate_acceleration(position, vv);
+	}
+	
+	public Vector2d calculate_acceleration(Vector2d positionn, Vector2d vv) {
+		return course.calculate_acceleration(positionn, vv);
+	}
 	
 	//Reads shots in the format (x.x, y.y)
 	public void read_shots(String path) {
@@ -107,42 +161,8 @@ public class PuttingSimulator {
 	         System.out.println("File not found or error while reading the file.");
 	      }
 	}
-	
-	
-	
-	public Vector2d calculate_acceleration(Vector2d vv){
-		double Ax, Ay, mu, g;
-		g=getCourse().get_gravity();
-		mu=getCourse().get_friction_coefficient();
-		Vector2d gradient=getCourse().get_height().gradient(position);
-		
-		Ax=(-g*gradient.get_x())-((mu*g*vv.get_x())/vv.get_scalar());
-		Ay=(-g*gradient.get_y())-((mu*g*vv.get_y())/vv.get_scalar());
-		return new Vector2d(Ax,Ay);
-	}
-	
-	public Vector2d accelerationAtPoint(Vector2d vel, Vector2d pos) {
-		double Ax, Ay, mu, g;
-		g=getCourse().get_gravity();
-		mu=getCourse().get_friction_coefficient();
-		Vector2d gradient=getCourse().get_height().gradient(pos);
-		
-		Ax=(-g*gradient.get_x())-((mu*g*vel.get_x())/vel.get_scalar());
-		Ay=(-g*gradient.get_y())-((mu*g*vel.get_y())/vel.get_scalar());
-		return new Vector2d(Ax,Ay);
-		
-	}
-	
-	public boolean getIsShotPut(){
-		return this.isShotPut;
-	}
 
 	public PuttingCourse getCourse() {
-		return course;
+		return this.course;
 	}
-
-	public void setCourse(PuttingCourse course) {
-		this.course = course;
-	}
-	
 }
