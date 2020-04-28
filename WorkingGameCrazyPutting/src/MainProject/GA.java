@@ -4,9 +4,9 @@ import readingOfFunctions.Function2d;
 import readingOfFunctions.FunctionH;
 
 public class GA {
-	private static int number_of_gen = 2;
+	private static int number_of_gen = 1;
     private static double middle;
-    private static int size_initpopulation = 5;
+    private static int size_initpopulation = 30;
     private static final int param = 2;
     private int stroke;
     private double mutationrate = 0.01;    
@@ -45,13 +45,22 @@ public class GA {
     
     public void setFitness(){
         middle = 0;
+       System.out.println("The hole x position is at : " + holepos.get_x() + ". The hole y position is at : " + holepos.get_y());
         for(int i = 0; i < initpopulation.length; i++){
         		ballpos = PS.get_ball_position();
         		backup_ballpos = ballpos;
         		PS.take_angle_shot(initpopulation[i][0], initpopulation[i][1]);
-        		System.out.println("Taking a shot : " + PS.get_ball_position().toString());
+//        		System.out.println("Taking a shot : " + PS.get_ball_position().toString());
+//        		System.out.println("Interest in this : " + PS.get_ball_position());
+        		double getTheX = PS.get_ball_position().get_x();
+        		double getTheY = PS.get_ball_position().get_y();
                 //distancefromhole = squareroot((holex-ballx)^2+(holey-bally)^2) + 0.0001
-                distancefromhole = Math.sqrt((Math.pow(holepos.get_x()-ballpos.get_x(), 2) + Math.pow(holepos.get_y()-ballpos.get_y(), 2))+0.0001);
+        		double xshot = holepos.get_x()-getTheX;
+        		double yshot = holepos.get_y()-getTheY;
+        		System.out.println("xshot : " + xshot);
+        		System.out.println("yshot : " + yshot);
+                distancefromhole = Math.sqrt((Math.pow(xshot, 2) + Math.pow(yshot, 2)));
+//                double rounded = Math.round(distancefromhole * 1000);
                 System.out.println("Distance from hole is : " + distancefromhole);
                 fitness[i] = 1/distancefromhole;
                 fitness[i] = fitness[i] * 100;
