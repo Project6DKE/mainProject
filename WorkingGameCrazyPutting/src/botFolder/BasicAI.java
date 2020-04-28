@@ -1,4 +1,7 @@
-package MainProject;
+package botFolder;
+
+import MainProject.PuttingSimulator;
+import MainProject.Vector2d;
 
 public class BasicAI {
 
@@ -11,9 +14,9 @@ public class BasicAI {
     Vector2d lastBallPosition;
     Vector2d currentBallPosition;
 
-    BasicAI(PuttingSimulator simulator){
+    public BasicAI(PuttingSimulator simulator){
         this.theGame = simulator;
-        this.flag = simulator.course.get_flag_position();
+        this.flag = simulator.getCourse().get_flag_position();
         this.currentBallPosition = simulator.get_ball_position();
     }
 
