@@ -169,6 +169,51 @@ public class PuttingSimulator {
 		}
 	}
 		
+	public ArrayList<Vector2d> take_shot_ab3(Vector2d initial_ball_velocity){
+		System.out.println("This is shot #"+(++shot));
+		ArrayList<Vector2d> ballPath= new ArrayList<Vector2d>();
+		initial_Velocity_Check( initial_ball_velocity);
+		Vector2d temp= position;
+		velocity=initial_ball_velocity;
+		
+		Vector2d[] initialValues= engine.bootstrap_AB3(position, velocity);
+		
+		for(int i=0;i<initialValues.length;i++) {
+			position=initialValues[i];
+			ballPath.add(position);
+			if(course.is_water(position)) {
+				System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
+				position=temp;
+				ballPath.add(position);
+				velocity=new Vector2d(0,0);
+				return ballPath;
+			}
+		}
+		
+		boolean conti=true;
+		while(conti) {
+			Vector2d[] data=engine.solve_AB3(position, velocity);
+			position=data[0];
+			velocity=data[1];
+			ballPath.add(position);
+			if(course.is_water(position)) {
+				System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
+				position=temp;
+				ballPath.add(position);
+				velocity=new Vector2d(0,0);
+				conti=false;
+				return ballPath;
+			}
+		}
+		
+		if(course.is_put(position)) {
+			put();
+			System.out.println("You have putted, number of shots: "+shot);
+		}
+		
+		return ballPath;
+	}
+
 	public void put() {
 		course_put=true;
 	}
