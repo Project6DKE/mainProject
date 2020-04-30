@@ -1,9 +1,7 @@
 package botFolder;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import MainProject.*;
+import MainProject.PuttingSimulator;
+import MainProject.RungeKutta;
 import MainProject.Vector2d;
 
 public class NewAI {
@@ -12,8 +10,12 @@ public class NewAI {
     Vector2d flag;
     Vector2d lastBallPosition;
     Vector2d currentBallPosition;
-    static final Vector2d STOPPING = new Vector2d(0.00001,0.00001);
-    static final double STEPSIZE = 10;
+    static final Vector2d STOPPING = new Vector2d(0.0000001,0.0000001);
+    static final Vector2d NEGSTOP = new Vector2d(-0.0000001,-0.0000001);
+    
+    boolean positiveStop = true;
+    
+    static final double STEPSIZE = 1000;
     //EulerSolver odeSolver;
     RungeKutta odeSolver;
 
@@ -32,7 +34,13 @@ public class NewAI {
     	double xdist = flag.getXDistance(currentBallPosition);
     	double ydist = flag.getYDistance(currentBallPosition);
     	
-    	Vector2d velocity = STOPPING;
+    	Vector2d velocity;
+    	
+    	if (positiveStop) {
+    		velocity = STOPPING;
+    	} else {
+    		velocity = NEGSTOP;
+    	}
     	
     	//List<Vector2d> posList = new ArrayList<>();
     	
@@ -46,19 +54,36 @@ public class NewAI {
     	 *  (Not sure if the point where the ball is matters, or whether the point where the flag is should be the start point)
     	 */
     	
-    	for(int i=0; i<STEPSIZE+1;i++) {
-    		double newX = flag.get_x() + i*xStep;
-    		double newY = flag.get_y() + i*yStep;
+    	/*
+    	 * There's a fundamental issue with how the acceleration is being calculated, the shot being done is completely wrong
+    	 * The issue is related to how V is calculated, I'll just deal with it later
+    	 */
+    	
+    	for(int i=1; i<STEPSIZE+1;i++) {
+    		double newX = flag.get_x()+i*xStep;
+    		double newY = flag.get_y()+i*yStep;
+    		
+    		/*
+    		 * The reason newX and newY had the i*zStep was to calculate the locations
+    		 * where the accel would change.
+    		 * 
+    		 * It makes sense that there would be 2 variables-ish, one of them the dist
+    		 * and one of them the location of the new accel
+    		 */
     		
     		//posList.add(new Vector2d(newX,newY));
     		
+    		Vector2d newDist = new Vector2d(-xStep,-yStep);
+    		
     		Vector2d newPos = new Vector2d(newX,newY);
     		
+    		//Vector2d accelStep = new Vector2d(-0.90871,-0.90871);
     		Vector2d accelStep = theGame.calculate_acceleration(newPos, velocity);
     		
-    		velocity = odeSolver.solve(velocity, accelStep);
+    		velocity = findV0(velocity, accelStep, newDist);
+    				//odeSolver.solve(velocity, accelStep);
     		
-    		
+    		positiveStop = !positiveStop;
     		
     	}
     	
