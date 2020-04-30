@@ -59,7 +59,7 @@ public class NewAI {
     	 * The issue is related to how V is calculated, I'll just deal with it later
     	 */
     	
-    	for(int i=1; i<STEPSIZE+1;i++) {
+    	for(int i=0; i<STEPSIZE;i++) {
     		double newX = flag.get_x()+i*xStep;
     		double newY = flag.get_y()+i*yStep;
     		
