@@ -59,9 +59,9 @@ public class PuttingSimulator {
 		 * This is done to give a focus to direction when taking a shot that's too strong.
 		 */
 		
-		initial_Velocity_Check( initial_ball_velocity);
+		this.velocity = initial_Velocity_Check( initial_ball_velocity);
 		
-		this.velocity=initial_ball_velocity;
+		//this.velocity=initial_ball_velocity;
 		Vector2d temp= position;
 		boolean conti=true;
 		while(conti) {
@@ -133,16 +133,20 @@ public class PuttingSimulator {
 		return ballPath;
 	}
 	
-	private void initial_Velocity_Check(Vector2d initial_ball_velocity) {
-		if(initial_ball_velocity.get_scalar()> maxV) {
-			double temp = initial_ball_velocity.get_x()/initial_ball_velocity.get_y();
-			double newX = Math.sqrt( (maxV*maxV)/(temp*temp +1));
-			double newY = newX/temp;
+	public Vector2d initial_Velocity_Check(Vector2d ballVelocity) {
+		double newX = ballVelocity.get_x();
+		double newY = ballVelocity.get_y();
+		
+		if(ballVelocity.get_scalar()> maxV) {
+			double temp = ballVelocity.get_x()/ballVelocity.get_y();
+			newY = NegativeRoot((maxV*maxV)/(temp*temp+1));
+			newX = newY*temp;
 			
-			initial_ball_velocity.set_x(newX);
-			initial_ball_velocity.set_y(newY);
 			
 		}
+		
+		return new Vector2d(newX,newY);
+		
 	}
 	
 	public void take_shot_RK(Vector2d initial_ball_velocity) {
@@ -253,6 +257,18 @@ public class PuttingSimulator {
 	      } catch (Exception e) {
 	         System.out.println("File not found or error while reading the file.");
 	      }
+	}
+	
+	public static double NegativeRoot(double num) {
+		if(num<0) {
+			return -Math.sqrt(-num);
+		} else {
+			return Math.sqrt(num);
+		}
+	}
+	
+	public double distToFlag() {
+		return this.position.get_distance(course.get_flag_position());
 	}
 
 	public PuttingCourse getCourse() {
