@@ -20,7 +20,6 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -63,33 +62,10 @@ public class Game3D1 extends StackPane{
         this.level = level;
         PS = new PuttingSimulator(PC, new EulerSolver());
 
-        playIntro();
-        playAudio("13sec_silent_golf_music.wav");
-
+        GameMusic gameMusic = new GameMusic();
+        gameMusic.playBackgroundMusic();
+        gameMusic.playIntroMusic(level);
         createVisualization();
-    }
-
-    private void playAudio(String path) {
-        AudioClip music = new AudioClip(getClass().getResource("Sound/" + path).toExternalForm());
-        music.setVolume(main.volume);
-        music.play();
-    }
-    
-    private void playIntro() {
-        switch (level) {
-            case 0:
-                playAudio("2sec_silent_intro_horn.wav");
-                break;
-            case 1:
-                playAudio("2sec_silent_harp.wav");
-                break;
-            case 2:
-                playAudio("2sec_silent_vibes.wav");
-                break;
-            case 3:
-                playAudio("2sec_silent_rithmic_hits.wav");
-                break;
-        }
     }
 
 
@@ -100,27 +76,11 @@ public class Game3D1 extends StackPane{
     public void createVisualization() {
 
         Group trees = getObject("trees", 20, 1, 13, 25);
-
-        Group grass = getGrass(-30, 0, 50);
-        Group grass2 = getGrass(-60, 0, 50);
-        Group grass3 = getGrass(-30, 0, 70);
-        Group grass4 = getGrass(-45, 0, 40);
-        Group grass5 = getGrass(-10, 0, 50);
-        Group grass6 = getGrass(-40, 0, 50);
-        Group grass7 = getGrass(-35, 0, 40);
-
         Group flag = getObject("flag", 0, 0, 0, 30);
         Group arrow = getObject("arrow", 0, -40, 3.3, 5);
 
-        Group[] grassArray = {grass, grass2, grass3, grass4, grass5, grass6, grass7};
-
+        Group[] grassArray = getGrassArray();
         arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
-
-        cam = new PerspectiveCamera();
-        cam.setNearClip(0.1);
-        cam.setFarClip(100000.0);
-
-        doDescendingIntroTransition();
 
         Group blenderObjects = new Group();
         blenderObjects.getChildren().addAll(arrow);
@@ -129,6 +89,10 @@ public class Game3D1 extends StackPane{
         for (Group grassElement: grassArray) {
             blenderObjects.getChildren().addAll(grassElement);
         }
+
+        cam = new PerspectiveCamera();
+        cam.setNearClip(0.1);
+        cam.setFarClip(100000.0);
 
 
         PointLight pointLight = new PointLight();
@@ -141,6 +105,8 @@ public class Game3D1 extends StackPane{
         this.cube = new Group();
         cube.getChildren().addAll(blenderObjects);
         cube.getChildren().add(flag);
+
+        doDescendingIntroTransition();
 
 
         Vector2d flagpos = PS.getCourse().get_flag_position();
@@ -280,6 +246,20 @@ public class Game3D1 extends StackPane{
         addControlListeners();
     }
 
+    private Group[] getGrassArray() {
+        Group grass = getGrass(-30, 0, 50);
+        Group grass2 = getGrass(-60, 0, 50);
+        Group grass3 = getGrass(-30, 0, 70);
+        Group grass4 = getGrass(-45, 0, 40);
+        Group grass5 = getGrass(-10, 0, 50);
+        Group grass6 = getGrass(-40, 0, 50);
+        Group grass7 = getGrass(-35, 0, 40);
+
+        Group[] grassArray = {grass, grass2, grass3, grass4, grass5, grass6, grass7};
+
+        return grassArray;
+    }
+
 
     private TriangularSurface generateSurface(int size) {
         TriangleMesh mesh = new TriangleMesh();
@@ -415,7 +395,7 @@ public class Game3D1 extends StackPane{
                     System.out.println("Reset the angle");
                     this.rotateX.setAngle(0);
                     this.rotateY.setAngle(0);
-                case ENTER:
+                case P:
                     if (level == 0) {
                         System.out.println("Speed : " + speed_value + " Angle : " + angle_value);
                         System.out.println("Stroke : " + stroke);
