@@ -74,37 +74,15 @@ public class Game3D1 extends StackPane{
     }
 
     public void createVisualization() {
-
-        Group trees = getObject("trees", 20, 1, 13, 25);
         Group flag = getObject("flag", 0, 0, 0, 30);
-        Group arrow = getObject("arrow", 0, -40, 3.3, 5);
 
-        Group[] grassArray = getGrassArray();
-        arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
-
-        Group blenderObjects = new Group();
-        blenderObjects.getChildren().addAll(arrow);
-        blenderObjects.getChildren().addAll(trees);
-
-        for (Group grassElement: grassArray) {
-            blenderObjects.getChildren().addAll(grassElement);
-        }
-
-        cam = new PerspectiveCamera();
-        cam.setNearClip(0.1);
-        cam.setFarClip(100000.0);
-
-
-        PointLight pointLight = new PointLight();
-        pointLight.setColor(Color.GRAY);
-        pointLight.setTranslateY(pointLight.getTranslateY() - 100);
-        pointLight.setOpacity(0.4);
-
-        blenderObjects.getChildren().add(pointLight);
+        Group blenderObjects = getBlenderObjects();
 
         this.cube = new Group();
         cube.getChildren().addAll(blenderObjects);
         cube.getChildren().add(flag);
+
+        setCam();
 
         doDescendingIntroTransition();
 
@@ -138,33 +116,7 @@ public class Game3D1 extends StackPane{
         addFacesMesh(triangularSurface.mesh, scalingFactor);
         addFacesMesh(triangularSurface.water, scalingFactor);
 
-        PhongMaterial fieldMaterial = new PhongMaterial();  //color
-        fieldMaterial.setSpecularColor(Color.GREEN);
-        fieldMaterial.setDiffuseColor(Color.GREEN);
-
-        PhongMaterial waterMaterial = new PhongMaterial();  //color
-        waterMaterial.setSpecularColor(Color.BLUE);
-        waterMaterial.setDiffuseColor(Color.BLUE);
-
-        MeshView waterView = new MeshView(triangularSurface.water);
-        waterView.setMaterial(waterMaterial);
-        waterView.setCullFace(CullFace.NONE);
-        waterView.setDrawMode(DrawMode.FILL);
-
-        MeshView meshView = new MeshView(triangularSurface.mesh);
-        meshView.setMaterial(fieldMaterial);
-        meshView.setCullFace(CullFace.NONE);
-        meshView.setDrawMode(DrawMode.FILL);
-
-        Group surface = new Group();
-
-        AmbientLight ambientLight = new AmbientLight();
-        ambientLight.setTranslateY(-1000);
-        surface.getChildren().add(ambientLight);
-
-        surface.getChildren().addAll(meshView);
-        surface.getChildren().addAll(waterView);
-
+        Group surface = getMaterials(triangularSurface);
         surface.setRotate(180);
 
         this.cube.getChildren().addAll(surface);
@@ -188,6 +140,61 @@ public class Game3D1 extends StackPane{
         });
 
 
+        VBox control = getControl();
+
+        cube.setTranslateX(400);
+        cube.setTranslateY(1800);
+        cube.setTranslateZ(-100);
+
+
+        HBox cubebox = new HBox();
+        cubebox.getChildren().add(this.cube);
+
+        VBox mainbox = new VBox();
+
+        mainbox.getChildren().add(cubebox);
+        mainbox.getChildren().add(control);
+
+        doRotateIntroTransition();
+        //Scene scene = new Scene(this.cube, 800, 600, true, SceneAntialiasing.BALANCED);
+
+        setScene(mainbox);
+
+        addControlListeners();
+    }
+
+    private void setCam() {
+        cam = new PerspectiveCamera();
+        cam.setNearClip(0.1);
+        cam.setFarClip(100000.0);
+    }
+
+    private Group getBlenderObjects() {
+        Group trees = getObject("trees", 20, 1, 13, 25);
+        Group arrow = getObject("arrow", 0, -40, 3.3, 5);
+
+        Group[] grassArray = getGrassArray();
+        arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
+
+        Group blenderObjects = new Group();
+        blenderObjects.getChildren().addAll(arrow);
+        blenderObjects.getChildren().addAll(trees);
+
+        for (Group grassElement: grassArray) {
+            blenderObjects.getChildren().addAll(grassElement);
+        }
+
+
+        PointLight pointLight = new PointLight();
+        pointLight.setColor(Color.GRAY);
+        pointLight.setTranslateY(pointLight.getTranslateY() - 100);
+        pointLight.setOpacity(0.4);
+
+        blenderObjects.getChildren().add(pointLight);
+        return blenderObjects;
+    }
+
+    private VBox getControl() {
         VBox control = new VBox();
         control.setSpacing(20);
 
@@ -223,27 +230,39 @@ public class Game3D1 extends StackPane{
         control.setTranslateX(0);
         control.setTranslateY(0);
 
-        cube.setTranslateX(400);
-        cube.setTranslateY(1800);
-        cube.setTranslateZ(-100);
-
         control.setTranslateY(1300);
+        return control;
+    }
 
-        HBox cubebox = new HBox();
-        cubebox.getChildren().add(this.cube);
+    private Group getMaterials(TriangularSurface triangularSurface) {
+        PhongMaterial fieldMaterial = new PhongMaterial();  //color
+        fieldMaterial.setSpecularColor(Color.GREEN);
+        fieldMaterial.setDiffuseColor(Color.GREEN);
 
-        VBox mainbox = new VBox();
+        PhongMaterial waterMaterial = new PhongMaterial();  //color
+        waterMaterial.setSpecularColor(Color.BLUE);
+        waterMaterial.setDiffuseColor(Color.BLUE);
 
-        mainbox.getChildren().add(cubebox);
-        mainbox.getChildren().add(control);
+        MeshView waterView = new MeshView(triangularSurface.water);
+        waterView.setMaterial(waterMaterial);
+        waterView.setCullFace(CullFace.NONE);
+        waterView.setDrawMode(DrawMode.FILL);
 
-        doRotateIntroTransition();
+        MeshView meshView = new MeshView(triangularSurface.mesh);
+        meshView.setMaterial(fieldMaterial);
+        meshView.setCullFace(CullFace.NONE);
+        meshView.setDrawMode(DrawMode.FILL);
 
-        //Scene scene = new Scene(this.cube, 800, 600, true, SceneAntialiasing.BALANCED);
+        Group surface = new Group();
 
-        setScene(mainbox);
+        AmbientLight ambientLight = new AmbientLight();
+        ambientLight.setTranslateY(-1000);
+        surface.getChildren().add(ambientLight);
 
-        addControlListeners();
+        surface.getChildren().addAll(meshView);
+        surface.getChildren().addAll(waterView);
+
+        return surface;
     }
 
     private Group[] getGrassArray() {
@@ -309,7 +328,7 @@ public class Game3D1 extends StackPane{
 
         return surface;
     }
-    
+
     private Slider getAngleSlider() {
         Slider angleSlider = new Slider(0.0, 360, 180);
         angleSlider.setMaxWidth(250);
@@ -328,7 +347,7 @@ public class Game3D1 extends StackPane{
                 });
         return angleSlider;
     }
-    
+
     private Slider getSpeedSlider() {
         Slider speedSlider = new Slider(0.0, 100.0, 50.0);
         speedSlider.setMaxWidth(250);
@@ -347,20 +366,20 @@ public class Game3D1 extends StackPane{
                 });
         return speedSlider;
     }
-    
+
     private void setScene(VBox mainbox) {
         main.scene2 = new Scene(mainbox, 1200,800,true, SceneAntialiasing.BALANCED);
         setBackground();
         main.scene2.setCamera(cam);
     }
-    
+
     private void setBackground() {
         Stop[] stops = new Stop[] { new Stop(0, Color.LIGHTBLUE), new Stop(1, Color.LIGHTYELLOW)};
         LinearGradient lg1 = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
 
         main.scene2.setFill(lg1);
     }
-    
+
     private void addControlListeners() {
         // To rotate controls around the X and Y axis and to launch the ball
         keyboardControlListener();
@@ -374,7 +393,7 @@ public class Game3D1 extends StackPane{
         // To rotate all objects in the scene around the Y axis
         mouseDraggedListener();
     }
-    
+
 
     private void keyboardControlListener() {
         main.scene2.setOnKeyPressed(t -> {
@@ -506,10 +525,10 @@ public class Game3D1 extends StackPane{
 
         return label;
     }
-    
-    
+
+
     private void updateStrokeLabel() {
-    	lbl_stroke.setText("Stroke : " + stroke);
+        lbl_stroke.setText("Stroke : " + stroke);
     }
 
     private static void addTextureMesh(TriangleMesh mesh, int size) {
@@ -562,9 +581,9 @@ public class Game3D1 extends StackPane{
             event.consume();
         });
     }
-    
+
     public void ballPosition() {
-    	Vector2d ballpos = PS.get_ball_position();
+        Vector2d ballpos = PS.get_ball_position();
         this.ball.setTranslateX(ballpos.get_x());
         this.ball.setTranslateZ(ballpos.get_y() /*- (ball_radius)*/);
         this.ball.setTranslateY(PS.getCourse().get_height().evaluate(ballpos));
