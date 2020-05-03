@@ -120,10 +120,8 @@ public class Game3D1 extends StackPane{
         surface.setRotate(180);
 
         this.cube.getChildren().addAll(surface);
-
-        //this.cube.getChildren().addAll(waterView);
-
         this.cube.getChildren().add(this.ball);
+
         //makeZoomable(this.cube);
         this.cube.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             switch (event.getCode()) {
@@ -146,20 +144,16 @@ public class Game3D1 extends StackPane{
         cube.setTranslateY(1800);
         cube.setTranslateZ(-100);
 
-
         HBox cubebox = new HBox();
         cubebox.getChildren().add(this.cube);
 
         VBox mainbox = new VBox();
-
-        mainbox.getChildren().add(cubebox);
-        mainbox.getChildren().add(control);
+        mainbox.getChildren().addAll(cubebox, control);
 
         doRotateIntroTransition();
         //Scene scene = new Scene(this.cube, 800, 600, true, SceneAntialiasing.BALANCED);
 
         setScene(mainbox);
-
         addControlListeners();
     }
 
@@ -183,7 +177,6 @@ public class Game3D1 extends StackPane{
         for (Group grassElement: grassArray) {
             blenderObjects.getChildren().addAll(grassElement);
         }
-
 
         PointLight pointLight = new PointLight();
         pointLight.setColor(Color.GRAY);
@@ -287,8 +280,6 @@ public class Game3D1 extends StackPane{
         for (double x = -area; x <= area; x += ((area * 2) - 0.0001) / ((float) (size - 1))) {
             for (double y = -area; y <= area; y += ((area * 2) - 0.0001) / ((float) (size - 1))) {
 
-                //double z = Math.pow(x, 2) + y;  //insert here the function (height)
-                //double z = 2.5;
                 double z = PS.getCourse().get_height().evaluate(new Vector2d(x, y));
                 if (z < -max_height) {
                     z = -max_height;     //limit so the different of height in the field is not too big
@@ -298,6 +289,7 @@ public class Game3D1 extends StackPane{
                 }
                 if (z < 0) {
                     z = max_height;
+                    System.out.println(z);
                 }
 
                 // Maybe there is a better constant than 0.5 to detect water
@@ -307,17 +299,16 @@ public class Game3D1 extends StackPane{
                             (int) (z * 100),
                             (int) (y * 100));
                 } else {
-                    // Move below water mesh
                     mesh.getPoints().addAll(
                             (int) (x * 100),
-                            (int) (z * 60),
+                            (int) (-0.99),
                             (int) (y * 100));
                 }
 
 
                 water.getPoints().addAll(
                         (int) (x * 100),
-                        (int) (20),
+                        (int) (0),
                         (int) (y * 100));
             }
         }
@@ -562,7 +553,6 @@ public class Game3D1 extends StackPane{
             }
         }
     }
-
 
 
     // zoom on a particular object
