@@ -16,6 +16,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -50,17 +51,17 @@ public class Main extends Application {
     private String functionV;
     private double gravityV;
     private boolean playGolf;
+    private int level = 0;
+    private UIMusic musicPlayer;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Golf");
-        //String musicFile = "golf_music_full.mp3";     // For example
-        //Media sound = new Media(new File(musicFile).toURI().toString());
-        //mediaPlayer = new MediaPlayer(sound);
-        //mediaPlayer.setVolume(0.5);
-        //mediaPlayer.setAutoPlay(true);
-        //mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+
+        musicPlayer = new UIMusic();
+        musicPlayer.playBackgroundMusic();
+
         Group group = new Group();
         playGolf = false;
 
@@ -72,11 +73,13 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+
     private HBox createView() {
         mainBox = new HBox();
         mainBox.getChildren().add(createMenuView());
         mainBox.getChildren().add(introView());
         if (playGolf) {
+            musicPlayer.stopBackgroundMusic();
             Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
             //Function2d height= new FunctionH("0");
 
@@ -92,7 +95,7 @@ public class Main extends Application {
 
             PuttingCourse course = new PuttingCourse(height, flag, start, mu, vmax, tol, g, m);
 
-            dim3 = new Game3D1(this, course);
+            dim3 = new Game3D1(this, course, level);
 
             primaryStage.setScene(scene2);
             return mainBox;
@@ -132,6 +135,7 @@ public class Main extends Application {
         play_btn.setOnAction(new EventHandler<ActionEvent>(){
         
             public void handle(ActionEvent event) {
+                musicPlayer.playClickSound();
                 mainBox.getChildren().remove(1);
                 mainBox.getChildren().add(playView());
             }
@@ -140,6 +144,7 @@ public class Main extends Application {
         cg_btn.setOnAction(new EventHandler<ActionEvent>(){
         
             public void handle(ActionEvent event) {
+                musicPlayer.playClickSound();
                 mainBox.getChildren().remove(1);
                 mainBox.getChildren().add(cgView());
             }
@@ -148,6 +153,7 @@ public class Main extends Application {
         setting_btn.setOnAction(new EventHandler<ActionEvent>(){
         
             public void handle(ActionEvent event) {
+                musicPlayer.playClickSound();
                 mainBox.getChildren().remove(1);
                 mainBox.getChildren().add(settingView());
             }
@@ -248,6 +254,37 @@ public class Main extends Application {
         box1.setAlignment(Pos.CENTER);
         box1.setSpacing(20);
 
+
+        level1_btn.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event){
+                musicPlayer.playClickSound();
+                level = 1;
+                playGolf = true;
+                createView();
+            }
+        });
+
+        level2_btn.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event){
+                musicPlayer.playClickSound();
+                level = 2;
+                playGolf = true;
+                createView();
+            }
+        });
+
+        level3_btn.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event){
+                musicPlayer.playClickSound();
+                level = 3;
+                playGolf = true;
+                createView();
+            }
+        });
+
         return box1;
     }
 
@@ -270,6 +307,7 @@ public class Main extends Application {
         human_btn.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event){
+                musicPlayer.playClickSound();
                 playGolf = true;
                 createView();
             }
@@ -286,6 +324,7 @@ public class Main extends Application {
         AI_btn.setOnAction(new EventHandler<ActionEvent>(){
 
             public void handle(ActionEvent event) {
+                musicPlayer.playClickSound();
                 mainBox.getChildren().remove(1);
                 mainBox.getChildren().add(botCreationView());
             }
@@ -414,6 +453,7 @@ public class Main extends Application {
         run.setOnAction(new EventHandler<ActionEvent>(){
         
             public void handle(ActionEvent event) {
+                musicPlayer.playClickSound();
                 massV = Double.parseDouble(massT.getText());
                 frictionV = Double.parseDouble(frictionT.getText());
                 holeDistV = Double.parseDouble(hole_distT.getText());
@@ -484,9 +524,7 @@ public class Main extends Application {
                       observable, Number oldValue, Number newValue) 
             {
                 volume = (double) newValue;
-  
-                //System.out.println("value: " + newValue);
-                //mediaPlayer.setVolume((double) newValue);
+                musicPlayer.setMusicVolume(volume);
             } 
         }); 
 

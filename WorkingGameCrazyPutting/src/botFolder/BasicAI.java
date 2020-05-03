@@ -32,7 +32,9 @@ public class BasicAI {
         double xdist = currentBallPosition.getXDistance(flag);
         double ydist = currentBallPosition.getYDistance(flag);
         
-        Vector2d acceleration = theGame.calculate_acceleration(currentBallPosition);
+        Vector2d speed = new Vector2d(0.0000001,0.0000001);
+        
+        Vector2d acceleration = theGame.calculate_acceleration(speed);
 
         //double maxV = theGame.course.get_maximum_velocity();
         
