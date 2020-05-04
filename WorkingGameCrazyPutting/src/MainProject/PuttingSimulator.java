@@ -258,7 +258,7 @@ public class PuttingSimulator {
 	         System.out.println("File not found or error while reading the file.");
 	      }
 	}
-	
+
 	public static double NegativeRoot(double num) {
 		if(num<0) {
 			return -Math.sqrt(-num);
@@ -273,5 +273,9 @@ public class PuttingSimulator {
 
 	public PuttingCourse getCourse() {
 		return this.course;
+	}
+	
+	public void setShot(int nbr) {
+		shot = nbr;
 	}
 }
