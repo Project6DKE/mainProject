@@ -46,8 +46,14 @@ public class PuttingCourse {
 	public Vector2d calculate_acceleration(Vector2d position, Vector2d vv) {
 		double Ax, Ay;
 		Vector2d gradient=height.gradient(position);
-		Ax=(-g*gradient.get_x())-((friction*g*vv.get_x())/vv.get_scalar());
-		Ay=(-g*gradient.get_y())-((friction*g*vv.get_y())/vv.get_scalar());
+		if(vv.get_scalar()==0) {
+			Ax=(-g*gradient.get_x());
+			Ay=(-g*gradient.get_y());
+		}
+		else {
+			Ax=(-g*gradient.get_x())-((friction*g*vv.get_x())/vv.get_scalar());
+			Ay=(-g*gradient.get_y())-((friction*g*vv.get_y())/vv.get_scalar());
+		}
 		return new Vector2d(Ax,Ay);
 	}
 	

@@ -49,7 +49,7 @@ public class GA {
         middle = 0;
         max_fit = 0;
         max_elem = -1;
-        System.out.println("The hole x position is at : " + holepos.get_x() + ". The hole y position is at : " + holepos.get_y());
+        //System.out.println("The hole x position is at : " + holepos.get_x() + ". The hole y position is at : " + holepos.get_y());
         for(int i = 0; i < initpopulation.length; i++){
         		ballpos = PS.get_ball_position();
         		backup_ballpos = ballpos;
@@ -59,7 +59,7 @@ public class GA {
         		double xshot = holepos.get_x()-getTheX;
         		double yshot = holepos.get_y()-getTheY;
                 distancefromhole = Math.sqrt((Math.pow(xshot, 2) + Math.pow(yshot, 2)));
-                System.out.println("Distance from hole is : " + distancefromhole);
+                //System.out.println("Distance from hole is : " + distancefromhole);
                 fitness[i] = 1/distancefromhole;
                 fitness[i] = fitness[i] * 100;
                 if (i == 0) {
@@ -72,12 +72,13 @@ public class GA {
                 	max_fit = fitness[i];
                 	max_elem = i;
                 }
-                System.out.println("Fitness of the element is : " + fitness[i]);
+                //System.out.println("Fitness of the element is : " + fitness[i]);
                 PS.set_ball_position(backup_ballpos);
+                PS.setShot(0);
         }
     }
     
-    public void newgen(){
+    public void newGen(){
         int n = 0;
         int chosen1;
         while (n<initpopulation.length || n<actualpopulation.length){
@@ -133,7 +134,7 @@ public class GA {
         }
     }
     
-    public int bestelement(){
+    public int bestElement(){
         int i = -1;
         double max_fit = -1;
         for(int j = 0; j<fitness.length; j++){
@@ -146,6 +147,23 @@ public class GA {
         
     }
     
+    public void runGA() {
+    	encoding();
+    	int nbr_gen = 0;
+    	while(nbr_gen<number_of_gen) {
+    		setFitness();
+    		newGen();
+    		mutation();
+    		nbr_gen++;
+    	}
+    	setFitness();
+    	int best = bestElement();
+    	double dist = 1/(fitness[best])*100;
+    	System.out.println("Best element has fitness : " + fitness[best] + " with a distance to the hole of : " + dist);   
+    }
+    
+    
+    
     public static void main(String[] args){
     	Function2d height= new FunctionH("0");
 		
@@ -153,23 +171,24 @@ public class GA {
 		Vector2d start = new Vector2d(0,0);
 		
 		double g,m,mu,vmax,tol;
-		g=9.81;m=45.93/1000;mu=0.131;vmax=3;tol=0.02;
+		g=9.81;m=45.93/1000;mu=0.131;vmax=3;tol=0.3;
 		
 		PuttingCourse course = new PuttingCourse(height,flag, start, mu, vmax,tol,g,m );
-        GA test = new GA(course);        
-        int nbr_gen = 0;
-       test.encoding();
-        while(nbr_gen<number_of_gen){
-        	test.setFitness();
-        	test.newgen();
-        	test.mutation();
-            System.out.println(nbr_gen);
-            nbr_gen++;
-       }
-       test.setFitness();
-       int best = test.bestelement();
-       double dist = 1/(fitness[best])*100;
-       System.out.println("Best element has fitness : " + fitness[best] + " with a distance to the hole of : " + dist);    
+        GA test = new GA(course); 
+        test.runGA();
+//        int nbr_gen = 0;
+//       test.encoding();
+//        while(nbr_gen<number_of_gen){
+//        	test.setFitness();
+//        	test.newGen();
+//        	test.mutation();
+//            System.out.println(nbr_gen);
+//            nbr_gen++;
+//       }
+//       test.setFitness();
+//       int best = test.bestElement();
+//       double dist = 1/(fitness[best])*100;
+//       System.out.println("Best element has fitness : " + fitness[best] + " with a distance to the hole of : " + dist);    
     }
     
 }

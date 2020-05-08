@@ -76,11 +76,8 @@ public class PuttingSimulator {
 			}
 			
 			velocity=engine.solve(velocity, acceleration);
-//			if(velocity.get_scalar()<stopV.get_scalar() && acceleration.get_scalar()< course.calculate_acceleration(position, stopV).get_scalar()) conti=false;
-			if(velocity.get_scalar()<0.01// && acceleration.get_scalar()< 0.05
-					) {
-				conti=false;
-			}
+			if(isStop()) conti=false;
+			
 			
 //			System.out.println("vel: "+velocity.toString());
 //			System.out.println("acc: "+acceleration.toString());
@@ -123,7 +120,8 @@ public class PuttingSimulator {
 			}
 			
 			velocity=engine.solve(velocity, acceleration);
-			if(velocity.get_scalar()<stopV.get_scalar() && acceleration.get_scalar()< course.calculate_acceleration(position, stopV).get_scalar()) conti=false;
+			if(isStop()) conti=false;
+			
 		}
 		
 		if(course.is_put(position)) {
@@ -165,6 +163,7 @@ public class PuttingSimulator {
 				conti=false;
 				break;
 			}
+			if(isStop())conti=false;
 		}
 		
 		if(course.is_put(position)) {
@@ -208,6 +207,7 @@ public class PuttingSimulator {
 				conti=false;
 				return ballPath;
 			}
+			if(isStop())conti=false;
 		}
 		
 		if(course.is_put(position)) {
@@ -241,6 +241,11 @@ public class PuttingSimulator {
 		return course.calculate_acceleration(positionn, vv);
 	}
 	
+	public boolean isStop() {
+		if(velocity.get_scalar()<stopV.get_scalar() && calculate_acceleration(position,new Vector2d(0,0)).get_scalar()< 0.01) return false;
+		else return true;
+	}
+	
 	//Reads shots in the format (x.x, y.y)
 	public void read_shots(String path) {
 		String script[];
@@ -258,7 +263,7 @@ public class PuttingSimulator {
 	         System.out.println("File not found or error while reading the file.");
 	      }
 	}
-	
+
 	public static double NegativeRoot(double num) {
 		if(num<0) {
 			return -Math.sqrt(-num);
@@ -273,5 +278,9 @@ public class PuttingSimulator {
 
 	public PuttingCourse getCourse() {
 		return this.course;
+	}
+	
+	public void setShot(int nbr) {
+		shot = nbr;
 	}
 }
