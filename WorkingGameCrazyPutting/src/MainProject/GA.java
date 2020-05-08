@@ -118,17 +118,17 @@ public class GA {
         for(int i = 0; i < actualpopulation.length; i++){
             double mut = Math.random();
             if(mut<mutationrate){
-                if(actualpopulation[i][0]>(maxspeed * 0.9)){
-                    actualpopulation[i][0] = actualpopulation[i][0]*0.9;
+                if(initpopulation[i][0]>(maxspeed * 0.9)){
+                    initpopulation[i][0] = initpopulation[i][0]*0.9;
                 }
                 else{
-                    actualpopulation[i][0] = actualpopulation[i][0]*1.1;
+                    initpopulation[i][0] = initpopulation[i][0]*1.1;
                 }
-                if(actualpopulation[i][1]>(maxangle * 0.9)){
-                    actualpopulation[i][1] = actualpopulation[i][1]*0.9;
+                if(initpopulation[i][1]>(maxangle * 0.9)){
+                    initpopulation[i][1] = initpopulation[i][1]*0.9;
                 }
                 else{
-                    actualpopulation[i][1] = actualpopulation[i][1]*1.1;
+                    initpopulation[i][1] = initpopulation[i][1]*1.1;
                 }
             }
         }
@@ -147,7 +147,7 @@ public class GA {
         
     }
     
-    public void runGA() {
+    public double[] runGA() {
     	encoding();
     	int nbr_gen = 0;
     	while(nbr_gen<number_of_gen) {
@@ -160,6 +160,11 @@ public class GA {
     	int best = bestElement();
     	double dist = 1/(fitness[best])*100;
     	System.out.println("Best element has fitness : " + fitness[best] + " with a distance to the hole of : " + dist);   
+    	double gaShot[] = new double[2];	//gaShot[0] is speed, gaShot[1] is angle
+    	gaShot[0] = initpopulation[best][0];
+    	gaShot[1] = initpopulation[best][1];
+    	return gaShot;
+    	
     }
     
     
