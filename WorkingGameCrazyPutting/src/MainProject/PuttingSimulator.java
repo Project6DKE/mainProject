@@ -242,8 +242,9 @@ public class PuttingSimulator {
 	}
 	
 	public boolean isStop() {
-		if(velocity.get_scalar()<stopV.get_scalar() && calculate_acceleration(position,new Vector2d(0,0)).get_scalar()< 0.01) return false;
-		else return true;
+		if(velocity.get_scalar()<stopV.get_scalar() && calculate_acceleration(position,new Vector2d(0,0)).get_scalar()< 0.01) 
+			return true;
+		else return false;
 	}
 	
 	//Reads shots in the format (x.x, y.y)
