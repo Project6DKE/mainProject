@@ -4,9 +4,9 @@ import readingOfFunctions.Function2d;
 import readingOfFunctions.FunctionH;
 
 public class GA {
-	private static int number_of_gen = 50;
+	private static int number_of_gen = 150;
     private static double middle;
-    private static int size_initpopulation = 10;	
+    private static int size_initpopulation = 250;	
     private static final int param = 2;
     private int stroke;
     private double mutationrate = 0.01;    
