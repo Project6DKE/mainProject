@@ -57,6 +57,7 @@ public class Game3D1 extends StackPane{
     private TriangleMesh field = new TriangleMesh();
     private TriangleMesh water = new TriangleMesh();
     private Group surface = new Group();
+    private final int resolution = 100;
 
 
     public Game3D1(Main main, PuttingCourse PC, int level) {
@@ -64,10 +65,14 @@ public class Game3D1 extends StackPane{
         this.level = level;
         PS = new PuttingSimulator(PC, new EulerSolver());
 
+        playMusic();
+        createVisualization();
+    }
+
+    private void playMusic() {
         GameMusic gameMusic = new GameMusic();
         gameMusic.playBackgroundMusic();
         gameMusic.playIntroMusic(level);
-        createVisualization();
     }
 
 
@@ -100,9 +105,7 @@ public class Game3D1 extends StackPane{
         ball.setRadius(ball_radius);
 
         ballPosition();
-
-        int scalingFactor = 100;
-        setSurface(scalingFactor);
+        setSurface();
 
         all3DObjects.getChildren().add(surface);
         all3DObjects.getChildren().add(ball);
@@ -122,19 +125,25 @@ public class Game3D1 extends StackPane{
         addControlListeners();
     }
 
-    private void setSurface(int resolution) {
-        generateSurface(resolution);
-
-        addTextureMesh(field, resolution);
-        addTextureMesh(water, resolution);
-
-        addFacesMesh(field, resolution);
-        addFacesMesh(water, resolution);
-
+    private void setSurface() {
+        generateSurface();
+        addTextures();
+        addFaces();
         getMaterials();
 
         surface.setRotate(180);
     }
+
+    private void addTextures() {
+        addTextureMesh(field);
+        addTextureMesh(water);
+    }
+
+    private void addFaces() {
+        addFacesMesh(field);
+        addFacesMesh(water);
+    }
+
 
     private void translateAll3DObjects() {
         all3DObjects.setTranslateX(400);
@@ -262,7 +271,7 @@ public class Game3D1 extends StackPane{
     }
 
 
-    private void generateSurface(int resolution) {
+    private void generateSurface() {
         double stepSize = ((area * 2)) / ((float) (resolution));
 
         for (double x = -area; x <= area; x += stepSize) {
@@ -345,15 +354,10 @@ public class Game3D1 extends StackPane{
     }
 
     private void addControlListeners() {
-        // To rotate controls around the X and Y axis and to launch the ball
         keyboardControlListener();
         detectZoomWithScroll();
-
-        // To teleport by double clicking
-        mousePressedListener();
-
-        // To rotate all objects in the scene around the Y axis
-        mouseDraggedListener();
+        teleportAfterDoubleClick();
+        rotateWhenDragging();
     }
 
 
@@ -442,7 +446,7 @@ public class Game3D1 extends StackPane{
         });
     }
 
-    private void mousePressedListener() {
+    private void teleportAfterDoubleClick() {
         main.scene2.setOnMousePressed(event -> {
             xPositionDragStarted = event.getSceneX();
             boolean doubleClick = event.getClickCount() == 2;
@@ -457,7 +461,7 @@ public class Game3D1 extends StackPane{
         all3DObjects.setTranslateX(all3DObjects.getTranslateX() - ((click.getSceneX() - (main.scene2.getWidth() / 2)) * 0.5));
     }
 
-    private void mouseDraggedListener() {
+    private void rotateWhenDragging() {
         main.scene2.setOnMouseDragged(this::rotateAroundYAxis);
     }
 
@@ -499,13 +503,13 @@ public class Game3D1 extends StackPane{
         lbl_stroke.setText("Stroke : " + stroke);
     }
 
-    private static void addTextureMesh(TriangleMesh mesh, int size) {
-        for (float x = 0; x < size - 1; x++) {
-            for (float y = 0; y < size - 1; y++) {
-                float x0 = x / (float) size;
-                float y0 = y / (float) size;
-                float x1 = (x + 1) / (float) size;
-                float y1 = (y + 1) / (float) size;
+    private void addTextureMesh(TriangleMesh mesh) {
+        for (float x = 0; x < resolution - 1; x++) {
+            for (float y = 0; y < resolution - 1; y++) {
+                float x0 = x / (float) resolution;
+                float y0 = y / (float) resolution;
+                float x1 = (x + 1) / (float) resolution;
+                float y1 = (y + 1) / (float) resolution;
 
                 mesh.getTexCoords().addAll(
                         x1, y1,
@@ -517,13 +521,13 @@ public class Game3D1 extends StackPane{
         }
     }
 
-    private static void addFacesMesh(TriangleMesh mesh, int size) {
-        for (int x = 0; x < size - 1; x++) {
-            for (int z = 0; z < size - 1; z++) {
-                int p0 = x * size + z;
-                int p1 = x * size + z + 1;
-                int p2 = (x + 1) * size + z;
-                int p3 = (x + 1) * size + z + 1;
+    private void addFacesMesh(TriangleMesh mesh) {
+        for (int x = 0; x < resolution - 1; x++) {
+            for (int z = 0; z < resolution - 1; z++) {
+                int p0 = x * resolution + z;
+                int p1 = x * resolution + z + 1;
+                int p2 = (x + 1) * resolution + z;
+                int p3 = (x + 1) * resolution + z + 1;
 
                 mesh.getFaces().addAll(p2, 0, p1, 0, p0, 0);
                 mesh.getFaces().addAll(p2, 0, p3, 0, p1, 0);
@@ -552,8 +556,7 @@ public class Game3D1 extends StackPane{
         return modelRoot;
     }
 
-    // zoom on a particular object
-    private void makeZoomable(Group control) {  //control is the object we are zooming in
+    private void zoomOnObject(Group control) {  //control is the object we are zooming in
         control.addEventFilter(ScrollEvent.ANY, event -> {
             double delta = 1.2;
             double scale = control.getScaleX();
@@ -570,10 +573,10 @@ public class Game3D1 extends StackPane{
     }
 
     //scale the zoom value
-    private static double clamp(double value) { //value is the the current zoom value
-        if (Double.compare(value, 0.1) < 0) return 0.1;
-        if (Double.compare(value, 10.0) > 0) return 10.0;
-        return value;
+    private static double clamp(double zoomValue) {
+        if (Double.compare(zoomValue, 0.1) < 0) return 0.1;
+        if (Double.compare(zoomValue, 10.0) > 0) return 10.0;
+        return zoomValue;
     }
 
 }
