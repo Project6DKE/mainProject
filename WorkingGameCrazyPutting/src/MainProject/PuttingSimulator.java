@@ -12,6 +12,7 @@ public class PuttingSimulator {
 	
 	int shot=0;
 	private Vector2d stopV= new Vector2d(0.01,0.01);
+	private int solverChoice=0;//0 for euler, 1 for RK4, 2 for AB3
 	
 	double maxV;
 	
@@ -49,7 +50,41 @@ public class PuttingSimulator {
 		return course_put;
 	}
 	
+	public void setSolver(String solver) {
+		solver=solver.toLowerCase();
+		if(solver.equals("euler")) solverChoice=0;
+		else if(solver.equals("rk4")) solverChoice=1;
+		else if(solver.equals("ab3")) solverChoice=2;
+		else System.out.println("Solver not recognized");
+	}
+	
+	public String getSolver() {
+		switch(solverChoice) {
+		case 0:
+			return "Euler";
+		case 1:
+			return "Runge Kutta";
+		case 2:
+			return "Adams Bashforth";
+		}
+		return "";
+	}
+	
 	public void take_shot(Vector2d initial_ball_velocity) {
+		switch(solverChoice) {
+		case 0:
+			take_shot_euler(initial_ball_velocity);
+			break;
+		case 1:
+			take_shot_RK(initial_ball_velocity);
+			break;
+		case 2:
+			take_shot_ab3(initial_ball_velocity);
+			break;
+		}
+	}
+	
+	public void take_shot_euler(Vector2d initial_ball_velocity) {
 		System.out.println("This is shot #"+(++shot));
 		
 		/*
