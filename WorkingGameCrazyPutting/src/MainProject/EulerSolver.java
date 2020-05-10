@@ -1,7 +1,7 @@
 package MainProject;
 
 public class EulerSolver implements PhysicsEngine {
-	private double h;
+	protected double h;
 	
 	public EulerSolver() {this.h=0.01;}
 	

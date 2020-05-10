@@ -120,4 +120,20 @@ public class RungeKutta extends EulerSolver{
 		Ny=ws.get_y()+(1/12)*(this.get_step_size())*(23*(fs[2].get_y())-16*(fs[1].get_y())+5*(fs[0].get_y()));
 		return new Vector2d(Nx,Ny);
 	}
+	
+	public Vector2d[] solveBack(Vector2d p1, Vector2d v1) {
+		Vector2d acc;
+		acc=c.calculate_acceleration(p1,v1);
+		
+		double Px= p1.get_x()-h*v1.get_x();
+		double Py= p1.get_y()-h*v1.get_y();
+		
+		double Vx= v1.get_x()-h*acc.get_x();
+		double Vy= v1.get_y()-h*acc.get_y();
+		
+		 Vector2d[] result = new Vector2d[2];
+		 result[0]= new Vector2d(Vx,Vy);
+		 result[1]= new Vector2d(Px,Py);
+		 return result;
+	}
 }
