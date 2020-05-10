@@ -68,7 +68,6 @@ public class PuttingSimulator {
 			return "Adams Bashforth";
 		}
 		return "";
-		//test
 	}
 	
 	public void take_shot(Vector2d initial_ball_velocity) {
