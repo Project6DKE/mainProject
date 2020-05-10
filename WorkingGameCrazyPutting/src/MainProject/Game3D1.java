@@ -83,7 +83,24 @@ public class Game3D1 extends StackPane{
     public void createVisualization() {
         setCam();
         doDescendingIntroTransition();
+        setAll3DObjects();
 
+        VBox control = getControl();
+        translateAll3DObjects();
+
+        HBox cubebox = new HBox();
+        cubebox.getChildren().add(all3DObjects);
+
+        VBox mainbox = new VBox();
+        mainbox.getChildren().add(cubebox);
+        mainbox.getChildren().add(control);
+
+        doRotateIntroTransition();
+        setScene(mainbox);
+        addControlListeners();
+    }
+
+    private void setAll3DObjects() {
         Group flag = getObject("flag", 0, 2, 0, 30);
 
         Group blenderObjects = getBlenderObjects();
@@ -109,20 +126,6 @@ public class Game3D1 extends StackPane{
 
         all3DObjects.getChildren().add(surface);
         all3DObjects.getChildren().add(ball);
-
-        VBox control = getControl();
-        translateAll3DObjects();
-
-        HBox cubebox = new HBox();
-        cubebox.getChildren().add(all3DObjects);
-
-        VBox mainbox = new VBox();
-        mainbox.getChildren().add(cubebox);
-        mainbox.getChildren().add(control);
-
-        doRotateIntroTransition();
-        setScene(mainbox);
-        addControlListeners();
     }
 
     private void setSurface() {
@@ -139,11 +142,42 @@ public class Game3D1 extends StackPane{
         addTextureMesh(water);
     }
 
+    private void addTextureMesh(TriangleMesh mesh) {
+        for (float x = 0; x < resolution - 1; x++) {
+            for (float y = 0; y < resolution - 1; y++) {
+                float x0 = x / (float) resolution;
+                float y0 = y / (float) resolution;
+                float x1 = (x + 1) / (float) resolution;
+                float y1 = (y + 1) / (float) resolution;
+
+                mesh.getTexCoords().addAll(
+                        x1, y1,
+                        x1, y0,
+                        x0, y1,
+                        x0, y0
+                );
+            }
+        }
+    }
+
     private void addFaces() {
         addFacesMesh(field);
         addFacesMesh(water);
     }
 
+    private void addFacesMesh(TriangleMesh mesh) {
+        for (int x = 0; x < resolution - 1; x++) {
+            for (int z = 0; z < resolution - 1; z++) {
+                int p0 = x * resolution + z;
+                int p1 = x * resolution + z + 1;
+                int p2 = (x + 1) * resolution + z;
+                int p3 = (x + 1) * resolution + z + 1;
+
+                mesh.getFaces().addAll(p2, 0, p1, 0, p0, 0);
+                mesh.getFaces().addAll(p2, 0, p3, 0, p1, 0);
+            }
+        }
+    }
 
     private void translateAll3DObjects() {
         all3DObjects.setTranslateX(400);
@@ -172,13 +206,19 @@ public class Game3D1 extends StackPane{
             blenderObjects.getChildren().addAll(grassElement);
         }
 
+        PointLight pointLight = basicPointLight();
+
+        blenderObjects.getChildren().add(pointLight);
+        return blenderObjects;
+    }
+
+    private PointLight basicPointLight() {
         PointLight pointLight = new PointLight();
         pointLight.setColor(Color.GRAY);
         pointLight.setTranslateY(pointLight.getTranslateY() - 100);
         pointLight.setOpacity(0.4);
 
-        blenderObjects.getChildren().add(pointLight);
-        return blenderObjects;
+        return pointLight;
     }
 
     private VBox getControl() {
@@ -232,12 +272,18 @@ public class Game3D1 extends StackPane{
         MeshView waterView = getMeshView(water, waterMaterial);
         MeshView meshView = getMeshView(field, fieldMaterial);
 
-        AmbientLight ambientLight = new AmbientLight();
-        ambientLight.setTranslateY(-1000);
-        surface.getChildren().add(ambientLight);
+        AmbientLight ambientLight = basicAmbientLight();
 
+        surface.getChildren().add(ambientLight);
         surface.getChildren().add(meshView);
         surface.getChildren().add(waterView);
+    }
+
+    private AmbientLight basicAmbientLight() {
+        AmbientLight ambientLight = new AmbientLight();
+        ambientLight.setTranslateY(-1000);
+
+        return ambientLight;
     }
 
     private PhongMaterial getMaterialWithColor(Color color) {
@@ -503,39 +549,7 @@ public class Game3D1 extends StackPane{
         lbl_stroke.setText("Stroke : " + stroke);
     }
 
-    private void addTextureMesh(TriangleMesh mesh) {
-        for (float x = 0; x < resolution - 1; x++) {
-            for (float y = 0; y < resolution - 1; y++) {
-                float x0 = x / (float) resolution;
-                float y0 = y / (float) resolution;
-                float x1 = (x + 1) / (float) resolution;
-                float y1 = (y + 1) / (float) resolution;
-
-                mesh.getTexCoords().addAll(
-                        x1, y1,
-                        x1, y0,
-                        x0, y1,
-                        x0, y0
-                );
-            }
-        }
-    }
-
-    private void addFacesMesh(TriangleMesh mesh) {
-        for (int x = 0; x < resolution - 1; x++) {
-            for (int z = 0; z < resolution - 1; z++) {
-                int p0 = x * resolution + z;
-                int p1 = x * resolution + z + 1;
-                int p2 = (x + 1) * resolution + z;
-                int p3 = (x + 1) * resolution + z + 1;
-
-                mesh.getFaces().addAll(p2, 0, p1, 0, p0, 0);
-                mesh.getFaces().addAll(p2, 0, p3, 0, p1, 0);
-            }
-        }
-    }
-
-    public void ballPosition() {
+    private void ballPosition() {
         Vector2d ballpos = PS.get_ball_position();
         this.ball.setTranslateX(ballpos.get_x());
         this.ball.setTranslateZ(ballpos.get_y() /*- (ball_radius)*/);
@@ -574,8 +588,13 @@ public class Game3D1 extends StackPane{
 
     //scale the zoom value
     private static double clamp(double zoomValue) {
-        if (Double.compare(zoomValue, 0.1) < 0) return 0.1;
-        if (Double.compare(zoomValue, 10.0) > 0) return 10.0;
+        if (Double.compare(zoomValue, 0.1) < 0) {
+            return 0.1;
+        }
+        if (Double.compare(zoomValue, 10.0) > 0) {
+            return 10.0;
+        }
+
         return zoomValue;
     }
 
