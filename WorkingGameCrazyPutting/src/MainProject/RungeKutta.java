@@ -122,8 +122,7 @@ public class RungeKutta extends EulerSolver{
 	}
 	
 	public Vector2d[] solveBack(Vector2d p1, Vector2d v1) {
-		Vector2d acc;
-		acc=c.calculate_acceleration(p1,v1);
+		Vector2d acc=c.calculate_acceleration(p1,v1);
 		
 		double Px= p1.get_x()-h*v1.get_x();
 		double Py= p1.get_y()-h*v1.get_y();
