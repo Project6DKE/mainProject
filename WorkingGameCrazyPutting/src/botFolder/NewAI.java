@@ -8,14 +8,20 @@ public class NewAI {
 	
 	PuttingSimulator theGame;
     Vector2d flag;
+    //Vector2d modFlag;
+    
     Vector2d lastBallPosition;
     Vector2d currentBallPosition;
-    static final Vector2d STOPPING = new Vector2d(0.0000001,0.0000001);
-    static final Vector2d NEGSTOP = new Vector2d(-0.0000001,-0.0000001);
     
-    boolean positiveStop = true;
+    static final double STOP0 = 0.00000000000001;
     
-    static final double STEPSIZE = 1000;
+    
+    //static final Vector2d STOPPING = new Vector2d(0,0);
+    //static final Vector2d NEGSTOP = new Vector2d(0,0);
+    
+    
+    
+    static final double STEPSIZE = 10;
     //EulerSolver odeSolver;
     RungeKutta odeSolver;
 
@@ -31,21 +37,22 @@ public class NewAI {
     	
     	this.currentBallPosition = theGame.get_ball_position();
     	
-    	double xdist = flag.getXDistance(currentBallPosition);
-    	double ydist = flag.getYDistance(currentBallPosition);
-    	
-    	Vector2d velocity;
-    	
-    	if (positiveStop) {
-    		velocity = STOPPING;
-    	} else {
-    		velocity = NEGSTOP;
-    	}
     	
     	//List<Vector2d> posList = new ArrayList<>();
     	
+    	//Vector2d modFlag = new Vector2d(this.flag.get_x()-velocity.get_x(),this.flag.get_x()-velocity.get_y());
+    	
+    	
+    	double xdist = flag.getXDistance(currentBallPosition);
+    	double ydist = flag.getYDistance(currentBallPosition);
+    	
     	double xStep = xdist/STEPSIZE;
     	double yStep = ydist/STEPSIZE;
+    	/*
+    	 * If one of the dist is 0 it causes problems
+    	 */
+    	
+    	Vector2d velocity = new Vector2d(Math.signum(-xdist)*STOP0, Math.signum(-ydist)*STOP0);
     	
     	/*
     	 *  The idea behind the method is okay and seems to be working
@@ -73,6 +80,12 @@ public class NewAI {
     		
     		//posList.add(new Vector2d(newX,newY));
     		
+    		/*
+    		 * Because I'm talking dist from flag to ball, when calculating from ball to flag
+    		 * I need to swap around the signs
+    		 */
+    		
+    		
     		Vector2d newDist = new Vector2d(-xStep,-yStep);
     		
     		Vector2d newPos = new Vector2d(newX,newY);
@@ -81,9 +94,9 @@ public class NewAI {
     		Vector2d accelStep = theGame.calculate_acceleration(newPos, velocity);
     		
     		velocity = findV0(velocity, accelStep, newDist);
-    				//odeSolver.solve(velocity, accelStep);
+
     		
-    		positiveStop = !positiveStop;
+    		
     		
     	}
     	
@@ -92,6 +105,8 @@ public class NewAI {
     	
     }
     
+    
+    
     public static Vector2d findV0(Vector2d vf, Vector2d accel, Vector2d dist) {
     	
     	/*
@@ -99,8 +114,8 @@ public class NewAI {
     	 *  Modified the variables so that it's Vo what's being looked for
     	 *  Additional change so that it can take into account to what direction the velocity is going
     	 */
-    	double tempx = Math.pow(vf.get_x(), 2)-2*accel.get_x()*dist.get_x();
-    	double tempy = Math.pow(vf.get_y(), 2)-2*accel.get_y()*dist.get_y();
+    	double tempx = Math.signum(vf.get_x())*Math.pow(vf.get_x(), 2)-2*accel.get_x()*Math.abs(dist.get_x());
+    	double tempy = Math.signum(vf.get_y())*Math.pow(vf.get_y(), 2)-2*accel.get_y()*Math.abs(dist.get_y());
     	
     	double vx,vy;
     	
@@ -118,6 +133,62 @@ public class NewAI {
     	
     	return new Vector2d(vx,vy);
     	
+    }
+    
+    public static Vector2d newFindV0(Vector2d vf, Vector2d accel, Vector2d dist) {
+    	
+    	Vector2d time = quadraticTime(vf,accel,dist);
+    	
+    	double vx = basicFindV0(vf.get_x(),accel.get_x(),time.get_x());
+    	double vy = basicFindV0(vf.get_y(),accel.get_y(),time.get_y());
+    	
+    	return new Vector2d(vx,vy);
+    	
+    }
+    
+    /*
+     * Solves equations of the form a*x^2+b*x+c = 0
+     * Will return results organized with the biggest one first
+     * Also assumes there's only real roots, no imaginary roots
+     */
+    public static double[] basicQuadratic(double a, double b, double c) {
+    	double temp = Math.sqrt(b*b-4*a*c);
+    	
+    	double res1=(-b+temp)/2*a;
+    	double res2=(-b-temp)/2*a;
+    	
+    	// In this order to make the biggest result the first one
+    	// For convenience when interacting with class
+    	if (res1 >= res2) {
+    		return new double[] {res1,res2};
+    	} else {
+    		return new double[] {res2,res1};
+    	}
+    	
+    }
+    
+    /*
+     * Testing class for mathematical assumption that for a given Vf, A, and X
+     * There will be at least one Time in common between both results
+     */
+    
+    public static Vector2d quadraticTime(Vector2d v, Vector2d accel, Vector2d dist) {
+    	
+    	double[] tx = basicQuadratic(accel.get_x()/2,-v.get_x(),dist.get_x());
+    	double[] ty = basicQuadratic(accel.get_y()/2,-v.get_y(),dist.get_y());
+    	
+    	/*
+    	 * TODO: add some way of checking which T to return
+    	 * Currently only the largest t is returned
+    	 */
+    	
+    	return new Vector2d(tx[0],ty[0]);
+    	
+    }
+    
+    public static double basicFindV0(double vf, double accel, double time) {
+    	double v = vf-accel*time;
+    	return v;
     }
     
 	
