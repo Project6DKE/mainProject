@@ -28,8 +28,8 @@ public class RungeKutta extends EulerSolver{
 	}
 	
 	public Vector2d[] solve_RK(Vector2d p1, Vector2d v1) {
-		p=p1;
-		v=v1;
+		 p=p1;
+		 v=v1;
 		 Vector2d k1,k2,k3,k4,l1,l2,l3,l4,a1,a2,a3,a4,p2,p3,p4,v2,v3,v4;
 		 
 		 a1=c.calculate_acceleration(p1, v1);
