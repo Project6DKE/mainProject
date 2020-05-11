@@ -4,8 +4,6 @@ import java.net.URL;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 
-import javafx.animation.RotateTransition;
-import javafx.animation.TranslateTransition;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.Label;
@@ -17,19 +15,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.PhongMaterial;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.CullFace;
-import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.Sphere;
-import javafx.scene.shape.TriangleMesh;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
-import javafx.util.Duration;
 
 public class Game3D1 extends StackPane{
     private final Rotate rotateY = new Rotate(-145, Rotate.Y_AXIS);
@@ -37,7 +30,6 @@ public class Game3D1 extends StackPane{
     private Sphere ball;
     private Group all3DObjects;
     private Main main;
-    private int area = 5;
 
     private double speedValue = 50;
     private double angleValue = 90;
@@ -57,11 +49,7 @@ public class Game3D1 extends StackPane{
 
     private int level;
     private int controlMode = 0;
-
-    private TriangleMesh field = new TriangleMesh();
-    private TriangleMesh water = new TriangleMesh();
     private Group surface = new Group();
-    private final int resolution = 100;
 
 
     public Game3D1(Main main, PuttingCourse PC, int level) {
@@ -70,7 +58,13 @@ public class Game3D1 extends StackPane{
         PS = new PuttingSimulator(PC, new EulerSolver());
 
         playMusic();
+        setCam();
+
+        Course course = new Course(PS);
+        surface = course.get();
+
         createVisualization();
+        playIntroTransition();
     }
 
     private void playMusic() {
@@ -79,14 +73,16 @@ public class Game3D1 extends StackPane{
         gameMusic.playIntroMusic(level);
     }
 
+    private void playIntroTransition() {
+        IntroTransition introTransition = new IntroTransition(all3DObjects, cam);
+        introTransition.play();
+    }
 
     public Sphere getBall() {
         return ball;
     }
 
     public void createVisualization() {
-        setCam();
-        doDescendingIntroTransition();
         setAll3DObjects();
 
         VBox control = getControl();
@@ -99,7 +95,6 @@ public class Game3D1 extends StackPane{
         mainbox.getChildren().add(cubebox);
         mainbox.getChildren().add(control);
 
-        doRotateIntroTransition();
         setScene(mainbox);
         addControlListeners();
     }
@@ -126,62 +121,12 @@ public class Game3D1 extends StackPane{
         ball.setRadius(ball_radius);
 
         ballPosition();
-        setSurface();
 
         all3DObjects.getChildren().add(surface);
         all3DObjects.getChildren().add(ball);
     }
 
-    private void setSurface() {
-        generateSurface();
-        addTextures();
-        addFaces();
-        getMaterials();
 
-        surface.setRotate(180);
-    }
-
-    private void addTextures() {
-        addTextureMesh(field);
-        addTextureMesh(water);
-    }
-
-    private void addTextureMesh(TriangleMesh mesh) {
-        for (float x = 0; x < resolution - 1; x++) {
-            for (float y = 0; y < resolution - 1; y++) {
-                float x0 = x / (float) resolution;
-                float y0 = y / (float) resolution;
-                float x1 = (x + 1) / (float) resolution;
-                float y1 = (y + 1) / (float) resolution;
-
-                mesh.getTexCoords().addAll(
-                        x1, y1,
-                        x1, y0,
-                        x0, y1,
-                        x0, y0
-                );
-            }
-        }
-    }
-
-    private void addFaces() {
-        addFacesMesh(field);
-        addFacesMesh(water);
-    }
-
-    private void addFacesMesh(TriangleMesh mesh) {
-        for (int x = 0; x < resolution - 1; x++) {
-            for (int z = 0; z < resolution - 1; z++) {
-                int p0 = x * resolution + z;
-                int p1 = x * resolution + z + 1;
-                int p2 = (x + 1) * resolution + z;
-                int p3 = (x + 1) * resolution + z + 1;
-
-                mesh.getFaces().addAll(p2, 0, p1, 0, p0, 0);
-                mesh.getFaces().addAll(p2, 0, p3, 0, p1, 0);
-            }
-        }
-    }
 
     private void translateAll3DObjects() {
         all3DObjects.setTranslateX(400);
@@ -249,46 +194,6 @@ public class Game3D1 extends StackPane{
         return control;
     }
 
-    private void getMaterials() {
-        Color grassColor = Color.GREEN;
-        Color waterColor = Color.BLUE;
-
-        PhongMaterial fieldMaterial = getMaterialWithColor(grassColor);
-        PhongMaterial waterMaterial = getMaterialWithColor(waterColor);
-
-        MeshView waterView = getMeshView(water, waterMaterial);
-        MeshView meshView = getMeshView(field, fieldMaterial);
-
-        AmbientLight ambientLight = basicAmbientLight();
-
-        surface.getChildren().add(ambientLight);
-        surface.getChildren().add(meshView);
-        surface.getChildren().add(waterView);
-    }
-
-    private AmbientLight basicAmbientLight() {
-        AmbientLight ambientLight = new AmbientLight();
-        ambientLight.setTranslateY(-1000);
-
-        return ambientLight;
-    }
-
-    private PhongMaterial getMaterialWithColor(Color color) {
-        PhongMaterial material = new PhongMaterial();
-        material.setSpecularColor(color);
-        material.setDiffuseColor(color);
-
-        return material;
-    }
-
-    private MeshView getMeshView(TriangleMesh surface, PhongMaterial material) {
-        MeshView meshView = new MeshView(surface);
-        meshView.setMaterial(material);
-        meshView.setCullFace(CullFace.NONE);
-        meshView.setDrawMode(DrawMode.FILL);
-        return meshView;
-    }
-
     private Group[] getGrassArray() {
         Group grass = getGrass(-30, 0, 50);
         Group grass2 = getGrass(-60, 0, 50);
@@ -301,38 +206,6 @@ public class Game3D1 extends StackPane{
         Group[] grassArray = {grass, grass2, grass3, grass4, grass5, grass6, grass7};
 
         return grassArray;
-    }
-
-
-    private void generateSurface() {
-        double stepSize = ((area * 2)) / ((float) (resolution));
-
-        for (double x = -area; x <= area; x += stepSize) {
-            for (double y = -area; y <= area; y += stepSize) {
-
-                double z = PS.getCourse().get_height().evaluate(new Vector2d(x, y));
-                addPointsToMeshes(x, y, z);
-            }
-        }
-    }
-
-    private void addPointsToMeshes(double x, double y, double z) {
-        if (z > 0.01) {
-            field.getPoints().addAll(
-                    (int) (x * 100),
-                    (int) (z * 200),
-                    (int) (y * 100));
-        } else {
-            field.getPoints().addAll(
-                    (int) (x * 100),
-                    (int) (-0.01),
-                    (int) (y * 100));
-        }
-
-        water.getPoints().addAll(
-                (int) (x * 100),
-                (int) (0),
-                (int) (y * 100));
     }
 
 
@@ -380,28 +253,6 @@ public class Game3D1 extends StackPane{
         });
     }
 
-    private void doRotateIntroTransition() {
-        RotateTransition rotateTransition = new RotateTransition();
-        rotateTransition.setAxis(Rotate.Y_AXIS);
-        rotateTransition.setFromAngle(45);
-        rotateTransition.setToAngle(90);
-        rotateTransition.setDuration(Duration.seconds(5.5));
-        rotateTransition.setAutoReverse(true);
-        rotateTransition.setCycleCount(1);
-        rotateTransition.setNode(all3DObjects);
-        rotateTransition.play();
-    }
-
-    private void doDescendingIntroTransition() {
-        TranslateTransition descendingIntroTransition = new TranslateTransition();
-        descendingIntroTransition.setDuration(Duration.seconds(3));
-        descendingIntroTransition.setFromY(800);
-        descendingIntroTransition.setToY(1600);
-        descendingIntroTransition.setAutoReverse(true);
-        descendingIntroTransition.setCycleCount(1);
-        descendingIntroTransition.setNode(cam);
-        descendingIntroTransition.play();
-    }
 
     private void detectZoomWithScroll() {
         main.scene2.addEventHandler(ScrollEvent.SCROLL, event -> {
@@ -578,5 +429,7 @@ public class Game3D1 extends StackPane{
 
         return zoomValue;
     }
-
 }
+
+
+
