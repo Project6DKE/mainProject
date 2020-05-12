@@ -233,12 +233,8 @@ public class Game3D1 extends StackPane{
     private void keyboardControlListener() {
         main.scene2.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()){
-                case TAB:
-                    controlMode += 1;
-
-                    if (controlMode == 2) {
-                        controlMode = 0;
-                    }
+                case SHIFT:
+                    controlMode = 1;
                     break;
                 case ENTER:
                     stroke += 1;
@@ -249,6 +245,13 @@ public class Game3D1 extends StackPane{
                     } else {
                         System.out.println("Bot move");
                     }
+                    break;
+            }
+        });
+
+        main.scene2.setOnKeyReleased(keyEvent -> {
+            if (!keyEvent.isShiftDown()) {
+                controlMode = 0;
             }
         });
     }
