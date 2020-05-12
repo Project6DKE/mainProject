@@ -36,18 +36,18 @@ class Music {
 }
 
 class GameMusic extends Music {
-    public void playIntroMusic(int level) {
-        switch (level) {
-            case 0:
+    public void playIntroMusic(GameType gameType) {
+        switch (gameType) {
+            case HUMAN:
                 soundEffect("2sec_silent_intro_horn.wav");
                 break;
-            case 1:
+            case EASY_BOT:
                 soundEffect("2sec_silent_harp.wav");
                 break;
-            case 2:
+            case MEDIUM_BOT:
                 soundEffect("2sec_silent_vibes.wav");
                 break;
-            case 3:
+            case HARD_BOT:
                 soundEffect("2sec_silent_rithmic_hits.wav");
                 break;
         }
@@ -58,7 +58,7 @@ class GameMusic extends Music {
     }
 }
 
-class UIMusic extends Music {
+class MenuMusic extends Music {
     public void playBackgroundMusic() {
         setBackgroundMusic("elevator_background.wav");
     }
