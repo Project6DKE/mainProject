@@ -29,10 +29,6 @@ public class VerletSolver {
          posX=position.get_x();
          posY=position.get_y();
 
-
-
-
-
     }
     public Vector2d calculateVelocity(){
         velX += (oldAcc.get_x()+acceleration.get_x()*(dt/2));

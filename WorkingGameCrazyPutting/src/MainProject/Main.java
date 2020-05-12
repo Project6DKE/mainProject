@@ -1,28 +1,19 @@
 package MainProject;
 
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.beans.value.*;
+import javafx.scene.text.*;
+import javafx.event.*;
+import javafx.scene.*;
+
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider; 
-import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
-import readingOfFunctions.Function2d;
-import readingOfFunctions.FunctionH;
+
+import readingOfFunctions.*;
 
 public class Main extends Application {
     public Stage primaryStage;

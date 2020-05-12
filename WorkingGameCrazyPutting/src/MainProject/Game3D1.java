@@ -4,24 +4,16 @@ import java.net.URL;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 
-import javafx.geometry.Pos;
+import javafx.scene.transform.*;
+import javafx.scene.layout.*;
+import javafx.scene.input.*;
+import javafx.scene.paint.*;
+import javafx.scene.shape.*;
 import javafx.scene.*;
+
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.shape.MeshView;
-import javafx.scene.shape.Sphere;
 import javafx.scene.text.Font;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Translate;
+import javafx.geometry.Pos;
 
 public class Game3D1 extends StackPane{
     private final Rotate rotateY = new Rotate(-145, Rotate.Y_AXIS);

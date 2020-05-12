@@ -1,19 +1,23 @@
 package MainProject;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
+import java.io.*;
 
 public class PuttingSimulator {
 	private PuttingCourse course;
 	RungeKutta engine;
-	Vector2d position, velocity, acceleration;
-	boolean course_put=false;
+
+	Vector2d position;
+	Vector2d velocity;
+	Vector2d acceleration;
+
+	boolean course_put = false;
 	
-	int shot=0;
-	private Vector2d stopV= new Vector2d(0.01,0.01);
-	private int solverChoice=0;//0 for euler, 1 for RK4, 2 for AB3
-	
+	int shot = 0;
+	private Vector2d stopV = new Vector2d(0.01,0.01);
+
+	private int solverChoice = 0; //0 for euler, 1 for RK4, 2 for AB3
+
 	double maxV;
 	
 	/*
@@ -301,7 +305,7 @@ public class PuttingSimulator {
 	}
 
 	public static double NegativeRoot(double num) {
-		if(num<0) {
+		if (num<0) {
 			return -Math.sqrt(-num);
 		} else {
 			return Math.sqrt(num);

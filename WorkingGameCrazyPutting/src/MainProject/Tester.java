@@ -2,11 +2,8 @@ package MainProject;
 
 import java.io.IOException;
 
-import botFolder.BackwardsAI;
-import botFolder.BasicAI;
-import botFolder.NewAI;
-import readingOfFunctions.Function2d;
-import readingOfFunctions.FunctionH;
+import readingOfFunctions.*;
+import botFolder.*;
 
 public class Tester {
 	public static void main(String[] args) throws IOException {

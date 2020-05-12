@@ -1,10 +1,10 @@
 package MainProject;
 
-import javafx.animation.RotateTransition;
-import javafx.animation.TranslateTransition;
 import javafx.scene.Node;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
+
+import javafx.animation.*;
 
 public class IntroTransition {
     Object cam;
