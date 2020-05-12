@@ -4,18 +4,10 @@ import java.net.URL;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 
-import javafx.animation.RotateTransition;
-import javafx.animation.TranslateTransition;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -23,38 +15,41 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.PhongMaterial;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.CullFace;
-import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.Sphere;
-import javafx.scene.shape.TriangleMesh;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
-import javafx.util.Duration;
 
 public class Game3D1 extends StackPane{
     private final Rotate rotateY = new Rotate(-145, Rotate.Y_AXIS);
     private final Rotate rotateX = new Rotate(0, Rotate.X_AXIS);
     private Sphere ball;
-    private Group cube;
+    private Group all3DObjects;
     private Main main;
-    private int area = 5;
-    private double max_height = 2.5;
-    private double speed_value = 50;
-    private double angle_value = 90;
+
+    private double speedValue = 50;
+    private double angleValue = 90;
     private int stroke = 0;
-    private Label lbl_stroke = new Label();
+
+    private int speedInPercent = 0;
+
+    private Label strokeLabel = new Label();
+    private Label angleLabel = new Label();
+    private Label speedLabel = new Label();
+
     private Camera cam;
     private PuttingSimulator PS;
     private final int ball_radius = 10;
     private double xPositionDragStarted;
-    private int level;
+    private double yPositionDragStarted;
 
+    private int level;
+    private int controlMode = 0;
+    private Group surface = new Group();
 
 
     public Game3D1(Main main, PuttingCourse PC, int level) {
@@ -62,99 +57,81 @@ public class Game3D1 extends StackPane{
         this.level = level;
         PS = new PuttingSimulator(PC, new EulerSolver());
 
+        playMusic();
+        setCam();
+
+        Course course = new Course(PS);
+        surface = course.get();
+
+        createVisualization();
+        playIntroTransition();
+    }
+
+    private void playMusic() {
         GameMusic gameMusic = new GameMusic();
         gameMusic.playBackgroundMusic();
         gameMusic.playIntroMusic(level);
-        createVisualization();
     }
 
+    private void playIntroTransition() {
+        IntroTransition introTransition = new IntroTransition(all3DObjects, cam);
+        introTransition.play();
+    }
 
     public Sphere getBall() {
         return ball;
     }
 
     public void createVisualization() {
-        Group flag = getObject("flag", 0, 0, 0, 30);
+        setAll3DObjects();
+
+        VBox control = getControl();
+        translateAll3DObjects();
+
+        HBox cubebox = new HBox();
+        cubebox.getChildren().add(all3DObjects);
+
+        VBox mainbox = new VBox();
+        mainbox.getChildren().add(cubebox);
+        mainbox.getChildren().add(control);
+
+        setScene(mainbox);
+        addControlListeners();
+    }
+
+    private void setAll3DObjects() {
+        Group flag = getObject("flag", 0, 2, 0, 30);
 
         Group blenderObjects = getBlenderObjects();
 
-        this.cube = new Group();
-        cube.getChildren().addAll(blenderObjects);
-        cube.getChildren().add(flag);
-
-        setCam();
-
-        doDescendingIntroTransition();
-
+        all3DObjects = new Group();
+        all3DObjects.getChildren().addAll(blenderObjects);
+        all3DObjects.getChildren().add(flag);
 
         Vector2d flagpos = PS.getCourse().get_flag_position();
         flag.getTransforms().add(new Translate(flagpos.get_x(), flagpos.get_y() - 5, PS.getCourse().get_height().evaluate(flagpos)));
 
 
         Box obs = new Box(1, 1, 1);
-        this.cube.getChildren().addAll(obs);
-        this.cube.getTransforms().addAll(this.rotateY);
-        this.cube.getTransforms().addAll(this.rotateX);
+        all3DObjects.getChildren().addAll(obs);
+        all3DObjects.getTransforms().addAll(this.rotateY);
+        all3DObjects.getTransforms().addAll(this.rotateX);
 
-        this.ball = new Sphere();
-        this.ball.setRadius(ball_radius);
-//        this.ball.setTranslateZ(200);
-//        this.ball.setTranslateX(200);
-//        this.ball.setTranslateY(240);
+        ball = new Sphere();
+        ball.setRadius(ball_radius);
 
         ballPosition();
 
-        int scalingFactor = 5;
-
-        TriangularSurface triangularSurface = generateSurface(scalingFactor);
-
-        // texture
-        addTextureMesh(triangularSurface.mesh, scalingFactor);
-        addTextureMesh(triangularSurface.water, scalingFactor);
-
-        // faces
-        addFacesMesh(triangularSurface.mesh, scalingFactor);
-        addFacesMesh(triangularSurface.water, scalingFactor);
-
-        Group surface = getMaterials(triangularSurface);
-        surface.setRotate(180);
-
-        this.cube.getChildren().addAll(surface);
-        this.cube.getChildren().add(this.ball);
-
-        //makeZoomable(this.cube);
-        this.cube.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            switch (event.getCode()) {
-                case O:
-                    double delta = 1.2;
-                    double scale = this.cube.getScaleX();
-                    scale /= delta;
-                    scale = clamp(scale);
-                    this.cube.setScaleX(scale);
-                    this.cube.setScaleY(scale);
-                    event.consume();
-                    break;
-            }
-        });
+        all3DObjects.getChildren().add(surface);
+        all3DObjects.getChildren().add(ball);
+    }
 
 
-        VBox control = getControl();
 
-        cube.setTranslateX(400);
-        cube.setTranslateY(1800);
-        cube.setTranslateZ(-100);
-
-        HBox cubebox = new HBox();
-        cubebox.getChildren().add(this.cube);
-
-        VBox mainbox = new VBox();
-        mainbox.getChildren().addAll(cubebox, control);
-
-        doRotateIntroTransition();
-        //Scene scene = new Scene(this.cube, 800, 600, true, SceneAntialiasing.BALANCED);
-
-        setScene(mainbox);
-        addControlListeners();
+    private void translateAll3DObjects() {
+        all3DObjects.setTranslateX(400);
+        all3DObjects.setTranslateY(1800);
+        all3DObjects.setTranslateZ(-100);
     }
 
     private void setCam() {
@@ -164,7 +141,7 @@ public class Game3D1 extends StackPane{
     }
 
     private Group getBlenderObjects() {
-        Group trees = getObject("trees", 20, 1, 13, 25);
+        Group trees = getObject("trees", -18, 0.3, 13, 25);
         Group arrow = getObject("arrow", 0, -40, 3.3, 5);
 
         Group[] grassArray = getGrassArray();
@@ -178,42 +155,34 @@ public class Game3D1 extends StackPane{
             blenderObjects.getChildren().addAll(grassElement);
         }
 
+        PointLight pointLight = basicPointLight();
+
+        blenderObjects.getChildren().add(pointLight);
+        return blenderObjects;
+    }
+
+    private PointLight basicPointLight() {
         PointLight pointLight = new PointLight();
         pointLight.setColor(Color.GRAY);
         pointLight.setTranslateY(pointLight.getTranslateY() - 100);
         pointLight.setOpacity(0.4);
 
-        blenderObjects.getChildren().add(pointLight);
-        return blenderObjects;
+        return pointLight;
     }
 
     private VBox getControl() {
         VBox control = new VBox();
         control.setSpacing(20);
 
-        Label lbl = createStandardLabel("Control", 20, 250);
-        lbl.setUnderline(true);
-        Label lbl_speed = createStandardLabel("Speed", 20, 250);
-        Label lbl_angle = createStandardLabel("Angle", 20, 250);
+        int labelSize = 20;
+        int prefWidth = 250;
+
+        speedLabel = createStandardLabel("Speed", labelSize, prefWidth);
+        angleLabel = createStandardLabel("Angle", labelSize, prefWidth);
         String strokeString = "Stroke : " + stroke;
-        lbl_stroke = createStandardLabel(strokeString, 20, 250);
+        strokeLabel = createStandardLabel(strokeString, labelSize, prefWidth);
 
-        Slider speed = getSpeedSlider();
-        Slider angle = getAngleSlider();
-
-        Button btn_shot = new Button("Shot");
-
-
-        btn_shot.setMinWidth(250);
-        btn_shot.setOnAction(new EventHandler<ActionEvent>() {
-
-            public void handle(ActionEvent event) {
-                System.out.println("Speed : " + speed_value + " Angle : " + angle_value);
-            }
-        });
-
-        Node[] controlElements = {lbl, lbl_stroke, lbl_speed, speed, lbl_angle,
-                angle, btn_shot};
+        Node[] controlElements = {angleLabel, speedLabel, strokeLabel};
 
         for (Node node: controlElements) {
             control.getChildren().addAll(node);
@@ -221,41 +190,8 @@ public class Game3D1 extends StackPane{
 
         control.setAlignment(Pos.TOP_LEFT);
         control.setTranslateX(0);
-        control.setTranslateY(0);
-
         control.setTranslateY(1300);
         return control;
-    }
-
-    private Group getMaterials(TriangularSurface triangularSurface) {
-        PhongMaterial fieldMaterial = new PhongMaterial();  //color
-        fieldMaterial.setSpecularColor(Color.GREEN);
-        fieldMaterial.setDiffuseColor(Color.GREEN);
-
-        PhongMaterial waterMaterial = new PhongMaterial();  //color
-        waterMaterial.setSpecularColor(Color.BLUE);
-        waterMaterial.setDiffuseColor(Color.BLUE);
-
-        MeshView waterView = new MeshView(triangularSurface.water);
-        waterView.setMaterial(waterMaterial);
-        waterView.setCullFace(CullFace.NONE);
-        waterView.setDrawMode(DrawMode.FILL);
-
-        MeshView meshView = new MeshView(triangularSurface.mesh);
-        meshView.setMaterial(fieldMaterial);
-        meshView.setCullFace(CullFace.NONE);
-        meshView.setDrawMode(DrawMode.FILL);
-
-        Group surface = new Group();
-
-        AmbientLight ambientLight = new AmbientLight();
-        ambientLight.setTranslateY(-1000);
-        surface.getChildren().add(ambientLight);
-
-        surface.getChildren().addAll(meshView);
-        surface.getChildren().addAll(waterView);
-
-        return surface;
     }
 
     private Group[] getGrassArray() {
@@ -273,91 +209,6 @@ public class Game3D1 extends StackPane{
     }
 
 
-    private TriangularSurface generateSurface(int size) {
-        TriangleMesh mesh = new TriangleMesh();
-        TriangleMesh water = new TriangleMesh();
-
-        for (double x = -area; x <= area; x += ((area * 2) - 0.0001) / ((float) (size - 1))) {
-            for (double y = -area; y <= area; y += ((area * 2) - 0.0001) / ((float) (size - 1))) {
-
-                double z = PS.getCourse().get_height().evaluate(new Vector2d(x, y));
-                if (z < -max_height) {
-                    z = -max_height;     //limit so the different of height in the field is not too big
-                }
-                if (z > max_height) {
-                    z = max_height;    //limit so the different of height in the field is not too big
-                }
-                if (z < 0) {
-                    z = max_height;
-                    System.out.println(z);
-                }
-
-                // Maybe there is a better constant than 0.5 to detect water
-                if (z > 0.5) {
-                    mesh.getPoints().addAll(
-                            (int) (x * 100),
-                            (int) (z * 100),
-                            (int) (y * 100));
-                } else {
-                    mesh.getPoints().addAll(
-                            (int) (x * 100),
-                            (int) (-0.99),
-                            (int) (y * 100));
-                }
-
-
-                water.getPoints().addAll(
-                        (int) (x * 100),
-                        (int) (0),
-                        (int) (y * 100));
-            }
-        }
-
-        TriangularSurface surface = new TriangularSurface();
-        surface.water = water;
-        surface.mesh = mesh;
-
-        return surface;
-    }
-
-    private Slider getAngleSlider() {
-        Slider angleSlider = new Slider(0.0, 360, 180);
-        angleSlider.setMaxWidth(250);
-        angleSlider.setShowTickLabels(true);
-        angleSlider.setShowTickMarks(true);
-        angleSlider.setMajorTickUnit(30);
-        angleSlider.setBlockIncrement(5);
-        angleSlider.valueProperty().addListener(
-                new ChangeListener<Number>() {
-
-                    public void changed(ObservableValue<? extends Number>
-                                                observable, Number oldValue, Number newValue) {
-                        angle_value = (Double) newValue;
-
-                    }
-                });
-        return angleSlider;
-    }
-
-    private Slider getSpeedSlider() {
-        Slider speedSlider = new Slider(0.0, 100.0, 50.0);
-        speedSlider.setMaxWidth(250);
-        speedSlider.setShowTickLabels(true);
-        speedSlider.setShowTickMarks(true);
-        speedSlider.setMajorTickUnit(10);
-        speedSlider.setBlockIncrement(2);
-        speedSlider.valueProperty().addListener(
-                new ChangeListener<Number>() {
-
-                    public void changed(ObservableValue<? extends Number>
-                                                observable, Number oldValue, Number newValue) {
-                        speed_value = (Double) newValue * PS.getCourse().get_maximum_velocity() / 100;
-
-                    }
-                });
-        return speedSlider;
-    }
-
     private void setScene(VBox mainbox) {
         main.scene2 = new Scene(mainbox, 1200,800,true, SceneAntialiasing.BALANCED);
         setBackground();
@@ -372,48 +223,29 @@ public class Game3D1 extends StackPane{
     }
 
     private void addControlListeners() {
-        // To rotate controls around the X and Y axis and to launch the ball
         keyboardControlListener();
-
-        // To scale all object, for a zoom effect
-        scrollListener();
-
-        // To teleport by double clicking
-        mousePressedListener();
-
-        // To rotate all objects in the scene around the Y axis
-        mouseDraggedListener();
+        detectZoomWithScroll();
+        clickEvent();
+        dragControl();
     }
 
 
     private void keyboardControlListener() {
-        main.scene2.setOnKeyPressed(t -> {
-            switch (t.getCode()){
-                case LEFT:
-                    this.rotateY.setAngle(this.rotateY.getAngle() - 10);
+        main.scene2.setOnKeyPressed(keyEvent -> {
+            switch (keyEvent.getCode()){
+                case TAB:
+                    controlMode += 1;
+
+                    if (controlMode == 2) {
+                        controlMode = 0;
+                    }
                     break;
-                case RIGHT:
-                    this.rotateY.setAngle(this.rotateY.getAngle() + 10);
-                    break;
-                case W:
-                    this.rotateX.setAngle(this.rotateX.getAngle() - 10);
-                    break;
-                case S:
-                    this.rotateX.setAngle(this.rotateX.getAngle() + 10);
-                    break;
-                case R:
-                    System.out.println("Reset the angle");
-                    this.rotateX.setAngle(0);
-                    this.rotateY.setAngle(0);
-                case P:
+                case ENTER:
+                    stroke += 1;
+                    strokeLabel.setText("Stroke: " + stroke);
+
                     if (level == 0) {
-                        System.out.println("Speed : " + speed_value + " Angle : " + angle_value);
-                        System.out.println("Stroke : " + stroke);
-                        PS.take_angle_shot(speed_value, angle_value * Math.PI / 180);
-                        ballPosition();
-                        stroke = PS.shot;
-                        System.out.println("Stroke : " + stroke);
-                        updateStrokeLabel();
+                        System.out.println("Human move");
                     } else {
                         System.out.println("Bot move");
                     }
@@ -421,77 +253,104 @@ public class Game3D1 extends StackPane{
         });
     }
 
-    private void doRotateIntroTransition() {
-        RotateTransition rotateTransition = new RotateTransition();
-        rotateTransition.setAxis(Rotate.Y_AXIS);
-        rotateTransition.setFromAngle(-40);
-        rotateTransition.setToAngle(0);
-        rotateTransition.setDuration(Duration.seconds(5.5));
-        rotateTransition.setAutoReverse(true);
-        rotateTransition.setCycleCount(1);
-        rotateTransition.setNode(cube);
-        rotateTransition.play();
-    }
 
-    private void doDescendingIntroTransition() {
-        TranslateTransition descendingIntroTransition = new TranslateTransition();
-        descendingIntroTransition.setDuration(Duration.seconds(3));
-        descendingIntroTransition.setFromY(800);
-        descendingIntroTransition.setToY(1600);
-        descendingIntroTransition.setAutoReverse(true);
-        descendingIntroTransition.setCycleCount(1);
-        descendingIntroTransition.setNode(cam);
-        descendingIntroTransition.play();
-    }
-
-    private void scrollListener() {
+    private void detectZoomWithScroll() {
         main.scene2.addEventHandler(ScrollEvent.SCROLL, event -> {
             final double scrollDirection = event.getDeltaY();
-            final double translateZ = cube.getTranslateZ();
+            final double translateZ = all3DObjects.getTranslateZ();
             final double minZoom = -900, maxZoom = -100;
 
-            // Functions constrains the zoom
+            final double zoomingSpeed = 0.5;
+            final double zoom = scrollDirection * zoomingSpeed;
 
             if (translateZ < minZoom) {
                 if (scrollDirection > 0) {
-                    cube.translateZProperty().set(translateZ + scrollDirection * 0.5);
+                    all3DObjects.translateZProperty().set(translateZ + zoom);
                 }
                 return;
             }
 
             if (translateZ > maxZoom) {
                 if (scrollDirection < 0) {
-                    cube.translateZProperty().set(translateZ + scrollDirection * 0.5);
+                    all3DObjects.translateZProperty().set(translateZ + zoom);
                 }
                 return;
             }
 
-            cube.translateZProperty().set(translateZ + scrollDirection * 0.5);
+            all3DObjects.translateZProperty().set(translateZ + zoom);
         });
     }
 
-    private void mousePressedListener() {
+    private void clickEvent() {
         main.scene2.setOnMousePressed(event -> {
-            // Find starting point
-            // To measure distance when starting to drag
             xPositionDragStarted = event.getSceneX();
+            yPositionDragStarted = event.getSceneY();
 
-            if(event.getClickCount() == 2){
-                cube.setTranslateX(cube.getTranslateX() - ((event.getSceneX() - (main.scene2.getWidth() / 2)) * 0.5));
+            boolean doubleClick = event.getClickCount() == 2;
+
+            if (doubleClick){
+                moveObjectsToClickPositionOnXAxis(event);
             }
         });
     }
 
-    private void mouseDraggedListener() {
-        main.scene2.setOnMouseDragged(event -> {
-            rotateY.setAngle(rotateY.getAngle() + (xPositionDragStarted - event.getSceneX()) / 250);
+    private void moveObjectsToClickPositionOnXAxis(MouseEvent click) {
+        all3DObjects.setTranslateX(all3DObjects.getTranslateX() - ((click.getSceneX() - (main.scene2.getWidth() / 2)) * 0.5));
+    }
+
+    private void dragControl() {
+        main.scene2.setOnMouseDragged(dragEvent -> {
+            switch (controlMode) {
+                case 0:
+                    rotateAroundYAxis(dragEvent);
+                    double angle = formatAngle(rotateY.getAngle());
+                    angleLabel.setText("Angle: " + angle + "deg");
+                    break;
+                case 1:
+                    calculateSpeed(dragEvent);
+                    speedLabel.setText("Speed: " + speedInPercent + "%");
+                    break;
+            }
+
         });
     }
 
+    private double formatAngle(double _angle) {
+        double angle = _angle;
+
+        while (angle / 360 > 1) {
+            angle -= 360;
+        }
+
+        while (angle / 360 < 0) {
+            angle += 360;
+        }
+
+        return (int) angle;
+    }
+
+    private void rotateAroundYAxis(MouseEvent dragEvent) {
+        rotateY.setAngle(rotateY.getAngle() + (xPositionDragStarted - dragEvent.getSceneX()) / 250);
+    }
+
+    private void calculateSpeed(MouseEvent dragEvent) {
+        speedValue = speedValue + (yPositionDragStarted - dragEvent.getSceneY());
+
+        if (speedValue > 30000) {
+            speedValue = 30000;
+        }
+
+        if (speedValue < 0) {
+            speedValue = 0;
+        }
+
+        speedInPercent = (int) ((speedValue / 30000) * 100);
+    }
+
     private Group getGrass(double x, double y, double z) {
-        double translateX = -50 + x;
-        double translateY = 75 + y;
-        double translateZ = 50 + z;
+        double translateX = 60 + x;
+        double translateY = 15 + y;
+        double translateZ = 70 + z;
 
         int scalingFactor = 3;
 
@@ -519,44 +378,31 @@ public class Game3D1 extends StackPane{
 
 
     private void updateStrokeLabel() {
-        lbl_stroke.setText("Stroke : " + stroke);
+        strokeLabel.setText("Stroke : " + stroke);
     }
 
-    private static void addTextureMesh(TriangleMesh mesh, int size) {
-        for (float x = 0; x < size - 1; x++) {
-            for (float y = 0; y < size - 1; y++) {
-                float x0 = x / (float) size;
-                float y0 = y / (float) size;
-                float x1 = (x + 1) / (float) size;
-                float y1 = (y + 1) / (float) size;
+    private void ballPosition() {
+        Vector2d ballpos = PS.get_ball_position();
+        this.ball.setTranslateX(ballpos.get_x());
+        this.ball.setTranslateZ(ballpos.get_y() /*- (ball_radius)*/);
+        this.ball.setTranslateY(PS.getCourse().get_height().evaluate(ballpos));
+        System.out.println("ball updated : " + ballpos.toString());
+    }
 
-                mesh.getTexCoords().addAll(
-                        x1, y1,
-                        x1, y0,
-                        x0, y1,
-                        x0, y0
-                );
-            }
+    private Group loadModel(URL url) {
+        Group modelRoot = new Group();
+
+        ObjModelImporter importer = new ObjModelImporter();
+        importer.read(url);
+
+        for (MeshView view : importer.getImport()) {
+            modelRoot.getChildren().add(view);
         }
+
+        return modelRoot;
     }
 
-    private static void addFacesMesh(TriangleMesh mesh, int size) {
-        for (int x = 0; x < size - 1; x++) {
-            for (int z = 0; z < size - 1; z++) {
-                int p0 = x * size + z;
-                int p1 = x * size + z + 1;
-                int p2 = (x + 1) * size + z;
-                int p3 = (x + 1) * size + z + 1;
-
-                mesh.getFaces().addAll(p2, 0, p1, 0, p0, 0);
-                mesh.getFaces().addAll(p2, 0, p3, 0, p1, 0);
-            }
-        }
-    }
-
-
-    // zoom on a particular object
-    private void makeZoomable(Group control) {  //control is the object we are zooming in
+    private void zoomOnObject(Group control) {  //control is the object we are zooming in
         control.addEventFilter(ScrollEvent.ANY, event -> {
             double delta = 1.2;
             double scale = control.getScaleX();
@@ -572,36 +418,18 @@ public class Game3D1 extends StackPane{
         });
     }
 
-    public void ballPosition() {
-        Vector2d ballpos = PS.get_ball_position();
-        this.ball.setTranslateX(ballpos.get_x());
-        this.ball.setTranslateZ(ballpos.get_y() /*- (ball_radius)*/);
-        this.ball.setTranslateY(PS.getCourse().get_height().evaluate(ballpos));
-        System.out.println("ball updated : " + ballpos.toString());
-    }
-    private Group loadModel(URL url) {
-        Group modelRoot = new Group();
-
-        ObjModelImporter importer = new ObjModelImporter();
-        importer.read(url);
-
-        for (MeshView view : importer.getImport()) {
-            modelRoot.getChildren().add(view);
+    //scale the zoom value
+    private static double clamp(double zoomValue) {
+        if (Double.compare(zoomValue, 0.1) < 0) {
+            return 0.1;
+        }
+        if (Double.compare(zoomValue, 10.0) > 0) {
+            return 10.0;
         }
 
-        return modelRoot;
+        return zoomValue;
     }
-
-    //scale the zoom value
-    private static double clamp(double value) { //value is the the current zoom value
-        if (Double.compare(value, 0.1) < 0) return 0.1;
-        if (Double.compare(value, 10.0) > 0) return 10.0;
-        return value;
-    }
-
 }
 
-class TriangularSurface {
-    public TriangleMesh water;
-    public TriangleMesh mesh;
-}
+
+

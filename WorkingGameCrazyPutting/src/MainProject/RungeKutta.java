@@ -28,6 +28,8 @@ public class RungeKutta extends EulerSolver{
 	}
 	
 	public Vector2d[] solve_RK(Vector2d p1, Vector2d v1) {
+		 p=p1;
+		 v=v1;
 		 Vector2d k1,k2,k3,k4,l1,l2,l3,l4,a1,a2,a3,a4,p2,p3,p4,v2,v3,v4;
 		 
 		 a1=c.calculate_acceleration(p1, v1);
@@ -119,5 +121,20 @@ public class RungeKutta extends EulerSolver{
 		Nx=ws.get_x()+(1/12)*(this.get_step_size())*(23*(fs[2].get_x())-16*(fs[1].get_x())+5*(fs[0].get_x()));
 		Ny=ws.get_y()+(1/12)*(this.get_step_size())*(23*(fs[2].get_y())-16*(fs[1].get_y())+5*(fs[0].get_y()));
 		return new Vector2d(Nx,Ny);
+	}
+	
+	public Vector2d[] solveBack(Vector2d p1, Vector2d v1) {
+		Vector2d acc=c.calculate_acceleration(p1,v1);
+		
+		double Px= p1.get_x()-h*v1.get_x();
+		double Py= p1.get_y()-h*v1.get_y();
+		
+		double Vx= v1.get_x()-h*acc.get_x();
+		double Vy= v1.get_y()-h*acc.get_y();
+		
+		 Vector2d[] result = new Vector2d[2];
+		 result[0]= new Vector2d(Vx,Vy);
+		 result[1]= new Vector2d(Px,Py);
+		 return result;
 	}
 }

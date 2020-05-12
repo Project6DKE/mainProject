@@ -4,14 +4,14 @@ import readingOfFunctions.Function2d;
 import readingOfFunctions.FunctionH;
 
 public class GA {
-	private static int number_of_gen = 20;
+	private static int number_of_gen = 150;
     private static double middle;
     private static int size_initpopulation = 250;	
     private static final int param = 2;
     private int stroke;
     private double mutationrate = 0.01;    
     private double distancefromhole;
-    private double max_fit;
+    private double max_fit; 
     private int max_elem;
     private static double[][] initpopulation = new double[size_initpopulation][param];
     private static double[] fitness = new double[initpopulation.length];
@@ -51,6 +51,7 @@ public class GA {
         max_elem = -1;
         //System.out.println("The hole x position is at : " + holepos.get_x() + ". The hole y position is at : " + holepos.get_y());
         for(int i = 0; i < initpopulation.length; i++){
+        		System.out.println("Take a new shot");
         		ballpos = PS.get_ball_position();
         		backup_ballpos = ballpos;
         		PS.take_angle_shot(initpopulation[i][0], initpopulation[i][1]);
@@ -75,6 +76,7 @@ public class GA {
                 //System.out.println("Fitness of the element is : " + fitness[i]);
                 PS.set_ball_position(backup_ballpos);
                 PS.setShot(0);
+                System.out.println("End of the shot");
         }
     }
     
@@ -156,6 +158,7 @@ public class GA {
     		mutation();
     		nbr_gen++;
     	}
+    	System.out.println("Here");
     	setFitness();
     	int best = bestElement();
     	double dist = 1/(fitness[best])*100;
@@ -194,6 +197,7 @@ public class GA {
 //       int best = test.bestElement();
 //       double dist = 1/(fitness[best])*100;
 //       System.out.println("Best element has fitness : " + fitness[best] + " with a distance to the hole of : " + dist);    
+        System.out.println("Over");
     }
     
 }

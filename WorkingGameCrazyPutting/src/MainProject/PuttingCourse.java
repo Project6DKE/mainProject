@@ -68,6 +68,13 @@ public class PuttingCourse {
 		return false;
 	}
 	
+	public boolean is_start(Vector2d p) {
+		double stol=tol/10;
+		double x=p.get_x()-start.get_x();double y=p.get_y()-start.get_y();
+		if((x*x+y*y)<=(stol*stol)) return true;
+		return false;
+	}
+	
 	public String toString() {
 		String ff="<html>Course Details<br>";
 		ff+=("g = "+g+";<br>");
