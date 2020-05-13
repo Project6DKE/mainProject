@@ -16,10 +16,12 @@ import javafx.scene.text.Font;
 import javafx.geometry.Pos;
 
 public class Game3D1 extends StackPane{
-    private final Rotate rotateY = new Rotate(-145, Rotate.Y_AXIS);
+    private final Rotate rotateY = new Rotate(-55, Rotate.Y_AXIS);
     private final Rotate rotateX = new Rotate(0, Rotate.X_AXIS);
 
     private Sphere ball;
+    private Group flag;
+
     private Group all3DObjects;
     private final Main main;
 
@@ -43,7 +45,7 @@ public class Game3D1 extends StackPane{
     private controlType controlMode = controlType.ANGLE;
 
     private enum controlType {ANGLE, SPEED};
-    private final Group surface;
+    private Group surface;
 
 
     public Game3D1(Main main, PuttingCourse PC, GameType gameType) {
@@ -53,9 +55,7 @@ public class Game3D1 extends StackPane{
 
         playMusic();
         setCam();
-
-        Course course = new Course(PS);
-        surface = course.get();
+        setSurface();
 
         createVisualization();
         playIntroTransition();
@@ -75,6 +75,11 @@ public class Game3D1 extends StackPane{
     private void playIntroTransition() {
         IntroTransition introTransition = new IntroTransition(all3DObjects, cam);
         introTransition.play();
+    }
+
+    private void setSurface() {
+        Course course = new Course(PS);
+        surface = course.get();
     }
 
     private void createVisualization() {
@@ -98,7 +103,8 @@ public class Game3D1 extends StackPane{
         ObjectType flagType = ObjectType.FLAG;
         flagType.setTranslate(0, 2, 0);
 
-        Group flag = getObject(flagType);
+        flag = getObject(flagType);
+        setFlagPosition();
 
         Group blenderObjects = getBlenderObjects();
 
@@ -106,20 +112,32 @@ public class Game3D1 extends StackPane{
         all3DObjects.getChildren().addAll(blenderObjects);
         all3DObjects.getChildren().add(flag);
 
-        Vector2d flagpos = PS.getCourse().get_flag_position();
-        flag.getTransforms().add(new Translate(flagpos.get_x(), flagpos.get_y() - 5, PS.getCourse().get_height().evaluate(flagpos)));
 
         all3DObjects.getTransforms().add(rotateY);
         all3DObjects.getTransforms().add(rotateX);
 
-        ball = new Sphere();
-        ball.setRadius(ball_radius);
-        ballPosition();
+        setBall();
 
         all3DObjects.getChildren().add(surface);
         all3DObjects.getChildren().add(ball);
     }
 
+    private void setFlagPosition() {
+        Vector2d flagPosition = PS.getCourse().get_flag_position();
+        double positionX = flagPosition.get_x();
+        double positionY = flagPosition.get_y() - 5;
+        double positionZ = PS.getCourse().get_height().evaluate(flagPosition);
+
+        Translate translate = new Translate(positionX, positionY, positionZ);
+
+        flag.getTransforms().add(translate);
+    }
+
+    private void setBall() {
+        ball = new Sphere();
+        ball.setRadius(ball_radius);
+        setBallPosition();
+    }
 
 
     private void translateAll3DObjects() {
@@ -129,35 +147,48 @@ public class Game3D1 extends StackPane{
     }
 
     private void setCam() {
+        double nearClip = 0.1;
+        double farClip = 100000.0;
+
         cam = new PerspectiveCamera();
-        cam.setNearClip(0.1);
-        cam.setFarClip(100000.0);
+        cam.setNearClip(nearClip);
+        cam.setFarClip(farClip);
     }
 
     private Group getBlenderObjects() {
-        ObjectType treesType = ObjectType.TREES;
-        treesType.setTranslate(-18, 0.3, 13);
-        Group trees = getObject(treesType);
-
-        ObjectType arrowType = ObjectType.ARROW;
-        arrowType.setTranslate(0, -40, 3.3);
-        Group arrow = getObject(arrowType);
-
-        Group[] grassArray = getGrassArray();
-        arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
+        Group trees = getTrees();
+        Group arrow = getArrow();
 
         Group blenderObjects = new Group();
-        blenderObjects.getChildren().addAll(arrow);
-        blenderObjects.getChildren().addAll(trees);
+        blenderObjects.getChildren().add(arrow);
+        blenderObjects.getChildren().add(trees);
+
+        Group[] grassArray = getGrassArray();
 
         for (Group grassElement: grassArray) {
-            blenderObjects.getChildren().addAll(grassElement);
+            blenderObjects.getChildren().add(grassElement);
         }
 
         PointLight pointLight = basicPointLight();
 
         blenderObjects.getChildren().add(pointLight);
         return blenderObjects;
+    }
+
+    private Group getTrees() {
+        ObjectType treesType = ObjectType.TREES;
+        treesType.setTranslate(-18, 1, 13);
+
+        return getObject(treesType);
+    }
+
+    private Group getArrow() {
+        ObjectType arrowType = ObjectType.ARROW;
+        arrowType.setTranslate(0, -40, 3.3);
+        Group arrow = getObject(arrowType);
+        arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
+
+        return arrow;
     }
 
     private PointLight basicPointLight() {
@@ -247,7 +278,9 @@ public class Game3D1 extends StackPane{
         });
 
         main.main3DGame.setOnKeyReleased(keyEvent -> {
-            if (!keyEvent.isShiftDown()) {
+            final boolean shiftReleased = !keyEvent.isShiftDown();
+
+            if (shiftReleased) {
                 controlMode = controlType.ANGLE;
             }
         });
@@ -273,30 +306,43 @@ public class Game3D1 extends StackPane{
     }
 
     private void detectZoomWithScroll() {
-        main.main3DGame.addEventHandler(ScrollEvent.SCROLL, event -> {
-            final double scrollDirection = event.getDeltaY();
+        main.main3DGame.addEventHandler(ScrollEvent.SCROLL, scrollEvent -> {
+            final double minZoom = -900;
+            final double maxZoom = -100;
+
             final double translateZ = all3DObjects.getTranslateZ();
-            final double minZoom = -900, maxZoom = -100;
+            final double zoom = getZoom(scrollEvent);
 
-            final double zoomingSpeed = 0.5;
-            final double zoom = scrollDirection * zoomingSpeed;
+            final boolean outOfMinZoomBound = translateZ < minZoom;
+            final boolean returningBackFromMinZoomBound = zoom > 0;
 
-            if (translateZ < minZoom) {
-                if (scrollDirection > 0) {
-                    all3DObjects.translateZProperty().set(translateZ + zoom);
-                }
+            if (outOfMinZoomBound && returningBackFromMinZoomBound) {
+                applyZoom(zoom);
                 return;
             }
 
-            if (translateZ > maxZoom) {
-                if (scrollDirection < 0) {
-                    all3DObjects.translateZProperty().set(translateZ + zoom);
-                }
+            final boolean outOfMaxZoomBound = translateZ > maxZoom;
+            final boolean returningBackFromMaxZoomBound = zoom > 0;
+
+            if (outOfMaxZoomBound && returningBackFromMaxZoomBound) {
+                applyZoom(zoom);
                 return;
             }
 
-            all3DObjects.translateZProperty().set(translateZ + zoom);
+            applyZoom(zoom);
         });
+    }
+
+    private double getZoom(ScrollEvent scrollEvent) {
+        final double scrollDirection = scrollEvent.getDeltaY();
+        final double zoomingSpeed = 0.5;
+
+        return scrollDirection * zoomingSpeed;
+    }
+
+    private void applyZoom(double zoom) {
+        final double translateZ = all3DObjects.getTranslateZ();
+        all3DObjects.translateZProperty().set(translateZ + zoom);
     }
 
     private void clickEvent() {
@@ -313,24 +359,33 @@ public class Game3D1 extends StackPane{
     }
 
     private void moveObjectsToClickPositionOnXAxis(MouseEvent click) {
-        all3DObjects.setTranslateX(all3DObjects.getTranslateX() - ((click.getSceneX() - (main.main3DGame.getWidth() / 2)) * 0.5));
+        double centerOfScreen = main.main3DGame.getWidth() / 2;
+        double differenceWithCenterOfScreen = click.getSceneX() - centerOfScreen;
+        double motionNeutraliser = 0.5;
+
+        double suggestedTranslation = differenceWithCenterOfScreen * motionNeutraliser;
+        double currentPosition = all3DObjects.getTranslateX();
+
+        double clickTransformation = currentPosition - suggestedTranslation;
+        all3DObjects.setTranslateX(clickTransformation);
     }
 
     private void dragControl() {
-        main.main3DGame.setOnMouseDragged(dragEvent -> {
-            switch (controlMode) {
-                case ANGLE:
-                    rotateAroundYAxis(dragEvent);
-                    double angle = formatAngle(rotateY.getAngle());
-                    angleLabel.setText("Angle: " + angle + "°");
-                    break;
-                case SPEED:
-                    calculateSpeed(dragEvent);
-                    speedLabel.setText("Speed: " + speedInPercent + "%");
-                    break;
-            }
+        main.main3DGame.setOnMouseDragged(this::updateSpeedAndAngleLabels);
+    }
 
-        });
+    private void updateSpeedAndAngleLabels(MouseEvent dragEvent) {
+        switch (controlMode) {
+            case ANGLE:
+                rotateAroundYAxis(dragEvent);
+                double angle = formatAngle(rotateY.getAngle());
+                angleLabel.setText("Angle: " + angle + "°");
+                break;
+            case SPEED:
+                calculateSpeed(dragEvent);
+                speedLabel.setText("Speed: " + speedInPercent + "%");
+                break;
+        }
     }
 
     private double formatAngle(double angle) {
@@ -384,8 +439,7 @@ public class Game3D1 extends StackPane{
         double scaling = objectType.getScalingFactor();
         object.getTransforms().add(new Scale(scaling, scaling, scaling));
 
-        object.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
-
+        object.getTransforms().add(new Rotate(0, Rotate.Y_AXIS));
         object.getTransforms().add(objectType.getTranslate());
 
         return object;
@@ -406,12 +460,12 @@ public class Game3D1 extends StackPane{
         strokeLabel.setText("Stroke : " + stroke);
     }
 
-    private void ballPosition() {
-        Vector2d ballpos = PS.get_ball_position();
-        this.ball.setTranslateX(ballpos.get_x());
-        this.ball.setTranslateZ(ballpos.get_y() /*- (ball_radius)*/);
-        this.ball.setTranslateY(PS.getCourse().get_height().evaluate(ballpos));
-        System.out.println("ball updated : " + ballpos.toString());
+    private void setBallPosition() {
+        Vector2d ballPosition = PS.get_ball_position();
+        this.ball.setTranslateX(ballPosition.get_x());
+        this.ball.setTranslateZ(ballPosition.get_y() /*- (ball_radius)*/);
+        this.ball.setTranslateY(PS.getCourse().get_height().evaluate(ballPosition));
+        System.out.println("Ball updated : " + ballPosition.toString());
     }
 
     private Group loadModel(URL url) {
