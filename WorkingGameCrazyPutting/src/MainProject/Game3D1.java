@@ -295,6 +295,11 @@ public class Game3D1 extends StackPane{
                 break;
             case EASY_BOT:
                 System.out.println("Easy bot");
+                //Kristian : i guess i will put the GA here
+                GA genAlgo = new GA(this.PS);
+                double[] shot = new double [2];
+                shot = genAlgo.runGA();
+                PS.take_angle_shot(shot[0], shot[1]);
                 break;
             case MEDIUM_BOT:
                 System.out.println("Medium bot");

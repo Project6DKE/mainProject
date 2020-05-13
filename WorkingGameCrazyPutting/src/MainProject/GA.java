@@ -22,8 +22,14 @@ public class GA {
     private Vector2d backup_ballpos;
     private Vector2d holepos;
     
-    public GA(PuttingCourse PC){
-        PS = new PuttingSimulator(PC, new RungeKutta());
+//    public GA(PuttingCourse PC){
+//        PS = new PuttingSimulator(PC, new RungeKutta());
+//        this.maxspeed = PS.getCourse().get_maximum_velocity();
+//        this.maxangle = 360 * Math.PI / 180;
+//        this.holepos = PS.getCourse().get_flag_position();
+//    }
+    public GA(PuttingSimulator PS){
+        this.PS = PS;
         this.maxspeed = PS.getCourse().get_maximum_velocity();
         this.maxangle = 360 * Math.PI / 180;
         this.holepos = PS.getCourse().get_flag_position();
@@ -33,7 +39,7 @@ public class GA {
         for(int i = 0; i<initpopulation.length; i++){
             for(int j = 0; j<initpopulation[i].length; j++){
                 if(j == 0){ //speed
-                    initpopulation[i][j] = Math.random() * maxspeed;    //generate a number between 0 and the amximum allowed speed of the ball
+                    initpopulation[i][j] = Math.random() * maxspeed;    //generate a number between 0 and the maximum allowed speed of the ball
                     //System.out.println("Speed : " + initpopulation[i][j]);
                 }
                 if(j == 1){ //angle
@@ -181,7 +187,8 @@ public class GA {
 		g=9.81;m=45.93/1000;mu=0.131;vmax=3;tol=0.3;
 		
 		PuttingCourse course = new PuttingCourse(height,flag, start, mu, vmax,tol,g,m );
-        GA test = new GA(course); 
+		PuttingSimulator putSim = new PuttingSimulator(course, new RungeKutta());
+        GA test = new GA(putSim); 
         test.runGA();
 //        int nbr_gen = 0;
 //       test.encoding();
