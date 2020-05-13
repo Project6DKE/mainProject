@@ -1,9 +1,7 @@
 package MainProject;
 
-import java.io.FileWriter;
-import java.io.IOException;
-
 import readingOfFunctions.Function2d;
+import java.io.*;
 
 public class PuttingCourse {
 	
@@ -12,36 +10,53 @@ public class PuttingCourse {
 	private double friction, maxV, tol, g, mass;
 	
 	public PuttingCourse(Function2d height,Vector2d flag, Vector2d start) {
-		this.height=height;
-		this.flag=flag;
-		this.start=start;
+		this.height = height;
+		this.flag = flag;
+		this.start = start;
 	}
 	
 	public PuttingCourse(Function2d height,Vector2d flag, Vector2d start, double friction, double maxV, double tol, double g, double mass) {
-		this.height=height;
-		this.flag=flag;
-		this.start=start;
-		this.friction=friction;
-		this.maxV=maxV;
-		this.tol=tol;
-		this.g=g;this.mass=mass;
+		this.height = height;
+		this.flag = flag;
+		this.start = start;
+		this.friction = friction;
+		this.maxV = maxV;
+		this.tol = tol;
+		this.g = g;
+		this.mass = mass;
 	}
 	
-	public Function2d get_height() {return height;}
+	public Function2d get_height() {
+		return height;
+	}
 	
-	public Vector2d get_flag_position() {return flag;}
+	public Vector2d get_flag_position() {
+		return flag;
+	}
 	
-	public Vector2d get_start_position() {return start;}
+	public Vector2d get_start_position() {
+		return start;
+	}
 	
-	public double get_friction_coefficient() {return friction;}
+	public double get_friction_coefficient() {
+		return friction;
+	}
 	
-	public double get_maximum_velocity() {return maxV;}
+	public double get_maximum_velocity() {
+		return maxV;
+	}
 	
-	public double get_hole_tolerance() {return tol;}
+	public double get_hole_tolerance() {
+		return tol;
+	}
 	
-	public double get_ball_mass() {return mass;}
+	public double get_ball_mass() {
+		return mass;
+	}
 	
-	public double get_gravity() {return g;}
+	public double get_gravity() {
+		return g;
+	}
 
 	public Vector2d calculate_acceleration(Vector2d position, Vector2d vv) {
 		double Ax, Ay;
@@ -58,8 +73,13 @@ public class PuttingCourse {
 	}
 	
 	public boolean is_water(Vector2d p) {
-		if(height.evaluate(p)<0) return true;
-		return false;
+		boolean heightBelowZero = height.evaluate(p) < 0;
+
+		if (heightBelowZero) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public boolean is_put(Vector2d p) {

@@ -4,38 +4,29 @@ import java.net.URL;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 
-import javafx.geometry.Pos;
+import javafx.scene.transform.*;
+import javafx.scene.layout.*;
+import javafx.scene.input.*;
+import javafx.scene.paint.*;
+import javafx.scene.shape.*;
 import javafx.scene.*;
+
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.shape.Box;
-import javafx.scene.shape.MeshView;
-import javafx.scene.shape.Sphere;
 import javafx.scene.text.Font;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Translate;
+import javafx.geometry.Pos;
 
 public class Game3D1 extends StackPane{
     private final Rotate rotateY = new Rotate(-145, Rotate.Y_AXIS);
     private final Rotate rotateX = new Rotate(0, Rotate.X_AXIS);
+    
     private Sphere ball;
     private Group all3DObjects;
     private Main main;
 
-    private double speedValue = 50;
-    private double angleValue = 90;
-    private int stroke = 0;
+    private double speedValue = 10000;
+    private int speedInPercent = 33;
 
-    private int speedInPercent = 0;
+    private int stroke = 0;
 
     private Label strokeLabel = new Label();
     private Label angleLabel = new Label();
@@ -44,17 +35,20 @@ public class Game3D1 extends StackPane{
     private Camera cam;
     private PuttingSimulator PS;
     private final int ball_radius = 10;
+
     private double xPositionDragStarted;
     private double yPositionDragStarted;
 
-    private int level;
-    private int controlMode = 0;
-    private Group surface = new Group();
+    private GameType gameType;
+    private controlType controlMode = controlType.ANGLE;
+
+    private enum controlType {ANGLE, SPEED};
+    private Group surface;
 
 
-    public Game3D1(Main main, PuttingCourse PC, int level) {
+    public Game3D1(Main main, PuttingCourse PC, GameType gameType) {
         this.main = main;
-        this.level = level;
+        this.gameType = gameType;
         PS = new PuttingSimulator(PC, new EulerSolver());
 
         playMusic();
@@ -67,10 +61,15 @@ public class Game3D1 extends StackPane{
         playIntroTransition();
     }
 
+
+    public Sphere getBall() {
+        return ball;
+    }
+
     private void playMusic() {
         GameMusic gameMusic = new GameMusic();
         gameMusic.playBackgroundMusic();
-        gameMusic.playIntroMusic(level);
+        gameMusic.playIntroMusic(gameType);
     }
 
     private void playIntroTransition() {
@@ -78,11 +77,7 @@ public class Game3D1 extends StackPane{
         introTransition.play();
     }
 
-    public Sphere getBall() {
-        return ball;
-    }
-
-    public void createVisualization() {
+    private void createVisualization() {
         setAll3DObjects();
 
         VBox control = getControl();
@@ -111,15 +106,11 @@ public class Game3D1 extends StackPane{
         Vector2d flagpos = PS.getCourse().get_flag_position();
         flag.getTransforms().add(new Translate(flagpos.get_x(), flagpos.get_y() - 5, PS.getCourse().get_height().evaluate(flagpos)));
 
-
-        Box obs = new Box(1, 1, 1);
-        all3DObjects.getChildren().addAll(obs);
-        all3DObjects.getTransforms().addAll(this.rotateY);
-        all3DObjects.getTransforms().addAll(this.rotateX);
+        all3DObjects.getTransforms().add(rotateY);
+        all3DObjects.getTransforms().add(rotateX);
 
         ball = new Sphere();
         ball.setRadius(ball_radius);
-
         ballPosition();
 
         all3DObjects.getChildren().add(surface);
@@ -177,8 +168,13 @@ public class Game3D1 extends StackPane{
         int labelSize = 20;
         int prefWidth = 250;
 
-        speedLabel = createStandardLabel("Speed", labelSize, prefWidth);
-        angleLabel = createStandardLabel("Angle", labelSize, prefWidth);
+        String speedText = "Speed: " + speedInPercent + "%";
+        speedLabel = createStandardLabel(speedText, labelSize, prefWidth);
+
+        double angle = formatAngle(rotateY.getAngle());
+        String angleText = "Angle: " + angle + "°";
+        angleLabel = createStandardLabel(angleText, labelSize, prefWidth);
+
         String strokeString = "Stroke : " + stroke;
         strokeLabel = createStandardLabel(strokeString, labelSize, prefWidth);
 
@@ -210,16 +206,16 @@ public class Game3D1 extends StackPane{
 
 
     private void setScene(VBox mainbox) {
-        main.scene2 = new Scene(mainbox, 1200,800,true, SceneAntialiasing.BALANCED);
+        main.main3DGame = new Scene(mainbox, 1200,800,true, SceneAntialiasing.BALANCED);
         setBackground();
-        main.scene2.setCamera(cam);
+        main.main3DGame.setCamera(cam);
     }
 
     private void setBackground() {
         Stop[] stops = new Stop[] { new Stop(0, Color.LIGHTBLUE), new Stop(1, Color.LIGHTYELLOW)};
         LinearGradient lg1 = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
 
-        main.scene2.setFill(lg1);
+        main.main3DGame.setFill(lg1);
     }
 
     private void addControlListeners() {
@@ -231,34 +227,43 @@ public class Game3D1 extends StackPane{
 
 
     private void keyboardControlListener() {
-        main.scene2.setOnKeyPressed(keyEvent -> {
+        main.main3DGame.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()){
                 case SHIFT:
-                    controlMode = 1;
+                    controlMode = controlType.SPEED;
                     break;
                 case ENTER:
                     stroke += 1;
                     strokeLabel.setText("Stroke: " + stroke);
 
-                    if (level == 0) {
-                        System.out.println("Human move");
-                    } else {
-                        System.out.println("Bot move");
+                    switch (gameType) {
+                        case HUMAN:
+                            System.out.println("Human game");
+                            break;
+                        case EASY_BOT:
+                            System.out.println("Easy bot");
+                            break;
+                        case MEDIUM_BOT:
+                            System.out.println("Medium bot");
+                            break;
+                        case HARD_BOT:
+                            System.out.println("Hard bot");
+                            break;
                     }
                     break;
             }
         });
 
-        main.scene2.setOnKeyReleased(keyEvent -> {
+        main.main3DGame.setOnKeyReleased(keyEvent -> {
             if (!keyEvent.isShiftDown()) {
-                controlMode = 0;
+                controlMode = controlType.ANGLE;
             }
         });
     }
 
 
     private void detectZoomWithScroll() {
-        main.scene2.addEventHandler(ScrollEvent.SCROLL, event -> {
+        main.main3DGame.addEventHandler(ScrollEvent.SCROLL, event -> {
             final double scrollDirection = event.getDeltaY();
             final double translateZ = all3DObjects.getTranslateZ();
             final double minZoom = -900, maxZoom = -100;
@@ -285,7 +290,7 @@ public class Game3D1 extends StackPane{
     }
 
     private void clickEvent() {
-        main.scene2.setOnMousePressed(event -> {
+        main.main3DGame.setOnMousePressed(event -> {
             xPositionDragStarted = event.getSceneX();
             yPositionDragStarted = event.getSceneY();
 
@@ -298,18 +303,18 @@ public class Game3D1 extends StackPane{
     }
 
     private void moveObjectsToClickPositionOnXAxis(MouseEvent click) {
-        all3DObjects.setTranslateX(all3DObjects.getTranslateX() - ((click.getSceneX() - (main.scene2.getWidth() / 2)) * 0.5));
+        all3DObjects.setTranslateX(all3DObjects.getTranslateX() - ((click.getSceneX() - (main.main3DGame.getWidth() / 2)) * 0.5));
     }
 
     private void dragControl() {
-        main.scene2.setOnMouseDragged(dragEvent -> {
+        main.main3DGame.setOnMouseDragged(dragEvent -> {
             switch (controlMode) {
-                case 0:
+                case ANGLE:
                     rotateAroundYAxis(dragEvent);
                     double angle = formatAngle(rotateY.getAngle());
-                    angleLabel.setText("Angle: " + angle + "deg");
+                    angleLabel.setText("Angle: " + angle + "°");
                     break;
-                case 1:
+                case SPEED:
                     calculateSpeed(dragEvent);
                     speedLabel.setText("Speed: " + speedInPercent + "%");
                     break;

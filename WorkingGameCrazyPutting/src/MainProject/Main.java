@@ -1,43 +1,31 @@
 package MainProject;
 
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.beans.value.*;
+import javafx.scene.text.*;
+import javafx.event.*;
+import javafx.scene.*;
+
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider; 
-import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.media.AudioClip;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
-import readingOfFunctions.Function2d;
-import readingOfFunctions.FunctionH;
 
-import java.io.File;
+import readingOfFunctions.*;
 
 public class Main extends Application {
     public Stage primaryStage;
-    public Scene scene, scene2;
+    public Scene gameMenu, main3DGame;
+    public Game3D1 dim3;
+    public double volume = 0.5;
+
     private MediaPlayer mediaPlayer;
     private HBox mainBox;
     private final int scene_width = 1500;
     private final int scene_height = 750;
-    private static Main thismain;
-    public Game3D1 dim3;
-    public double volume = 0.5;
+    private GameType gameType;
 
     private double massV;
     private double frictionV;
@@ -51,25 +39,24 @@ public class Main extends Application {
     private String functionV;
     private double gravityV;
     private boolean playGolf;
-    private int level = 0;
-    private UIMusic musicPlayer;
+    private MenuMusic musicPlayer;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Golf");
 
-        musicPlayer = new UIMusic();
+        musicPlayer = new MenuMusic();
         musicPlayer.playBackgroundMusic();
 
         Group group = new Group();
         playGolf = false;
 
-        scene = new Scene(group, scene_width, scene_height, true);
-        scene.setFill(Color.LIGHTCORAL);
+        gameMenu = new Scene(group, scene_width, scene_height, true);
+        gameMenu.setFill(Color.LIGHTCORAL);
         group.getChildren().add(createView());
 
-        primaryStage.setScene(scene);
+        primaryStage.setScene(gameMenu);
         primaryStage.show();
     }
 
@@ -95,9 +82,9 @@ public class Main extends Application {
 
             PuttingCourse course = new PuttingCourse(height, flag, start, mu, vmax, tol, g, m);
 
-            dim3 = new Game3D1(this, course, level);
+            dim3 = new Game3D1(this, course, gameType);
 
-            primaryStage.setScene(scene2);
+            primaryStage.setScene(main3DGame);
             return mainBox;
         }
 
@@ -210,14 +197,15 @@ public class Main extends Application {
     }
 
     private VBox botCreationView(){
-        VBox box1 = new VBox();
-        box1.prefWidth(scene_width-200);
+        VBox mainBox = new VBox();
+        mainBox.prefWidth(scene_width-200);
+
+        HBox box1 = new HBox();
+        box1.setPrefWidth(scene_width-200);
         HBox box2 = new HBox();
         box2.setPrefWidth(scene_width-200);
         HBox box3 = new HBox();
-        box2.setPrefWidth(scene_width-200);
-        HBox box4 = new HBox();
-        box2.setPrefWidth(scene_width-200);
+        box3.setPrefWidth(scene_width-200);
 
         Label title = new Label("Select difficulty");
         title.setFont(Font.font("Helvetica", 50));
@@ -225,67 +213,67 @@ public class Main extends Application {
         Label empty2 = new Label("");
         empty2.setFont(Font.font("Helvetica", 50));
 
-        Button level1_btn = new Button("Easy");
-        level1_btn.setFont(Font.font("Helvetica", 40));
-        level1_btn.setPrefWidth(500);
+        Button easyButton = new Button("Easy");
+        easyButton.setFont(Font.font("Helvetica", 40));
+        easyButton.setPrefWidth(500);
 
-        Button level2_btn = new Button("Expert");
-        level2_btn.setFont(Font.font("Helvetica", 40));
-        level2_btn.setPrefWidth(500);
+        Button mediumButton = new Button("Expert");
+        mediumButton.setFont(Font.font("Helvetica", 40));
+        mediumButton.setPrefWidth(500);
 
-        Button level3_btn = new Button("Impossible");
-        level3_btn.setFont(Font.font("Helvetica", 40));
-        level3_btn.setPrefWidth(500);
+        Button hardButton = new Button("Impossible");
+        hardButton.setFont(Font.font("Helvetica", 40));
+        hardButton.setPrefWidth(500);
 
-        box2.getChildren().add(level1_btn);
+        box1.getChildren().add(easyButton);
+        box1.setAlignment(Pos.CENTER);
+
+        box2.getChildren().add(mediumButton);
         box2.setAlignment(Pos.CENTER);
 
-        box3.getChildren().add(level2_btn);
+        box3.getChildren().add(hardButton);
         box3.setAlignment(Pos.CENTER);
 
-        box4.getChildren().add(level3_btn);
-        box4.setAlignment(Pos.CENTER);
-
-        box1.getChildren().add(title);
-        box1.getChildren().add(empty2);
-        box1.getChildren().add(box2);
-        box1.getChildren().add(box3);
-        box1.getChildren().add(box4);
-        box1.setAlignment(Pos.CENTER);
-        box1.setSpacing(20);
+        mainBox.getChildren().add(title);
+        mainBox.getChildren().add(empty2);
+        mainBox.getChildren().add(box1);
+        mainBox.getChildren().add(box2);
+        mainBox.getChildren().add(box3);
+        mainBox.setAlignment(Pos.CENTER);
+        mainBox.setSpacing(20);
 
 
-        level1_btn.setOnAction(new EventHandler<ActionEvent>() {
+        easyButton.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event){
                 musicPlayer.playClickSound();
-                level = 1;
+                gameType = GameType.EASY_BOT;
                 playGolf = true;
                 createView();
             }
         });
 
-        level2_btn.setOnAction(new EventHandler<ActionEvent>() {
+        mediumButton.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event){
                 musicPlayer.playClickSound();
-                level = 2;
+                gameType = GameType.MEDIUM_BOT;
                 playGolf = true;
                 createView();
             }
         });
 
-        level3_btn.setOnAction(new EventHandler<ActionEvent>() {
+        hardButton.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event){
                 musicPlayer.playClickSound();
-                level = 3;
+                gameType = GameType.HARD_BOT;
                 playGolf = true;
                 createView();
             }
         });
 
-        return box1;
+        return mainBox;
     }
 
     private VBox playView(){
@@ -308,6 +296,7 @@ public class Main extends Application {
 
             public void handle(ActionEvent event){
                 musicPlayer.playClickSound();
+                gameType = GameType.HUMAN;
                 playGolf = true;
                 createView();
             }

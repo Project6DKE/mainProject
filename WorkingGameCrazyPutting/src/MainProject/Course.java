@@ -1,13 +1,10 @@
 package MainProject;
 
+import javafx.scene.paint.*;
+import javafx.scene.shape.*;
+
 import javafx.scene.AmbientLight;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.CullFace;
-import javafx.scene.shape.DrawMode;
-import javafx.scene.shape.MeshView;
-import javafx.scene.shape.TriangleMesh;
 
 public class Course {
     private final TriangleMesh field = new TriangleMesh();

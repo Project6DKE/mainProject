@@ -1,7 +1,6 @@
 package MainProject;
 
-import readingOfFunctions.Function2d;
-import readingOfFunctions.FunctionH;
+import readingOfFunctions.*;
 
 public class GA {
 	private static int number_of_gen = 150;

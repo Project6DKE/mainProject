@@ -1,7 +1,5 @@
 package MainProject;
 
-import java.util.ArrayList;
-
 public class RungeKutta extends EulerSolver{
 	private PuttingCourse c;
 	private double RKStep=0.1;
