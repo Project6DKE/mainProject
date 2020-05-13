@@ -6,12 +6,6 @@ class Music {
     private double volume = 0.5;
     private AudioClip backgroundMusic;
 
-    private AudioClip getAudioClip(String path) {
-        String full_path = "Sound/" + path;
-        AudioClip audio = new AudioClip(getClass().getResource(full_path).toExternalForm());
-        return audio;
-    }
-
     public void soundEffect(String path) {
         AudioClip soundEffect = getAudioClip(path);
         soundEffect.setVolume(volume);
@@ -32,6 +26,12 @@ class Music {
     public void setMusicVolume(double volume) {
         this.volume = volume;
         backgroundMusic.setVolume(volume);
+    }
+
+    private AudioClip getAudioClip(String path) {
+        String full_path = "Sound/" + path;
+        AudioClip audio = new AudioClip(getClass().getResource(full_path).toExternalForm());
+        return audio;
     }
 }
 

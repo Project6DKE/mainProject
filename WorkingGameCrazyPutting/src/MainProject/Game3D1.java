@@ -18,10 +18,10 @@ import javafx.geometry.Pos;
 public class Game3D1 extends StackPane{
     private final Rotate rotateY = new Rotate(-145, Rotate.Y_AXIS);
     private final Rotate rotateX = new Rotate(0, Rotate.X_AXIS);
-    
+
     private Sphere ball;
     private Group all3DObjects;
-    private Main main;
+    private final Main main;
 
     private double speedValue = 10000;
     private int speedInPercent = 33;
@@ -33,17 +33,17 @@ public class Game3D1 extends StackPane{
     private Label speedLabel = new Label();
 
     private Camera cam;
-    private PuttingSimulator PS;
+    private final PuttingSimulator PS;
     private final int ball_radius = 10;
 
     private double xPositionDragStarted;
     private double yPositionDragStarted;
 
-    private GameType gameType;
+    private final GameType gameType;
     private controlType controlMode = controlType.ANGLE;
 
     private enum controlType {ANGLE, SPEED};
-    private Group surface;
+    private final Group surface;
 
 
     public Game3D1(Main main, PuttingCourse PC, GameType gameType) {
@@ -95,7 +95,10 @@ public class Game3D1 extends StackPane{
     }
 
     private void setAll3DObjects() {
-        Group flag = getObject("flag", 0, 2, 0, 30);
+        ObjectType flagType = ObjectType.FLAG;
+        flagType.setTranslate(0, 2, 0);
+
+        Group flag = getObject(flagType);
 
         Group blenderObjects = getBlenderObjects();
 
@@ -132,8 +135,13 @@ public class Game3D1 extends StackPane{
     }
 
     private Group getBlenderObjects() {
-        Group trees = getObject("trees", -18, 0.3, 13, 25);
-        Group arrow = getObject("arrow", 0, -40, 3.3, 5);
+        ObjectType treesType = ObjectType.TREES;
+        treesType.setTranslate(-18, 0.3, 13);
+        Group trees = getObject(treesType);
+
+        ObjectType arrowType = ObjectType.ARROW;
+        arrowType.setTranslate(0, -40, 3.3);
+        Group arrow = getObject(arrowType);
 
         Group[] grassArray = getGrassArray();
         arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
@@ -233,23 +241,7 @@ public class Game3D1 extends StackPane{
                     controlMode = controlType.SPEED;
                     break;
                 case ENTER:
-                    stroke += 1;
-                    strokeLabel.setText("Stroke: " + stroke);
-
-                    switch (gameType) {
-                        case HUMAN:
-                            System.out.println("Human game");
-                            break;
-                        case EASY_BOT:
-                            System.out.println("Easy bot");
-                            break;
-                        case MEDIUM_BOT:
-                            System.out.println("Medium bot");
-                            break;
-                        case HARD_BOT:
-                            System.out.println("Hard bot");
-                            break;
-                    }
+                    playGame();
                     break;
             }
         });
@@ -261,6 +253,24 @@ public class Game3D1 extends StackPane{
         });
     }
 
+    private void playGame() {
+        updateStrokeLabel();
+
+        switch (gameType) {
+            case HUMAN:
+                System.out.println("Human game");
+                break;
+            case EASY_BOT:
+                System.out.println("Easy bot");
+                break;
+            case MEDIUM_BOT:
+                System.out.println("Medium bot");
+                break;
+            case HARD_BOT:
+                System.out.println("Hard bot");
+                break;
+        }
+    }
 
     private void detectZoomWithScroll() {
         main.main3DGame.addEventHandler(ScrollEvent.SCROLL, event -> {
@@ -323,15 +333,16 @@ public class Game3D1 extends StackPane{
         });
     }
 
-    private double formatAngle(double _angle) {
-        double angle = _angle;
+    private double formatAngle(double angle) {
+        double numberOfFullRotations = angle / 360;
+        double fullRotation = 360;
 
-        while (angle / 360 > 1) {
-            angle -= 360;
+        if (numberOfFullRotations > 1) {
+            angle -= fullRotation;
         }
 
-        while (angle / 360 < 0) {
-            angle += 360;
+        if (numberOfFullRotations < 0) {
+            angle += fullRotation;
         }
 
         return (int) angle;
@@ -360,17 +371,22 @@ public class Game3D1 extends StackPane{
         double translateY = 15 + y;
         double translateZ = 70 + z;
 
-        int scalingFactor = 3;
+        ObjectType grassType = ObjectType.GRASS;
+        grassType.setTranslate(translateX, translateY, translateZ);
 
-        Group grassObject = getObject("bunchOfGrass", translateX, translateY, translateZ, scalingFactor);
-        return grassObject;
+        return getObject(grassType);
     }
 
-    private Group getObject(String pathName, double x, double y, double z, double scalingFactor) {
+    private Group getObject(ObjectType objectType) {
+        String pathName = objectType.getPathName();
         Group object = loadModel(getClass().getResource("Objects/" + pathName + ".obj"));
+
+        double scaling = objectType.getScalingFactor();
+        object.getTransforms().add(new Scale(scaling, scaling, scaling));
+
         object.getTransforms().add(new Rotate(90, Rotate.Y_AXIS));
-        object.getTransforms().add(new Scale(scalingFactor, scalingFactor, scalingFactor));
-        object.getTransforms().add(new Translate(x, y, z));
+
+        object.getTransforms().add(objectType.getTranslate());
 
         return object;
     }
@@ -386,6 +402,7 @@ public class Game3D1 extends StackPane{
 
 
     private void updateStrokeLabel() {
+        stroke += 1;
         strokeLabel.setText("Stroke : " + stroke);
     }
 
