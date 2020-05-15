@@ -51,7 +51,7 @@ public class Game3D1 extends StackPane{
     public Game3D1(Main main, PuttingCourse PC, GameType gameType) {
         this.main = main;
         this.gameType = gameType;
-        PS = new PuttingSimulator(PC, new EulerSolver());
+        PS = new PuttingSimulator(PC, new RungeKutta());
 
         playMusic();
         setCam();
@@ -296,7 +296,7 @@ public class Game3D1 extends StackPane{
             case EASY_BOT:
                 System.out.println("Easy bot");
                 //Kristian : i guess i will put the GA here
-                GA genAlgo = new GA(this.PS);
+                GA genAlgo = new GA(PS);
                 double[] shot = new double [2];
                 shot = genAlgo.runGA();
                 PS.take_angle_shot(shot[0], shot[1]);
