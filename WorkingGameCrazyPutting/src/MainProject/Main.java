@@ -67,8 +67,8 @@ public class Main extends Application {
         mainBox.getChildren().add(introView());
         if (playGolf) {
             musicPlayer.stopBackgroundMusic();
-            Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
-            //Function2d height= new FunctionH("0");
+            //Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
+            Function2d height= new FunctionH("1");
 
             Vector2d flag = new Vector2d(0, 3);
             Vector2d start = new Vector2d(0, 0);
@@ -78,7 +78,7 @@ public class Main extends Application {
             m = 45.93 / 1000;
             mu = 0.131;
             vmax = 3;
-            tol = 0.02;
+            tol = 0.2;
 
             PuttingCourse course = new PuttingCourse(height, flag, start, mu, vmax, tol, g, m);
 

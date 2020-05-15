@@ -7,6 +7,7 @@ import readingOfFunctions.FunctionH;
 
 public class FunctionReader {
 
+
     private double gravity;
     private double mass;
     private double mu;
@@ -88,7 +89,7 @@ public class FunctionReader {
     }
 
     public FunctionReader(String filename) throws IOException {
-        String file = filename; // change the txt name here
+        String file = filename;
         Scanner in = new Scanner(System.in);
         ArrayList<String> variable = new ArrayList<>();
         ArrayList<Double> value = new ArrayList<>();
@@ -107,7 +108,6 @@ public class FunctionReader {
         }
 
         for (int i = 0; i < variable.size(); i++) {
-            //System.out.println(variable.get(i)+"="+value.get(i));
             if (variable.get(i).equalsIgnoreCase("g "))
                 gravity = value.get(i);
             if (variable.get(i).equalsIgnoreCase("m ") || variable.get(i).equalsIgnoreCase("[m/s^2]m "))

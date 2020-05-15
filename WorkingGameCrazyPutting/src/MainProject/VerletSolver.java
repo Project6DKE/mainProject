@@ -1,7 +1,6 @@
 package MainProject;
 
 public class VerletSolver {
-
     private PuttingCourse putCourse;
     private EulerSolver eulSol;
     private Vector2d velocity;
