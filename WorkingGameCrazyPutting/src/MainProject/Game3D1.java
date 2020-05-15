@@ -84,16 +84,15 @@ public class Game3D1 extends StackPane{
 
     private void createVisualization() {
         setAll3DObjects();
-
-        VBox control = getControl();
         translateAll3DObjects();
 
-        HBox cubebox = new HBox();
-        cubebox.getChildren().add(all3DObjects);
+        VBox controlBox = getControl();
+        HBox objectBox = new HBox();
+        objectBox.getChildren().add(all3DObjects);
 
         VBox mainbox = new VBox();
-        mainbox.getChildren().add(cubebox);
-        mainbox.getChildren().add(control);
+        mainbox.getChildren().add(objectBox);
+        mainbox.getChildren().add(controlBox);
 
         setScene(mainbox);
         addControlListeners();
@@ -137,6 +136,22 @@ public class Game3D1 extends StackPane{
         ball = new Sphere();
         ball.setRadius(ball_radius);
         setBallPosition();
+    }
+
+    private void setBallPosition() {
+        Vector2d ballPosition = PS.get_ball_position();
+        this.ball.setTranslateX(ballPosition.get_x());
+        this.ball.setTranslateZ(ballPosition.get_y());  // - ball_radius
+        this.ball.setTranslateY(PS.getCourse().get_height().evaluate(ballPosition));
+        System.out.println("Ball updated : " + ballPosition.toString());
+    }
+
+    private void putBallAtBounds() {
+        // The diameter of the field equals 960;
+        // If we use the translateX
+        // And translateZ functions on the ball
+        // We can reach the bounds by ball.translateZ(480) or ball.translateZ(-480)
+        // The step size can be 1 or 2
     }
 
 
@@ -295,11 +310,7 @@ public class Game3D1 extends StackPane{
                 break;
             case EASY_BOT:
                 System.out.println("Easy bot");
-                //Kristian : i guess i will put the GA here
-                GA genAlgo = new GA(this.PS);
-                double[] shot = new double [2];
-                shot = genAlgo.runGA();
-                PS.take_angle_shot(shot[0], shot[1]);
+                playGeneticAlgorithm();
                 break;
             case MEDIUM_BOT:
                 System.out.println("Medium bot");
@@ -308,6 +319,18 @@ public class Game3D1 extends StackPane{
                 System.out.println("Hard bot");
                 break;
         }
+    }
+
+    private void playGeneticAlgorithm() {
+        GA geneticAlgorithm = new GA(this.PS);
+        double[] shot = new double [2];
+
+        shot = geneticAlgorithm.runGA();
+
+        System.out.println(geneticAlgorithm.runGA();
+        System.out.println(shot[1]);
+
+        PS.take_angle_shot(shot[0], shot[1]);
     }
 
     private void detectZoomWithScroll() {
@@ -397,12 +420,14 @@ public class Game3D1 extends StackPane{
         double numberOfFullRotations = angle / 360;
         double fullRotation = 360;
 
-        if (numberOfFullRotations > 1) {
+        while (numberOfFullRotations > 1) {
             angle -= fullRotation;
+            numberOfFullRotations = angle / 360;
         }
 
-        if (numberOfFullRotations < 0) {
+        while (numberOfFullRotations < 0) {
             angle += fullRotation;
+            numberOfFullRotations = angle / 360;
         }
 
         return (int) angle;
@@ -463,14 +488,6 @@ public class Game3D1 extends StackPane{
     private void updateStrokeLabel() {
         stroke += 1;
         strokeLabel.setText("Stroke : " + stroke);
-    }
-
-    private void setBallPosition() {
-        Vector2d ballPosition = PS.get_ball_position();
-        this.ball.setTranslateX(ballPosition.get_x());
-        this.ball.setTranslateZ(ballPosition.get_y() /*- (ball_radius)*/);
-        this.ball.setTranslateY(PS.getCourse().get_height().evaluate(ballPosition));
-        System.out.println("Ball updated : " + ballPosition.toString());
     }
 
     private Group loadModel(URL url) {
