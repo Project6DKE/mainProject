@@ -8,7 +8,7 @@ public class GA {
     private static int size_initpopulation = 250;	
     private static final int param = 2;
     private int stroke;
-    private double mutationrate = 0.01;    
+    private double mutationrate = 0.1;    
     private double distancefromhole;
     private double max_fit; 
     private int max_elem;
@@ -17,6 +17,7 @@ public class GA {
     private static double[][] actualpopulation = new double[initpopulation.length][param];
     private double maxspeed;
     private double maxangle;
+    private double distScore = 0.2;
     private PuttingSimulator PS;
     private Vector2d ballpos;
     private Vector2d backup_ballpos;
@@ -50,7 +51,7 @@ public class GA {
         }
     }
     
-    public void setFitness(){
+    public int setFitness(){
         middle = 0;
         max_fit = 0;
         max_elem = -1;
@@ -68,6 +69,9 @@ public class GA {
                 //System.out.println("Distance from hole is : " + distancefromhole);
                 fitness[i] = 1/distancefromhole;
                 fitness[i] = fitness[i] * 100;
+                if(distancefromhole <= distScore) {
+                	return i;
+                }
                 if (i == 0) {
                 	middle = fitness[i];
                 	}
@@ -83,6 +87,7 @@ public class GA {
                 PS.setShot(0);
                 System.out.println("End of the shot");
         }
+        return -1;
     }
     
     public void newGen(){
@@ -155,17 +160,34 @@ public class GA {
     }
     
     public double[] runGA() {
+    	long startT = System.currentTimeMillis();
     	encoding();
     	int nbr_gen = 0;
+    	int check = -1;
+    	int best = 0;
+    	boolean flag  = true;
     	while(nbr_gen<number_of_gen) {
-    		setFitness();
-    		newGen();
-    		mutation();
-    		nbr_gen++;
+    		check = setFitness();
+    		if(check != -1){
+    			best = check;
+    			flag = false;
+    			//break;
+    		}
+    		if(flag){
+    			newGen();
+        		mutation();
+        		nbr_gen++;
+    		}
+    		else {
+    			//System.out.println("WE BREAK");
+    			break;
+    		}
     	}
     	System.out.println("Here");
-    	setFitness();
-    	int best = bestElement();
+    	//setFitness();
+    	if(flag) {
+    		best = bestElement();
+    	}
     	double dist = 1/(fitness[best])*100;
     	System.out.println("Best element has fitness : " + fitness[best] + " with a distance to the hole of : " + dist);   
     	double gaShot[] = new double[2];	//gaShot[0] is speed, gaShot[1] is angle
@@ -178,13 +200,15 @@ public class GA {
     
     
     public static void main(String[] args){
-    	Function2d height= new FunctionH("0");
+    	//Function2d height= new FunctionH("0");
+    	Function2d height= new FunctionH(" 0.04 * x ^ 2 + 0.001 * y");
+    	//Function2d height= new FunctionH(" -0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
 		
 		Vector2d flag = new Vector2d(0,3);
 		Vector2d start = new Vector2d(0,0);
 		
 		double g,m,mu,vmax,tol;
-		g=9.81;m=45.93/1000;mu=0.131;vmax=3;tol=0.3;
+		g=9.81;m=45.93/1000;mu=0.131;vmax=3;tol=0.2;
 		
 		PuttingCourse course = new PuttingCourse(height,flag, start, mu, vmax,tol,g,m );
 		PuttingSimulator putSim = new PuttingSimulator(course, new RungeKutta());
