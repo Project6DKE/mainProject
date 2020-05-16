@@ -1,8 +1,8 @@
 package readingOfFunctions;
 
-public class RandomishFunction extends FunctionH {
+public class RandomishFunction extends FunctionH implements Function2d {
 	
-	static int randomSize = 3;
+	static int randomSize = 5;
 	
 	/*
 	 * I can add in some arguments in the super in the first line
@@ -26,13 +26,43 @@ public class RandomishFunction extends FunctionH {
 		 */
 		
 		String[] elements = new String[randomSize];
-		boolean openParenthesis = false;
 		
+		// Done to make sure there's a closure of parenthesis
+		int openParenthesis = 0;
+		
+		// Done to avoid having constants side by side
 		boolean lastConstant = false;
 		
-		// Divided by 100 so that it's somewhat flat
+		/*
+		 * I'm generating these two elements to make sure there's an X and Y value
+		 * Should be modified later some way, doesn't matter for now
+		 */
 		elements[0] = generateX() + " +";
 		elements[1] = generateY();
+		
+		
+		/*
+		 * If a variable was generated, the next element has to be an operator
+		 * If an operator was generated, the next element has to be a variable or a function
+		 * If a function was generated, next element has to be an variable, and it must close
+		 * 		
+		 *  When generating a function include add an open parenthesis
+		 *  IE not log x
+		 *  But log ( x )
+		 * 
+		 * This could be redundant
+		 * 	0.02 * cos ( 0.02 * x )
+		 * 
+		 * This is easier to do
+		 * 	0.02 * sin ( x )
+		 * 
+		 * Make sure to not end on an operator or a function
+		 * IE you cant have x + + or x + cos ( )
+		 * So if the last value is a operator or a function, add a variable somewhere
+		 * 
+		 * If you open a function or add a parenthesis, do openparenthesis++
+		 * 
+		 */
 		
 		
 		for(int i=2; i<randomSize-1; i++) {
@@ -40,6 +70,28 @@ public class RandomishFunction extends FunctionH {
 			
 			
 			
+			if (generate <= 0.33) {
+				//Generate a new operation
+				
+				
+			} else if (generate <= 0.66) {
+				//Generate a new function
+				
+				
+			} else {
+				// Generate a new variable
+				// 50/50 chance of generating an x or a y
+				lastConstant = true;
+				
+			}
+			
+			
+		}
+		
+		if (openParenthesis != 0) {
+			/*
+			 * add whoever many parenthesis needed at end so that it's equal to 0
+			 */
 		}
 		
 		elements[randomSize-1] = "+ 5";
@@ -63,6 +115,10 @@ public class RandomishFunction extends FunctionH {
 	
 	// Done so that the generated x is flat enough
 	static String generateX() {
+		
+		/*
+		 * Also needs to be negative, currently only generates positive values
+		 */
 		double num = Math.random()/100;
 		while (num == 0 ) {
 			num = Math.random()/100;
@@ -72,6 +128,9 @@ public class RandomishFunction extends FunctionH {
 	}
 	
 	static String generateY() {
+		
+		//Also needs to be negative, currently only generates positive values
+		
 		double num = Math.random()/100;
 		while (num == 0 ) {
 			num = Math.random()/100;
@@ -81,6 +140,8 @@ public class RandomishFunction extends FunctionH {
 	}
 	
 	static String flatify(String str) {
+		
+		//Also needs to be negative, currently only generates positive values
 		double num = Math.random()/100;
 		while (num == 0 ) {
 			num = Math.random()/100;

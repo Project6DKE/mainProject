@@ -13,6 +13,8 @@ public class BasicAI {
     Vector2d flag;
     Vector2d lastBallPosition;
     Vector2d currentBallPosition;
+    
+    static final double STOP0 = 0.00000000000001;
 
     public BasicAI(PuttingSimulator simulator){
         this.theGame = simulator;
@@ -32,7 +34,11 @@ public class BasicAI {
         double xdist = currentBallPosition.getXDistance(flag);
         double ydist = currentBallPosition.getYDistance(flag);
         
-        Vector2d speed = new Vector2d(0.0000001,0.0000001);
+        double vx0 = Math.signum(xdist)*STOP0;
+    	double vy0 = Math.signum(ydist)*STOP0;
+    	
+    	Vector2d speed = new Vector2d(vx0, vy0);
+        
         
         Vector2d acceleration = theGame.calculate_acceleration(speed);
 

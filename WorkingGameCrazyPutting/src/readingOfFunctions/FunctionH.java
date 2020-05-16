@@ -21,9 +21,6 @@ public class FunctionH implements Function2d {
      * Exists solely so that RandomishFunction
      * Can extend this function without problems
      */
-    public FunctionH(){
-    	
-    }
     
    
     public void understand(){

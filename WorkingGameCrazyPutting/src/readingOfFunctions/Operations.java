@@ -80,7 +80,6 @@ public class Operations implements Something {
             this.precedence = 3;
             this.leftAss = false;
             this.isFunction = false;
-
         } else if (operType.equals("/")){
             this.operationType = 6;
             this.precedence = 3;
@@ -156,8 +155,13 @@ public class Operations implements Something {
         } else if (operValue==5){
             return "*";
         } else if (operValue==6){
+        	// A pain
             return "/";
         } else if (operValue==7){
+        	/*
+        	 * If you generate an exponential,
+        	 * Generate a random int 0 < x < 5
+        	 */
             return "^";
         } else if (operValue==8){
             return "cos";
@@ -166,8 +170,10 @@ public class Operations implements Something {
         } else if (operValue==10){
             return "tan";
         } else if (operValue==11){
+        	// A pain
             return "acos";
         } else if (operValue==12){
+        	// A pain
             return "asin";
         } else if (operValue==13){
             return "atan";
