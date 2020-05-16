@@ -2,27 +2,6 @@ package readingOfFunctions;
 
 public class Operations implements Something {
 
-    /*
-    GUIDE FOR WHOEVER HAS TO FINISH HARDCODING THIS:
-    -Information about things that are functions:
-        -If it's a function only assign it a left, don't assign both
-        -Functions start from operation type 7 onwards
-        -Operation type is more than all used to categorize the operations, just add go in increasing order for them
-        -For functions precedence and leftass don't matter
-    -Operations (AKA the Operate function):
-        -These should just do whatever the operation does
-        -So the + operation will sum the left and right, etc.
-        -FOR THE FUNCTIONS ONLY OPERATE THEM ON THE LEFT SOMETHING
-        -So f(x) = f(solve.left) <-- Visualize it like that if it makes it easier for you
-        -Cos is done, that should work as an example of what's expected for functions
-        -DOING IT WITH solve.right WILL BREAK EVERYTHING. DON'T
-        -https://docs.oracle.com/javase/8/docs/api/java/lang/Math.html
-        -For the trigonometric it should work relatively easy, there might be some weirder implementation for some of the other functions (or we might need to specify something)
-            -For example, for absolute value doing it with the |x| is a pain, so just do Abs ( x ), or something like that
-            -For these weird guys make sure to add how you're reading them into the readme file included.
-     */
-
-
 
     /*
     Use operation Type to properly define what operation is being used, a pain in the ass but fuck it.
@@ -55,6 +34,12 @@ public class Operations implements Something {
     So if it's a function it's true. If it's not it aint
     Functions are things like cos(x), sin(), things like that.
      */
+    
+    /*
+     * Alt generator so that operations can be generated with only an int
+     * More hardcoding, it's not good but it works
+     */
+    
 
 
     public Operations(String operType) {
@@ -120,7 +105,7 @@ public class Operations implements Something {
         } else if (operType.equalsIgnoreCase("acos")){
             this.operationType = 11;
             this.isFunction = true;
-        } else if (operType.equalsIgnoreCase("acos")){
+        } else if (operType.equalsIgnoreCase("asin")){
             this.operationType = 12;
             this.isFunction = true;
         } else if (operType.equalsIgnoreCase("atan")){
@@ -144,10 +129,67 @@ public class Operations implements Something {
         } else if (operType.equalsIgnoreCase("tanh")){
             this.operationType = 19;
             this.isFunction = true;
+        } else if (operType.equalsIgnoreCase("sqrt")) {
+        	this.operationType = 20;
+        	this.isFunction = true;
         }
 
 
     }
+    
+    // Alternate generation method
+    // Only uses an int, with each in up till 19 having an equivalent relevant operation
+    public Operations (int operValue) {
+    	this(createOperation(operValue));    	
+    }
+
+    // Creates the relevant string from an int
+	static String createOperation(int operValue) {
+		if (operValue == 1){
+            return "(";
+        } else if (operValue == 2){
+            return ")";
+        } else if (operValue == 3){
+            return "+";
+        } else if (operValue ==4){
+            return "-";
+        } else if (operValue==5){
+            return "*";
+        } else if (operValue==6){
+            return "/";
+        } else if (operValue==7){
+            return "^";
+        } else if (operValue==8){
+            return "cos";
+        } else if (operValue==9){
+            return "sin";
+        } else if (operValue==10){
+            return "tan";
+        } else if (operValue==11){
+            return "acos";
+        } else if (operValue==12){
+            return "asin";
+        } else if (operValue==13){
+            return "atan";
+        } else if (operValue==14){
+            return "abs";
+        } else if (operValue==15){
+            return "log";
+        } else if (operValue==16){
+            return "log10";
+        } else if (operValue==17){
+            return "cosh";
+        } else if (operValue==18){
+            return "sinh";
+        } else if (operValue==19){
+            return "tanh";
+        } else if (operValue==20) {
+        	return "sqrt";
+        }
+		
+		System.out.println("There's an error here");
+		return null;
+	}
 
     public boolean getIsFunction(){
         return isFunction;
@@ -184,6 +226,7 @@ public class Operations implements Something {
 
 
     public double solve() {
+    	// I'm realizing now that this is probably kind of shit ahhhhhh
         return Operate(left, right);
     }
 
@@ -222,15 +265,17 @@ public class Operations implements Something {
         } else if (this.operationType == 14){
             return Math.abs(left.solve());
         } else if (this.operationType == 15){
-            return Math.log(left.solve());
+            return Math.log(Math.abs(left.solve()));
         } else if (this.operationType == 16){
-            return Math.log10(left.solve());
+            return Math.log10(Math.abs(left.solve()));
         } else if (this.operationType == 17){
             return Math.cosh(left.solve());
         } else if (this.operationType == 18){
             return Math.sinh(left.solve());
         } else if (this.operationType == 19) {
             return Math.tanh(left.solve());
+        } else if (this.operationType == 20) {
+        	return Math.sqrt(Math.abs(left.solve()));
         }
 
         System.out.println("Invalid function");

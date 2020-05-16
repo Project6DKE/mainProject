@@ -46,13 +46,22 @@ public class NewAI {
     	double xdist = flag.getXDistance(currentBallPosition);
     	double ydist = flag.getYDistance(currentBallPosition);
     	
-    	double xStep = xdist/STEPSIZE;
-    	double yStep = ydist/STEPSIZE;
     	/*
     	 * If one of the dist is 0 it causes problems
     	 */
     	
-    	Vector2d velocity = new Vector2d(Math.signum(-xdist)*STOP0, Math.signum(-ydist)*STOP0);
+    	double vx0 = Math.signum(-xdist)*STOP0;
+    	double vy0 = Math.signum(-ydist)*STOP0;
+    	
+    	Vector2d velocity = new Vector2d(vx0, vy0);
+    	
+    	xdist = xdist + vx0;
+    	ydist = ydist + vy0;
+    	
+    	
+    	double xStep = xdist/STEPSIZE;
+    	double yStep = ydist/STEPSIZE;
+    	
     	
     	/*
     	 *  The idea behind the method is okay and seems to be working

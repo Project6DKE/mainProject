@@ -17,20 +17,32 @@ public class FunctionH implements Function2d {
         this.understand();
     }
     
+    /*
+     * Exists solely so that RandomishFunction
+     * Can extend this function without problems
+     */
+    public FunctionH(){
+    	
+    }
+    
    
     public void understand(){
         /*
         This is where the equation will be transformed into a search tree.
          */
-
+    	
+    	// Operator stack is a temporary stack where the operators are store
+    	// outputStack is where the results are put in, organized in reverse polish notation
         ArrayDeque<Operations> operatorStack = new ArrayDeque<Operations>();
-        //ArrayDeque<Something> functionStack = new ArrayDeque<Something>();
         ArrayDeque<Something> outputStack = new ArrayDeque<Something>();
-
+        
         String[] elements = function.split(" ");
 
         for(int i=0; i<elements.length; i++){
-            if (isNumeric(elements[i])){
+            /*
+             *  Long if else statements that take care of identifying the elements in the function
+             */
+        	if (isNumeric(elements[i])){
                 outputStack.push(new Constants(elements[i]));
             } else if(elements[i].equalsIgnoreCase("x") ||
                     elements[i].equalsIgnoreCase("y") ||
@@ -47,6 +59,8 @@ public class FunctionH implements Function2d {
                 operatorStack.pop();
 
             } else {
+            	// The last part assumes that the element has to be an operator or a function
+            	// And then uses the Operations creator to generate the reelvant operation
                 Operations op = new Operations(elements[i]);
 
                 if(op.isFunction){
@@ -113,7 +127,7 @@ public class FunctionH implements Function2d {
         }
 
         if(solvedTree.size() != 1){
-            System.out.println("buggs");
+            System.out.println("error, look at later");
         }
 
         this.root = solvedTree.pop();
