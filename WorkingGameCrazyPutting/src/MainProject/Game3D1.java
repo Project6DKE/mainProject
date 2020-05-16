@@ -295,11 +295,7 @@ public class Game3D1 extends StackPane{
                 break;
             case EASY_BOT:
                 System.out.println("Easy bot");
-                //Kristian : i guess i will put the GA here
-                GA genAlgo = new GA(PS);
-                double[] shot = new double [2];
-                shot = genAlgo.runGA();
-                PS.take_angle_shot(shot[0], shot[1]);
+                playGeneticAlgorithm();
                 break;
             case MEDIUM_BOT:
                 System.out.println("Medium bot");
@@ -308,6 +304,21 @@ public class Game3D1 extends StackPane{
                 System.out.println("Hard bot");
                 break;
         }
+    }
+
+    private void playGeneticAlgorithm() {
+        GA genAlgo = new GA(PS);
+        double[] shot = new double [2];
+        shot = genAlgo.runGA();
+        PS.take_angle_shot(shot[0], shot[1]);
+    }
+
+    private void putBallAtBounds() {
+        // The diameter of the field equals 960;
+        // If we use the translateX
+        // And translateZ functions on the ball
+        // We can reach the bounds by ball.translateZ(480) or ball.translateZ(-480)
+        // The step size can be 1 or 2
     }
 
     private void detectZoomWithScroll() {
