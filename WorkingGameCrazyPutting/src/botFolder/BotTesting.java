@@ -11,6 +11,7 @@ import MainProject.RungeKutta;
 import MainProject.Vector2d;
 import readingOfFunctions.Function2d;
 import readingOfFunctions.FunctionH;
+import readingOfFunctions.LessRandomFunctions;
 import readingOfFunctions.RandomishFunction;
 
 public class BotTesting {
@@ -55,7 +56,7 @@ public class BotTesting {
 					try {
 						
 						int size = (int)((Math.random()*6)+3);
-						height = new RandomishFunction(size);
+						height = new LessRandomFunctions(size);
 						//height = new FunctionH("2");
 						hasFunc = true;
 					} catch (Exception e) {
