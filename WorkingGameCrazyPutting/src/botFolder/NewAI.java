@@ -282,5 +282,9 @@ public class NewAI implements PuttingBot {
     	return v;
     }
     
+    public String toString() {
+    	return "NewAI";
+    }
+    
 	
 }

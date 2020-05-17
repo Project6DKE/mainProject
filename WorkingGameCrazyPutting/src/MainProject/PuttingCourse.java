@@ -83,7 +83,8 @@ public class PuttingCourse {
 	}
 	
 	public boolean is_put(Vector2d p) {
-		double x=p.get_x()-flag.get_x();double y=p.get_y()-flag.get_y();
+		double x=p.get_x()-flag.get_x();
+		double y=p.get_y()-flag.get_y();
 		if((x*x+y*y)<=(tol*tol)) return true;
 		return false;
 	}

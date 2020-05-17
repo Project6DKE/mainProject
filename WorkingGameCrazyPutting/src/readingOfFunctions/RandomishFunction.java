@@ -5,7 +5,7 @@ import java.util.List;
 
 public class RandomishFunction extends FunctionH implements Function2d {
 	
-	static int randomSize = 3;
+	static int randomSize = 4;
 	
 	/*
 	 * I can add in some arguments in the super in the first line
@@ -17,6 +17,14 @@ public class RandomishFunction extends FunctionH implements Function2d {
 	
 	public RandomishFunction(String aString) throws Exception {
 		super(aString);
+	}
+	public RandomishFunction(int size) throws Exception {
+		this(generateRandom(size));
+	}
+	
+	static String generateRandom(int size) {
+		randomSize = size;
+		return (generateRandom());
 	}
 	
 	static String generateRandom() {
@@ -319,7 +327,7 @@ public class RandomishFunction extends FunctionH implements Function2d {
 	// Generate a Math.random() double, if the double*100 < chance
 	// Then the boolean returns a true, if not it returns a false
 	static boolean takeChance(double chance) {
-		double num = Math.random()*100;
+		double num = Math.random()*100.0;
 		
 		if(num<chance) {
 			return true;
@@ -346,6 +354,7 @@ public class RandomishFunction extends FunctionH implements Function2d {
 		
 		for(int i=0; i<50; i++) {
 			ran = new RandomishFunction();
+			System.out.println(ran.toString());
 		}
 		
 	}

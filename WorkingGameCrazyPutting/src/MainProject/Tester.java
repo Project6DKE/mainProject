@@ -25,7 +25,7 @@ public class Tester {
 		Function2d height= new FunctionH("2");
 		//Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y + 1");
 		
-		Vector2d flag = new Vector2d(0,10);
+		Vector2d flag = new Vector2d(10,10);
 		Vector2d start = new Vector2d(0,0);
 		
 		double g,m,mu,vmax,tol;
@@ -37,12 +37,13 @@ public class Tester {
 		
 		PuttingSimulator s= new PuttingSimulator(course,engine);
 		
-		//BasicAI ai = new BasicAI(s);
-		NewAI ai = new NewAI(s);
+		BasicAI ai = new BasicAI(s);
+		//NewAI ai = new NewAI(s);
 		//BackwardsAI ai = new BackwardsAI(s);
 		
 		while(!s.course_put) {
-			ai.takeShot();
+			Vector2d speed = ai.shot_velocity(course, s.get_ball_position());
+			s.take_shot(speed);
 			System.out.println(s.get_ball_position().toString());
 			System.out.println("The distance to flag is " + s.distToFlag());
 			

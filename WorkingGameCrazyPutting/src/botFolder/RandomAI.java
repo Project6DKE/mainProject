@@ -13,6 +13,10 @@ public class RandomAI implements PuttingBot {
         this.maxangle = 360 * Math.PI / 180;
 	}
 	
+	public RandomAI() {
+		this.maxangle = 360* Math.PI / 180;
+	}
+	
 	//this returns the parameter to run PS.takeAngleShot()
 	public double [] getShotParam() {
 		double[] AngSp = new double [2];
@@ -22,6 +26,7 @@ public class RandomAI implements PuttingBot {
 	}
 	
 	public Vector2d shot_velocity(PuttingCourse course, Vector2d ball_position) {
+		this.maxspeed = course.get_maximum_velocity();
 		double[] myShot = new double[2]; 
     	myShot = getShotParam();
     	double speed = myShot[0];
