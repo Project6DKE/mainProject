@@ -32,6 +32,8 @@ public class BotTesting {
 			sb.append(',');
 			sb.append("ShotsTaken");
 			sb.append(',');
+			sb.append("Put");
+			sb.append(',');
 			sb.append("DistanceAfterFirstShot");
 			sb.append(',');
 			sb.append("FinalDistance");
@@ -56,8 +58,8 @@ public class BotTesting {
 					try {
 						
 						int size = (int)((Math.random()*6)+3);
-						height = new LessRandomFunctions(size);
-						//height = new FunctionH("2");
+						//height = new LessRandomFunctions(size);
+						height = new FunctionH("2");
 						hasFunc = true;
 					} catch (Exception e) {
 						hasFunc = false;
@@ -97,7 +99,7 @@ public class BotTesting {
 					double distAfter1Shot = 0;
 					double finalDist = 0;
 					double avgTime = 0;
-					
+					boolean put = false;
 					
 					
 					// Just taking 10 shots as an abritrary value
@@ -119,6 +121,7 @@ public class BotTesting {
 					
 						
 						if(s.get_put_state()) {
+							put = true;
 							break;
 						}
 						
@@ -127,8 +130,9 @@ public class BotTesting {
 					finalDist =s.distToFlag();
 					avgTime = avgTime/shotsTaken;
 					
-					String results = height.toString() + "," + distToFlag + "," +bot.toString() + "," + shotsTaken + "," + distAfter1Shot + "," +
-							finalDist + "," + avgTime + '\n';
+					String results = height.toString() + "," + distToFlag + "," 
+							+bot.toString() + "," + shotsTaken + "," + put + "," + distAfter1Shot 
+							+ "," + finalDist + "," + avgTime + '\n';
 					
 					sb.append(results);
 					//sb.append('\n');
