@@ -42,7 +42,7 @@ public class Operations implements Something {
     
 
 
-    public Operations(String operType) {
+    public Operations(String operType) throws Exception {
         /*
         Something annoying to create what kind of operation type it will be
         Probably a lot of annoying if else statements.
@@ -132,13 +132,15 @@ public class Operations implements Something {
         	this.operationType = 20;
         	this.isFunction = true;
         }
+        
+        throw new Exception();
 
 
     }
     
     // Alternate generation method
     // Only uses an int, with each in up till 19 having an equivalent relevant operation
-    public Operations (int operValue) {
+    public Operations (int operValue) throws Exception {
     	this(createOperation(operValue));    	
     }
 
@@ -201,7 +203,7 @@ public class Operations implements Something {
         return isFunction;
     }
 
-    public Operations(String operType, Something aLeft, Something aRight){
+    public Operations(String operType, Something aLeft, Something aRight) throws Exception{
 
         this(operType);
 

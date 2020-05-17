@@ -12,7 +12,7 @@ public class FunctionH implements Function2d {
 
     Something root;
 
-    public FunctionH(String aFunction){
+    public FunctionH(String aFunction) throws Exception{
         this.function = aFunction.trim();
         this.understand();
     }
@@ -23,7 +23,7 @@ public class FunctionH implements Function2d {
      */
     
    
-    public void understand(){
+    public void understand() throws Exception{
         /*
         This is where the equation will be transformed into a search tree.
          */

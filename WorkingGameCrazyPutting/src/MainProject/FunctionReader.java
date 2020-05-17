@@ -88,7 +88,7 @@ public class FunctionReader {
         return stroke;
     }
 
-    public FunctionReader(String filename) throws IOException {
+    public FunctionReader(String filename) throws Exception {
         String file = filename;
         Scanner in = new Scanner(System.in);
         ArrayList<String> variable = new ArrayList<>();

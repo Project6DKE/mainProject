@@ -199,7 +199,7 @@ public class GA {
     
     
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception{
     	//Function2d height= new FunctionH("0");
     	Function2d height= new FunctionH(" 0.04 * x ^ 2 + 0.001 * y");
     	//Function2d height= new FunctionH(" -0.01 * x + 0.003 * x ^ 2 + 0.04 * y");

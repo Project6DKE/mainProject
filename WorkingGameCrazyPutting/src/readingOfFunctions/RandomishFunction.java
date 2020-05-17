@@ -11,11 +11,11 @@ public class RandomishFunction extends FunctionH implements Function2d {
 	 * I can add in some arguments in the super in the first line
 	 * Keep it in mind while doing the random generator
 	 */
-	public RandomishFunction() {
+	public RandomishFunction() throws Exception {
 		this(generateRandom());
 	}
 	
-	public RandomishFunction(String aString) {
+	public RandomishFunction(String aString) throws Exception {
 		super(aString);
 	}
 	
@@ -340,7 +340,7 @@ public class RandomishFunction extends FunctionH implements Function2d {
 		
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
 		RandomishFunction ran;
 		

@@ -6,7 +6,7 @@ import readingOfFunctions.*;
 import botFolder.*;
 
 public class Tester {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		
 		//String path="C:\\Users\\husam\\git\\mainProject\\Speed_velocity3.txt";
 		
