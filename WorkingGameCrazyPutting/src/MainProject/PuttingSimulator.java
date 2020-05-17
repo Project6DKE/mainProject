@@ -323,4 +323,10 @@ public class PuttingSimulator {
 	public void setShot(int nbr) {
 		shot = nbr;
 	}
+	
+	public void restart_simulation() {
+		this.position=course.get_start_position();
+		this.velocity=new Vector2d(0,0);
+		this.shot=0;
+	}
 }
