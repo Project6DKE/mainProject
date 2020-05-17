@@ -13,6 +13,7 @@ public class RandomAI implements PuttingBot {
         this.maxangle = 360 * Math.PI / 180;
 	}
 	
+	//this returns the parameter to run PS.takeAngleShot()
 	public double [] getShotParam() {
 		double[] AngSp = new double [2];
 		AngSp[0] = Math.random() * maxspeed;
