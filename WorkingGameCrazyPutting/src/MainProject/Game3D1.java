@@ -4,6 +4,7 @@ import java.net.URL;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 
+import botFolder.GA;
 import javafx.scene.transform.*;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
@@ -309,7 +310,8 @@ public class Game3D1 extends StackPane{
     private void playGeneticAlgorithm() {
         GA genAlgo = new GA(PS);
         double[] shot = new double [2];
-        shot = genAlgo.runGA();
+        Vector2d ballP = PS.get_ball_position();
+        shot = genAlgo.runGA(ballP);
         PS.take_angle_shot(shot[0], shot[1]);
     }
 
