@@ -38,6 +38,10 @@ public class GA implements PuttingBot{
         this.maxangle = 360 * Math.PI / 180;
         this.holepos = PS.getCourse().get_flag_position();
     }
+    public GA() {
+    	
+    }
+    
     
     public void encoding(){
         for(int i = 0; i<initpopulation.length; i++){
@@ -201,6 +205,10 @@ public class GA implements PuttingBot{
     }
     
     public Vector2d shot_velocity(PuttingCourse course, Vector2d ball_position) {
+    	this.maxspeed = course.get_maximum_velocity();
+        this.maxangle = 360 * Math.PI / 180;
+        this.holepos = course.get_flag_position();
+        this.PS = new PuttingSimulator(course, new RungeKutta());
     	double[] myShot = new double[2]; 
     	myShot = runGA(ball_position);
     	double speed = myShot[0];
@@ -225,8 +233,11 @@ public class GA implements PuttingBot{
 		
 		PuttingCourse course = new PuttingCourse(height,flag, start, mu, vmax,tol,g,m );
 		PuttingSimulator putSim = new PuttingSimulator(course, new RungeKutta());
-        GA test = new GA(putSim); 
-        test.runGA(putSim.get_ball_position());
+        //GA test = new GA(putSim); 
+        //test.runGA(putSim.get_ball_position());
+		GA test = new GA();
+		test.shot_velocity(course, start);
+		
 //        int nbr_gen = 0;
 //       test.encoding();
 //        while(nbr_gen<number_of_gen){
