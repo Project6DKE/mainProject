@@ -131,6 +131,9 @@ public class Operations implements Something {
         } else if (operType.equalsIgnoreCase("sqrt")) {
         	this.operationType = 20;
         	this.isFunction = true;
+        } else if (operType.equalsIgnoreCase("exp")) {
+        	this.operationType = 21;
+        	this.isFunction = true;
         } else {
         	throw new Exception();
         }
@@ -193,6 +196,8 @@ public class Operations implements Something {
             return "tanh";
         } else if (operValue==20) {
         	return "sqrt";
+        } else if (operValue==21) {
+        	return "exp";
         }
 		
 		System.out.println("There's an error here");
@@ -284,6 +289,8 @@ public class Operations implements Something {
             return Math.tanh(left.solve());
         } else if (this.operationType == 20) {
         	return Math.sqrt(Math.abs(left.solve()));
+        } else if (this.operationType == 21) {
+        	return Math.exp(left.solve());
         }
 
         System.out.println("Invalid function");
