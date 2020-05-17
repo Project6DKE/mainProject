@@ -68,7 +68,7 @@ public class BasicAI implements PuttingBot {
     }
     
     public static double getVel(double accel, double dist) {
-    	double temp = -2*accel*dist;
+    	double temp = -2*accel*Math.abs(dist);
     	
     	if (temp<0) {
     		return -Math.sqrt(-temp);
@@ -82,6 +82,7 @@ public class BasicAI implements PuttingBot {
 	public Vector2d shot_velocity(PuttingCourse course, Vector2d ball_position) {
 		
 		this.currentBallPosition = ball_position;
+		this.flag = course.get_flag_position();
 		
 		double xdist = currentBallPosition.getXDistance(flag);
         double ydist = currentBallPosition.getYDistance(flag);
@@ -111,6 +112,10 @@ public class BasicAI implements PuttingBot {
 
         //theGame.take_angle_shot(requiredVel,angle);
         return new Vector2d(reqVelX, reqVelY);
+	}
+	
+	public String toString() {
+		return "BasicAI";
 	}
 
 }
