@@ -31,4 +31,9 @@ public class RandomAI implements PuttingBot {
 		Vector2d result = new Vector2d(x,y);
     	return result;
 	}
+	
+	public String toString() {
+		String name = "Random";
+		return name;
+	}
 }

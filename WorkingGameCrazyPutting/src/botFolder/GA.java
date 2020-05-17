@@ -243,5 +243,10 @@ public class GA implements PuttingBot{
         System.out.println("Over");
     }
     
+    public String toString() {
+    	String name = "Genetic Algorithm";
+    	return name;
+    }
+    
 }
 
