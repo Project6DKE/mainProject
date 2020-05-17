@@ -131,10 +131,10 @@ public class Operations implements Something {
         } else if (operType.equalsIgnoreCase("sqrt")) {
         	this.operationType = 20;
         	this.isFunction = true;
+        } else {
+        	throw new Exception();
         }
         
-        throw new Exception();
-
 
     }
     

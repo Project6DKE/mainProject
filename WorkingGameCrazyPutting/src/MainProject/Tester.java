@@ -22,8 +22,8 @@ public class Tester {
 //		PuttingCourse course1 = xh.readFile();
 //		System.out.println(course1.get_height().toString());
 		
-		//Function2d height= new FunctionH("2");
-		Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y + 1");
+		Function2d height= new FunctionH("2");
+		//Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y + 1");
 		
 		Vector2d flag = new Vector2d(0,10);
 		Vector2d start = new Vector2d(0,0);
