@@ -212,7 +212,7 @@ public class GA implements PuttingBot{
     	
     }
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception{
     	//Function2d height= new FunctionH("0");
     	Function2d height= new FunctionH(" 0.04 * x ^ 2 + 0.001 * y");
     	//Function2d height= new FunctionH(" -0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
@@ -226,7 +226,7 @@ public class GA implements PuttingBot{
 		PuttingCourse course = new PuttingCourse(height,flag, start, mu, vmax,tol,g,m );
 		PuttingSimulator putSim = new PuttingSimulator(course, new RungeKutta());
         GA test = new GA(putSim); 
-        test.runGA();
+        test.runGA(putSim.get_ball_position());
 //        int nbr_gen = 0;
 //       test.encoding();
 //        while(nbr_gen<number_of_gen){
