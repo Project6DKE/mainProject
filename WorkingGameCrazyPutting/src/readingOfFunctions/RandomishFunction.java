@@ -1,5 +1,8 @@
 package readingOfFunctions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RandomishFunction extends FunctionH implements Function2d {
 	
 	static int randomSize = 3;
@@ -25,76 +28,109 @@ public class RandomishFunction extends FunctionH implements Function2d {
 		 * 
 		 */
 		
-		String[] elements = new String[randomSize];
+		String[] elements = new String[randomSize*5];
 		
 		// Done to make sure there's a closure of parenthesis
-		int openParenthesis = 0;
+		// I only open parenthesis when adding a function
+		// Lazy, but implementing parenthesis separately felt like a pain
+		int parenthesis = 0;
 		
-		// Done to avoid having constants side by side
-		boolean lastConstant = false;
+		// Done to avoid having constants, variables or operators that clash
+		// true = lastElement is a variable
+		boolean lastVar = false;
+		
+		// There needs to be a variable no matter what
+		boolean hasVar = false;
 		
 		/*
 		 * I'm generating these two elements to make sure there's an X and Y value
 		 * Should be modified later some way, doesn't matter for now
 		 */
-		elements[0] = generateX() + " +";
-		elements[1] = generateY();
+		
+		//elements[0] = generateX() + " +";
+		//elements[1] = generateY();
 		
 		
-		/*
-		 * If a variable was generated, the next element has to be an operator
-		 * If an operator was generated, the next element has to be a variable or a function
-		 * If a function was generated, next element has to be an variable, and it must close
-		 * 		
-		 *  When generating a function include add an open parenthesis
-		 *  IE not log x
-		 *  But log ( x )
-		 * 
-		 * This could be redundant
-		 * 	0.02 * cos ( 0.02 * x )
-		 * 
-		 * This is easier to do
-		 * 	0.02 * sin ( x )
-		 * 
-		 * Make sure to not end on an operator or a function
-		 * IE you cant have x + + or x + cos ( )
-		 * So if the last value is a operator or a function, add a variable somewhere
-		 * 
-		 * If you open a function or add a parenthesis, do openparenthesis++
-		 * 
-		 */
-		
-		
-		for(int i=2; i<randomSize-1; i++) {
-			double generate = Math.random();
+		// 50/50 chance of the first element being a variable or a function
+		// This can be removed and updated to work only on the inside of the function
+		if (takeChance(50)) {
+			// First element is a variable
+			lastVar = true;
 			
+			// 50/50 chance of it being an x or a y
+			elements[0] = generateVar();
 			
+			hasVar = true;
 			
-			if (generate <= 0.33) {
-				//Generate a new operation
-				
-				
-			} else if (generate <= 0.66) {
-				//Generate a new function
-				
+		} else {
+			elements[0] = flatify(generateFunction());
+			parenthesis++;
+			lastVar = false;
+		}
+		
+		int count = 1;
+		
+		while(count<=randomSize) {
+			
+			// Last element is a variable
+			if (lastVar) {
+				elements[count] = generateOperator();
+				lastVar = false;
 				
 			} else {
-				// Generate a new variable
-				// 50/50 chance of generating an x or a y
-				lastConstant = true;
+				// Last element is not a variable
+				if(takeChance(50)) {
+					
+					String var = generateVar();
+					
+					if (parenthesis>0) {
+						if(takeChance(50)) {
+							// For practical purposes closing parenthesis has the same requirements as a normal variable
+							var = var + " )";
+							parenthesis--;
+						}
+					}
+					
+					elements[count] = var;
+					
+					lastVar = true;
+					hasVar = true;					
+				} else {
+					String func = generateFunction();
+					
+					if(parenthesis == 0) {
+						elements[count] = flatify(func);
+						
+					} else {
+						elements[count] = func;
+					}
+					
+					lastVar = false;
+					parenthesis++;
+					
+				}
 				
 			}
-			
+			count++;
 			
 		}
 		
-		if (openParenthesis != 0) {
-			/*
-			 * add whoever many parenthesis needed at end so that it's equal to 0
-			 */
+		if(!lastVar) {
+			elements[count] = generateVar();
+			count++;
 		}
 		
-		elements[randomSize-1] = "+ 5";
+		while (parenthesis != 0) {
+			elements[count] = ")";
+			count++;
+			parenthesis--;
+		}
+		
+		elements[count] = "+ 10";
+		
+		List<String> list = removeNull(elements);
+		
+		elements = list.toArray(new String[list.size()]);
 		
 		return addSpace(elements);
 	}
@@ -113,7 +149,17 @@ public class RandomishFunction extends FunctionH implements Function2d {
 		return res.trim();
 	}
 	
+	static String generateVar() {
+		if(takeChance(50)) {
+			return generateX().trim();
+		} else {
+			return generateY().trim();
+		}
+		
+	}
+	
 	// Done so that the generated x is flat enough
+	// Can also be negative, and can also be exponential
 	static String generateX() {
 		
 		/*
@@ -130,17 +176,21 @@ public class RandomishFunction extends FunctionH implements Function2d {
 		
 		
 		int power = 1;
-		double chance = 2;
+		double chance = 50.0;
+		double opportunity = Math.random()*100.0;
 		
+		/*
+		 * There's a 50% chance of it being x ^ 1
+		 * 25% for x ^ 2
+		 * 12.5% for x ^ 3
+		 * So on and so forth
+		 */
 		while(true) {
-			double opportunity = 100*(1.0/chance);			
-			
-			if ((takeChance(opportunity)) || (power > 6)) {
-				
+			if ((opportunity>chance) || (power > 6)) {
 				return Double.toString(num) + " * x ^ " + power;
 				
 			} else {
-				chance = chance *2;
+				chance = chance/2.0;
 				power++;
 			}
 			
@@ -162,15 +212,15 @@ public class RandomishFunction extends FunctionH implements Function2d {
 		
 		
 		int power = 1;
-		double chance = 2;
+		double chance = 50.0;
+		double opportunity = Math.random()*100.0;
 		
 		while(true) {
-			double opportunity = 100*(1.0/chance);
-			if ((takeChance(opportunity)) || (power > 6)) {
+			if ((opportunity>chance) || (power > 6)) {
 				return Double.toString(num) + " * y ^ " + power;
 				
 			} else {
-				chance = chance *2;
+				chance = chance/2.0;
 				power++;
 			}
 			
@@ -186,7 +236,83 @@ public class RandomishFunction extends FunctionH implements Function2d {
 			num = Math.random()/100;
 		}
 		
-		return Double.toString(num) + " * " + str;
+		return (Double.toString(num) + " * " + str).trim();
+	}
+	
+	static String generateFunction() {
+		// It
+		int temp = (int)((Math.random()*13)+8);
+		
+		// Done because asin and acos can end up with NaN
+		// Didn't feel like working around them for the moment, so just ignore them
+		while ((temp == 11) || (temp == 12)) {
+			temp = (int)((Math.random()*13)+8);
+		}
+		
+		return (Operations.createOperation(temp) + " (").trim();
+		
+	}
+	
+	static String generateOperator() {
+		int temp = (int)(Math.random()*4);
+		
+		switch(temp) {
+		case 0: 
+			return "+";
+		case 1:
+			return "-";
+		case 2:
+			return "*";
+		case 3:
+			/*
+			 * Exponentials can have some weird effects, so to reduce them
+			 * We make sure that it's always an int exponential
+			 * And that there's an operator afterwards
+			 * All done to make life easier
+			 */
+			
+			int power = 2;
+			double chance = 50.0;
+			double opportunity = Math.random()*100.0;
+			boolean stop = true;
+			
+			while(stop) {
+				
+				while(true) {
+					if (opportunity>chance) {
+						int newtemp = (int)Math.random()*3;
+						String op = null;
+						
+						if (newtemp ==0) {
+							op = "+";
+						} else if (newtemp ==1) {
+							op = "-";
+						} else if (newtemp==2) {
+							op="*";
+						}
+						
+						return "^ " + power + " " + op;
+						
+						
+					} else {
+						chance = chance/2.0;
+						power++;
+					}
+					
+				}
+				
+			}
+			break;
+			default: 
+				System.out.println("Error generating operator");
+				break;
+			
+		}
+		
+		System.out.println("No operator was generated");
+		return null;
+		
+		
 	}
 	
 	// Chance has to be 0<x<100, to represent a chance of something happening
@@ -203,9 +329,24 @@ public class RandomishFunction extends FunctionH implements Function2d {
 		
 	}
 	
+	static List<String> removeNull(String[] arr) {
+		ArrayList<String> list = new ArrayList<String>();
+		for(int i=0; i<arr.length; i++) {
+			if(arr[i] != null) {
+				list.add(arr[i]);
+			}
+		}
+		return list;
+		
+	}
+	
 	public static void main(String[] args) {
-		RandomishFunction ran1 = new RandomishFunction();
-		RandomishFunction ran2 = new RandomishFunction();
+		
+		RandomishFunction ran;
+		
+		for(int i=0; i<50; i++) {
+			ran = new RandomishFunction();
+		}
 		
 	}
 
