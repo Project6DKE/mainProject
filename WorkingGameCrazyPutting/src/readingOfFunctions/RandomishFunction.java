@@ -2,7 +2,7 @@ package readingOfFunctions;
 
 public class RandomishFunction extends FunctionH implements Function2d {
 	
-	static int randomSize = 5;
+	static int randomSize = 3;
 	
 	/*
 	 * I can add in some arguments in the super in the first line
@@ -124,7 +124,27 @@ public class RandomishFunction extends FunctionH implements Function2d {
 			num = Math.random()/100;
 		}
 		
-		return Double.toString(num) + " * x";
+		if(takeChance(50)) {
+			num = -num;
+		}
+		
+		
+		int power = 1;
+		double chance = 2;
+		
+		while(true) {
+			double opportunity = 100*(1.0/chance);			
+			
+			if ((takeChance(opportunity)) || (power > 6)) {
+				
+				return Double.toString(num) + " * x ^ " + power;
+				
+			} else {
+				chance = chance *2;
+				power++;
+			}
+			
+		}
 	}
 	
 	static String generateY() {
@@ -136,7 +156,26 @@ public class RandomishFunction extends FunctionH implements Function2d {
 			num = Math.random()/100;
 		}
 		
-		return Double.toString(num) + " * y";
+		if(takeChance(50)) {
+			num = -num;
+		}
+		
+		
+		int power = 1;
+		double chance = 2;
+		
+		while(true) {
+			double opportunity = 100*(1.0/chance);
+			if ((takeChance(opportunity)) || (power > 6)) {
+				return Double.toString(num) + " * y ^ " + power;
+				
+			} else {
+				chance = chance *2;
+				power++;
+			}
+			
+		}
+		
 	}
 	
 	static String flatify(String str) {
@@ -148,6 +187,20 @@ public class RandomishFunction extends FunctionH implements Function2d {
 		}
 		
 		return Double.toString(num) + " * " + str;
+	}
+	
+	// Chance has to be 0<x<100, to represent a chance of something happening
+	// Generate a Math.random() double, if the double*100 < chance
+	// Then the boolean returns a true, if not it returns a false
+	static boolean takeChance(double chance) {
+		double num = Math.random()*100;
+		
+		if(num<chance) {
+			return true;
+		} else {
+			return false;
+		}
+		
 	}
 	
 	public static void main(String[] args) {
