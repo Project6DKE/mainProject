@@ -25,6 +25,7 @@ public class GA implements PuttingBot{
     private Vector2d ballpos;
     private Vector2d backup_ballpos;
     private Vector2d holepos;
+    private static double dist;
     
 //    public GA(PuttingCourse PC){
 //        PS = new PuttingSimulator(PC, new RungeKutta());
@@ -195,13 +196,17 @@ public class GA implements PuttingBot{
     	if(flag) {
     		best = bestElement();
     	}
-    	double dist = 1/(fitness[best])*100;
+    	dist = 1/(fitness[best])*100;
     	System.out.println("Best element has fitness : " + fitness[best] + " with a distance to the hole of : " + dist);   
     	double gaShot[] = new double[2];	//gaShot[0] is speed, gaShot[1] is angle
     	gaShot[0] = initpopulation[best][0];
     	gaShot[1] = initpopulation[best][1];
     	return gaShot;
     	
+    }
+    
+    public static double getDistance() {
+    	return dist;
     }
     
     public Vector2d shot_velocity(PuttingCourse course, Vector2d ball_position) {
@@ -221,8 +226,8 @@ public class GA implements PuttingBot{
     }
     
     public static void main(String[] args) throws Exception{
-    	//Function2d height= new FunctionH("0");
-    	Function2d height= new FunctionH(" 0.04 * x ^ 2 + 0.001 * y");
+    	Function2d height= new FunctionH("0");
+    	//Function2d height= new FunctionH(" 0.04 * x ^ 2 + 0.001 * y");
     	//Function2d height= new FunctionH(" -0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
     	//Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y + 1");
     	//Function2d height = new FunctionH("( 7 * x * y ) / ( exp ( x ^ 2 + y ^ 2 ) )");
@@ -236,6 +241,24 @@ public class GA implements PuttingBot{
 		PuttingSimulator putSim = new PuttingSimulator(course, new RungeKutta());
         GA test = new GA(putSim); 
         test.runGA(putSim.get_ball_position());
+//        int nbr_max = 60;
+//    	int temp = 0;
+//    	double distAvg = 0;
+//    	long startT = System.currentTimeMillis();   	 
+//    	while(temp<nbr_max) {
+//    		test.runGA(putSim.get_ball_position());
+//    		if(temp == 0) {
+//    			distAvg += getDistance();
+//    		}
+//    		else {
+//    			distAvg = (getDistance() + distAvg) /2;
+//    		}
+//    		temp++;
+//    	}
+//    	long endT = System.currentTimeMillis();
+//    	System.out.println("Algorithm ran for " + ((endT - startT) / 1000.) + " seconds ");
+//    	System.out.println("So ran for " + (((endT - startT) / 1000.) / nbr_max) + " seconds per shots  ");
+//    	System.out.println("Dist average is of : " + distAvg + " after " + nbr_max + " shots");
 //		GA test = new GA();
 //		test.shot_velocity(course, start);
 //        int nbr_gen = 0;
