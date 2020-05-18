@@ -17,7 +17,7 @@ public class PuttingSimulator {
 	private Vector2d stopV = new Vector2d(0.01,0.01);
 	final int pointOfAbandon = 1000000;
 
-	private int solverChoice = 0; //0 for euler, 1 for RK4, 2 for AB3
+	private int solverChoice = 2; //0 for euler, 1 for RK4, 2 for AB3
 
 	double maxV;
 	
@@ -207,6 +207,7 @@ public class PuttingSimulator {
 				break;
 			}
 			if(isStop())conti=false;
+//			System.out.println("failed to stop at "+position);
 		}
 		
 		if(course.is_put(position)) {
@@ -216,14 +217,14 @@ public class PuttingSimulator {
 	}
 		
 	public ArrayList<Vector2d> take_shot_ab3(Vector2d initial_ball_velocity){
-		System.out.println("This is shot #"+(++shot));
+		System.out.println("This is shot #"+(++shot)+" using ab3");
 		ArrayList<Vector2d> ballPath= new ArrayList<Vector2d>();
 		initial_Velocity_Check( initial_ball_velocity);
 		Vector2d temp= position;
 		velocity=initial_ball_velocity;
 		
 		Vector2d[] initialValues= engine.bootstrap_AB3(position, velocity);
-		
+		velocity=engine.get_velocity();
 		for(int i=0;i<initialValues.length;i++) {
 			position=initialValues[i];
 			ballPath.add(position);
@@ -234,10 +235,13 @@ public class PuttingSimulator {
 				velocity=new Vector2d(0,0);
 				return ballPath;
 			}
+			if(isStop()) {break;}
+			else {System.out.println("failed to stop at "+position);}
+			
 		}
 		
 		boolean conti=true;
-		while(conti) {
+		while(conti&& ! isStop()) {
 			Vector2d[] data=engine.solve_AB3(position, velocity);
 			position=data[0];
 			velocity=data[1];
@@ -250,8 +254,12 @@ public class PuttingSimulator {
 				conti=false;
 				return ballPath;
 			}
-			if(isStop())conti=false;
+			
+			if(isStop()) {conti=false;}
+			else {System.out.println("failed to stop at "+position);}
+			conti=false;
 		}
+		System.out.println("This is shot #"+(++shot)+" using ab3");
 		
 		if(course.is_put(position)) {
 			put();
