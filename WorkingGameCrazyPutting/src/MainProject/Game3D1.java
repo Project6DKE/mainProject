@@ -126,8 +126,8 @@ public class Game3D1 extends StackPane{
     private void setFlagPosition() {
         Vector2d flagPosition = PS.getCourse().get_flag_position();
         double positionX = flagPosition.get_x();
-        double positionY = flagPosition.get_y() - 5;
-        double positionZ = PS.getCourse().get_height().evaluate(flagPosition);
+        double positionY = PS.getCourse().get_height().evaluate(flagPosition);
+        double positionZ = flagPosition.get_y() - 5;
 
         Translate translate = new Translate(positionX, positionY, positionZ);
 
@@ -274,6 +274,7 @@ public class Game3D1 extends StackPane{
                     break;
                 case ENTER:
                     playGame();
+                    setBallPosition();
                     break;
             }
         });
@@ -293,6 +294,7 @@ public class Game3D1 extends StackPane{
         switch (gameType) {
             case HUMAN:
                 System.out.println("Human game");
+                playHuman();
                 break;
             case EASY_BOT:
                 System.out.println("Easy bot");
@@ -306,13 +308,20 @@ public class Game3D1 extends StackPane{
                 break;
         }
     }
-
+    
+    private void playHuman() {
+    	double angle = rotateY.getAngle();
+        PS.take_angle_shot(speedInPercent, angle);
+        setBallPosition();
+    }
+    
     private void playGeneticAlgorithm() {
         GA genAlgo = new GA(PS);
         double[] shot = new double [2];
         Vector2d ballP = PS.get_ball_position();
         shot = genAlgo.runGA(ballP);
         PS.take_angle_shot(shot[0], shot[1]);
+        setBallPosition();
     }
 
     private void putBallAtBounds() {

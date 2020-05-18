@@ -40,12 +40,16 @@ public class Main extends Application {
     private double gravityV;
     private boolean playGolf;
     private MenuMusic musicPlayer;
+    private PuttingCourse courseNew;
+    private boolean newCourse;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Golf");
-
+        
+        newCourse = false;
+        
         musicPlayer = new MenuMusic();
         musicPlayer.playBackgroundMusic();
 
@@ -68,7 +72,7 @@ public class Main extends Application {
         if (playGolf) {
             musicPlayer.stopBackgroundMusic();
             //Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
-            Function2d height= new FunctionH("1");
+            Function2d height= new FunctionH("0.02");
 
             Vector2d flag = new Vector2d(0, 3);
             Vector2d start = new Vector2d(0, 0);
@@ -81,7 +85,16 @@ public class Main extends Application {
             tol = 0.2;
 
             PuttingCourse course = new PuttingCourse(height, flag, start, mu, vmax, tol, g, m);
-
+            
+            if(newCourse) {
+            	try {
+            	course = courseNew;
+            	}
+            	catch(NullPointerException e) {
+            		System.out.println("Null pointer Exception caught. Went on the wrong place");
+            	}
+            }
+            
             dim3 = new Game3D1(this, course, gameType);
 
             primaryStage.setScene(main3DGame);
@@ -486,7 +499,8 @@ public class Main extends Application {
                 System.out.println(functionV);
                 System.out.println(gravityV);
                 try {
-					PuttingCourse course = new PuttingCourse(new FunctionH(functionV), new Vector2d(goalXV,goalYV), new Vector2d(startXV,startYV),frictionV,ballSpeedV,holeDistV,gravityV,massV);
+					courseNew = new PuttingCourse(new FunctionH(functionV), new Vector2d(goalXV,goalYV), new Vector2d(startXV,startYV),frictionV,ballSpeedV,holeDistV,gravityV,massV);
+					newCourse = true;
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
