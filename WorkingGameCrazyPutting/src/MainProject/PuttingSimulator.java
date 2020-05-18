@@ -15,6 +15,7 @@ public class PuttingSimulator {
 	
 	int shot = 0;
 	private Vector2d stopV = new Vector2d(0.01,0.01);
+	final int pointOfAbandon = 1000000;
 
 	private int solverChoice = 0; //0 for euler, 1 for RK4, 2 for AB3
 
@@ -103,7 +104,8 @@ public class PuttingSimulator {
 		//this.velocity=initial_ball_velocity;
 		Vector2d temp= position;
 		boolean conti=true;
-		while(conti) {
+		int count = 0;
+		while((conti) && (count<pointOfAbandon)) {
 			acceleration=course.calculate_acceleration(position, velocity);
 			position=engine.solve(position, velocity);
 			if(course.is_water(position)) {
@@ -115,6 +117,8 @@ public class PuttingSimulator {
 			}
 			
 			velocity=engine.solve(velocity, acceleration);
+			count++;
+			
 			if(isStop()) conti=false;
 			
 			

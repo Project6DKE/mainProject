@@ -16,7 +16,7 @@ import readingOfFunctions.RandomishFunction;
 
 public class BotTesting {
 	
-	static int numberOfTests = 3;
+	static int numberOfTests = 1000;
 	
 	public static void main(String[] args) {
 		
@@ -57,9 +57,9 @@ public class BotTesting {
 					
 					try {
 						
-						int size = (int)((Math.random()*6)+3);
-						//height = new LessRandomFunctions(size);
-						height = new FunctionH("2");
+						int size = (int)((Math.random()*5)+2);
+						height = new LessRandomFunctions(size);
+						//height = new FunctionH("2");
 						hasFunc = true;
 					} catch (Exception e) {
 						hasFunc = false;

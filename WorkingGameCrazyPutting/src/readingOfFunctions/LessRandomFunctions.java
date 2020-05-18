@@ -5,7 +5,7 @@ import java.util.List;
 
 public class LessRandomFunctions extends FunctionH {
 
-	static int randomSize = 4;
+	static int randomSize = 5;
 	
 	public LessRandomFunctions(String aFunction) throws Exception {
 		super(aFunction);
