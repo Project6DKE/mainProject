@@ -126,8 +126,8 @@ public class Game3D1 extends StackPane{
     private void setFlagPosition() {
         Vector2d flagPosition = PS.getCourse().get_flag_position();
         double positionX = flagPosition.get_x();
-        double positionY = PS.getCourse().get_height().evaluate(flagPosition) - 3;
-        double positionZ = flagPosition.get_y();
+        double positionY = PS.getCourse().get_height().evaluate(flagPosition) - 4;
+        double positionZ = flagPosition.get_y() - 5;
 
         Translate translate = new Translate(positionX, positionY, positionZ);
 
@@ -138,6 +138,14 @@ public class Game3D1 extends StackPane{
         ball = new Sphere();
         ball.setRadius(ball_radius);
         setBallPosition();
+    }
+
+    private void setBallPosition() {
+        Vector2d ballPosition = PS.get_ball_position();
+        this.ball.setTranslateX(ballPosition.get_x());
+        this.ball.setTranslateZ(ballPosition.get_y() /*- (ball_radius)*/);
+        this.ball.setTranslateY(PS.getCourse().get_height().evaluate(ballPosition) - 9);
+        System.out.println("Ball updated : " + ballPosition.toString());
     }
 
 
@@ -450,7 +458,7 @@ public class Game3D1 extends StackPane{
 
     private Group getGrass(double x, double y, double z) {
         double translateX = 60 + x;
-        double translateY = 15 + y;
+        double translateY =  y;
         double translateZ = 70 + z;
 
         ObjectType grassType = ObjectType.GRASS;
@@ -485,14 +493,6 @@ public class Game3D1 extends StackPane{
     private void updateStrokeLabel() {
         stroke += 1;
         strokeLabel.setText("Stroke : " + stroke);
-    }
-
-    private void setBallPosition() {
-        Vector2d ballPosition = PS.get_ball_position();
-        this.ball.setTranslateX(ballPosition.get_x());
-        this.ball.setTranslateZ(ballPosition.get_y() /*- (ball_radius)*/);
-        this.ball.setTranslateY(PS.getCourse().get_height().evaluate(ballPosition));
-        System.out.println("Ball updated : " + ballPosition.toString());
     }
 
     private Group loadModel(URL url) {
