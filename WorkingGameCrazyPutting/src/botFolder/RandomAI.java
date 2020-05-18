@@ -2,7 +2,10 @@ package botFolder;
 
 import MainProject.PuttingCourse;
 import MainProject.PuttingSimulator;
+import MainProject.RungeKutta;
 import MainProject.Vector2d;
+import readingOfFunctions.Function2d;
+import readingOfFunctions.FunctionH;
 
 public class RandomAI implements PuttingBot {
 	private double maxspeed;
@@ -41,4 +44,30 @@ public class RandomAI implements PuttingBot {
 		String name = "Random";
 		return name;
 	}
+
+	//this is just for testing
+	public static void main(String[] args) throws Exception {
+		Function2d height= new FunctionH("0");
+		
+		Vector2d flag = new Vector2d(0,3);
+		Vector2d start = new Vector2d(0,0);
+		
+		double g,m,mu,vmax,tol;
+		g=9.81;m=45.93/1000;mu=0.131;vmax=3;tol=0.2;
+		
+		PuttingCourse course = new PuttingCourse(height,flag, start, mu, vmax,tol,g,m );
+		PuttingSimulator putSim = new PuttingSimulator(course, new RungeKutta());
+		
+		RandomAI rand = new RandomAI(putSim);
+		
+		System.out.println("The ball before the shot : + " + putSim.get_ball_position().toString());
+		
+		double[] testparam = new double[2];
+		testparam = rand.getShotParam();
+		putSim.take_angle_shot(testparam[0], testparam[1]);
+		
+		System.out.println("The ball after the shot : + " + putSim.get_ball_position().toString());
+		
+	}
+	
 }
