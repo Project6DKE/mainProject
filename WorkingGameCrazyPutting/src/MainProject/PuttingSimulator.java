@@ -17,7 +17,7 @@ public class PuttingSimulator {
 	private Vector2d stopV = new Vector2d(0.01,0.01);
 	final int pointOfAbandon = 1000000;
 
-	private int solverChoice = 2; //0 for euler, 1 for RK4, 2 for AB3
+	private int solverChoice = 0; //0 for euler, 1 for RK4, 2 for AB3,3 for Verlet
 
 	double maxV;
 	
@@ -71,6 +71,8 @@ public class PuttingSimulator {
 			return "Runge Kutta";
 		case 2:
 			return "Adams Bashforth";
+		case 3:
+			return "Verlet";
 		}
 		return "";
 	}
@@ -85,6 +87,9 @@ public class PuttingSimulator {
 			break;
 		case 2:
 			take_shot_ab3(initial_ball_velocity);
+			break;
+		case 3:
+			take_shot_verlet(initial_ball_velocity);
 			break;
 		}
 	}
@@ -109,7 +114,7 @@ public class PuttingSimulator {
 			acceleration=course.calculate_acceleration(position, velocity);
 			position=engine.solve(position, velocity);
 			if(course.is_water(position)) {
-				System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
+				System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot)+"\n"+position);
 				position=temp;
 				velocity=new Vector2d(0,0);
 				conti=false;
@@ -129,8 +134,7 @@ public class PuttingSimulator {
 		
 		if(course.is_put(position)) {
 			put();
-			System.out.println("You have putted, number of shots: "+shot);
-		}
+			}
 	}
 	
 	public ArrayList<Vector2d> take_shot_list(Vector2d initial_ball_velocity) {
@@ -240,7 +244,6 @@ public class PuttingSimulator {
 			
 		}
 		
-		
 		boolean conti=true;
 		while(conti&& ! isStop()) {
 			Vector2d[] data=engine.solve_AB3(position, velocity);
@@ -269,9 +272,39 @@ public class PuttingSimulator {
 		
 		return ballPath;
 	}
+	
+	public void take_shot_verlet(Vector2d initial_ball_velocity) {
+		System.out.println("This is shot #"+(++shot));	
+		this.velocity = initial_Velocity_Check( initial_ball_velocity);
+		
+		Vector2d temp= position;
+		boolean conti=true;
+//		int count = 0;
+		while((conti)/* && (count<pointOfAbandon)*/) {
+			Vector2d[] data=engine.solve_Verlet(position, velocity);
+			
+			position=data[0];
+			velocity=data[1];
+			
+			if(course.is_water(position)) {
+				System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot)+"\n"+position);
+				position=temp;
+				velocity=new Vector2d(0,0);
+				conti=false;
+				break;
+			}
+			//			count++;	
+			if(isStop()) conti=false;
+		}
+		
+		if(course.is_put(position)) {
+			put();
+		}
+	}
 
 	public void put() {
 		course_put=true;
+		System.out.println("You have putted, number of shots: "+shot);
 	}
 	
 	public void take_shot(double x, double y) {
