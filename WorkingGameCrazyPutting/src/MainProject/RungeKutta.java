@@ -101,29 +101,35 @@ public class RungeKutta extends EulerSolver{
 	}
 	
 	public Vector2d[] solve_AB3(Vector2d p1, Vector2d v1){
-		p=ab3_body(p1,vs);
-		v=ab3_body(v1,as);
+		Vector2d p0=ab3_body(p1,vs.clone());
+		Vector2d v0=ab3_body(v1,as.clone());
 		
-		as[0]=as[1];
-		as[1]=as[2];
-		as[2]=c.calculate_acceleration(p, v);
+		this.as[0]=as[1].clone();
+		this.as[1]=as[2].clone();
+		this.as[2]=c.calculate_acceleration(p0, v0);
 		
-		vs[0]=vs[1];
-		vs[1]=vs[2];
-		vs[2]=v;
+		
+		this.vs[0]=vs[1].clone();
+		this.vs[1]=vs[2].clone();
+		this.vs[2]=v0;
 
 		
 		Vector2d[] result = new Vector2d[2];
-		 result[0]=p;
-		 result[1]=v;
+		 result[0]=p0;
+		 result[1]=v0;
 		 return result;
 	}
+	
+	/*
+	 * Assumes the 3 elements are the next step in an adamBashforth method
+	 * with element 0 being wi, 1 wi-1, 2 wi-3 
+	 */
 	
 	private Vector2d ab3_body(Vector2d ws, Vector2d[] fs) {
 		double Nx,Ny;
 		
-		Nx=ws.get_x()+(1/12)*(this.get_step_size())*(23*(fs[2].get_x())-16*(fs[1].get_x())+5*(fs[0].get_x()));
-		Ny=ws.get_y()+(1/12)*(this.get_step_size())*(23*(fs[2].get_y())-16*(fs[1].get_y())+5*(fs[0].get_y()));
+		Nx=ws.get_x()+(1/12.0)*(this.get_step_size())*(23*(fs[2].get_x())-16*(fs[1].get_x())+5*(fs[0].get_x()));
+		Ny=ws.get_y()+(1/12.0)*(this.get_step_size())*(23*(fs[2].get_y())-16*(fs[1].get_y())+5*(fs[0].get_y()));
 		return new Vector2d(Nx,Ny);
 	}
 	

@@ -235,14 +235,14 @@ public class PuttingSimulator {
 				velocity=new Vector2d(0,0);
 				return ballPath;
 			}
-			if(isStop()) {break;}
-			else {System.out.println("failed to stop at "+position);}
+			if(isStop()) {break;
+			} else {System.out.println("failed to stop at "+position);}
 			
 		}
 		
 		
 		boolean conti=true;
-		while(conti&& ! isStop()) {
+		while(conti&& !isStop()) {
 			Vector2d[] data=engine.solve_AB3(position, velocity);
 			position=data[0];
 			velocity=data[1];
@@ -258,7 +258,6 @@ public class PuttingSimulator {
 			
 			if(isStop()) {conti=false;}
 			else {System.out.println("failed to stop at "+position);}
-			conti=false;
 		}
 		System.out.println("This is shot #"+(++shot)+" using ab3");
 		
