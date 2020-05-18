@@ -40,12 +40,16 @@ public class Main extends Application {
     private double gravityV;
     private boolean playGolf;
     private MenuMusic musicPlayer;
+    private PuttingCourse courseNew;
+    private boolean newCourse;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Golf");
-
+        
+        newCourse = false;
+        
         musicPlayer = new MenuMusic();
         musicPlayer.playBackgroundMusic();
 
@@ -81,7 +85,16 @@ public class Main extends Application {
             tol = 0.2;
 
             PuttingCourse course = new PuttingCourse(height, flag, start, mu, vmax, tol, g, m);
-
+            
+            if(newCourse) {
+            	try {
+            	course = courseNew;
+            	}
+            	catch(NullPointerException e) {
+            		System.out.println("Null pointer Exception caught. Went on the wrong place");
+            	}
+            }
+            
             dim3 = new Game3D1(this, course, gameType);
 
             primaryStage.setScene(main3DGame);
@@ -486,7 +499,8 @@ public class Main extends Application {
                 System.out.println(functionV);
                 System.out.println(gravityV);
                 try {
-					PuttingCourse course = new PuttingCourse(new FunctionH(functionV), new Vector2d(goalXV,goalYV), new Vector2d(startXV,startYV),frictionV,ballSpeedV,holeDistV,gravityV,massV);
+					courseNew = new PuttingCourse(new FunctionH(functionV), new Vector2d(goalXV,goalYV), new Vector2d(startXV,startYV),frictionV,ballSpeedV,holeDistV,gravityV,massV);
+					newCourse = true;
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
