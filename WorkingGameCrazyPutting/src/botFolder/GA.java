@@ -1,13 +1,16 @@
-package MainProject;
+package botFolder;
 
 import readingOfFunctions.*;
+import MainProject.PuttingCourse;
+import MainProject.PuttingSimulator;
+import MainProject.RungeKutta;
+import MainProject.Vector2d;
 
-public class GA {
+public class GA implements PuttingBot{
 	private static int number_of_gen = 150;
     private static double middle;
     private static int size_initpopulation = 250;	
     private static final int param = 2;
-    private int stroke;
     private double mutationrate = 0.1;    
     private double distancefromhole;
     private double max_fit; 
@@ -35,6 +38,10 @@ public class GA {
         this.maxangle = 360 * Math.PI / 180;
         this.holepos = PS.getCourse().get_flag_position();
     }
+    public GA() {
+    	
+    }
+    
     
     public void encoding(){
         for(int i = 0; i<initpopulation.length; i++){
@@ -159,7 +166,7 @@ public class GA {
         
     }
     
-    public double[] runGA() {
+    public double[] runGA(Vector2d ball_position) {
     	long startT = System.currentTimeMillis();
     	encoding();
     	int nbr_gen = 0;
@@ -197,7 +204,21 @@ public class GA {
     	
     }
     
-    
+    public Vector2d shot_velocity(PuttingCourse course, Vector2d ball_position) {
+    	this.maxspeed = course.get_maximum_velocity();
+        this.maxangle = 360 * Math.PI / 180;
+        this.holepos = course.get_flag_position();
+        this.PS = new PuttingSimulator(course, new RungeKutta());
+    	double[] myShot = new double[2]; 
+    	myShot = runGA(ball_position);
+    	double speed = myShot[0];
+    	double angle = myShot[1];
+    	double x = speed*Math.cos(angle);
+		double y = speed*Math.sin(angle);
+		Vector2d result = new Vector2d(x,y);
+    	return result;
+    	
+    }
     
     public static void main(String[] args) throws Exception{
     	//Function2d height= new FunctionH("0");
@@ -212,8 +233,11 @@ public class GA {
 		
 		PuttingCourse course = new PuttingCourse(height,flag, start, mu, vmax,tol,g,m );
 		PuttingSimulator putSim = new PuttingSimulator(course, new RungeKutta());
-        GA test = new GA(putSim); 
-        test.runGA();
+        //GA test = new GA(putSim); 
+        //test.runGA(putSim.get_ball_position());
+		GA test = new GA();
+		test.shot_velocity(course, start);
+		
 //        int nbr_gen = 0;
 //       test.encoding();
 //        while(nbr_gen<number_of_gen){
@@ -228,6 +252,11 @@ public class GA {
 //       double dist = 1/(fitness[best])*100;
 //       System.out.println("Best element has fitness : " + fitness[best] + " with a distance to the hole of : " + dist);    
         System.out.println("Over");
+    }
+    
+    public String toString() {
+    	String name = "Genetic Algorithm";
+    	return name;
     }
     
 }

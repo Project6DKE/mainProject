@@ -61,7 +61,7 @@ public class Main extends Application {
     }
 
 
-    private HBox createView() {
+    private HBox createView() throws Exception {
         mainBox = new HBox();
         mainBox.getChildren().add(createMenuView());
         mainBox.getChildren().add(introView());
@@ -249,7 +249,12 @@ public class Main extends Application {
                 musicPlayer.playClickSound();
                 gameType = GameType.EASY_BOT;
                 playGolf = true;
-                createView();
+                try {
+					createView();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
 
@@ -259,7 +264,12 @@ public class Main extends Application {
                 musicPlayer.playClickSound();
                 gameType = GameType.MEDIUM_BOT;
                 playGolf = true;
-                createView();
+                try {
+					createView();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
 
@@ -269,7 +279,12 @@ public class Main extends Application {
                 musicPlayer.playClickSound();
                 gameType = GameType.HARD_BOT;
                 playGolf = true;
-                createView();
+                try {
+					createView();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
 
@@ -298,7 +313,12 @@ public class Main extends Application {
                 musicPlayer.playClickSound();
                 gameType = GameType.HUMAN;
                 playGolf = true;
-                createView();
+                try {
+					createView();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
 
@@ -465,7 +485,12 @@ public class Main extends Application {
                 System.out.println(goalYV);
                 System.out.println(functionV);
                 System.out.println(gravityV);
-                PuttingCourse course = new PuttingCourse(new FunctionH(functionV), new Vector2d(goalXV,goalYV), new Vector2d(startXV,startYV),frictionV,ballSpeedV,holeDistV,gravityV,massV);
+                try {
+					PuttingCourse course = new PuttingCourse(new FunctionH(functionV), new Vector2d(goalXV,goalYV), new Vector2d(startXV,startYV),frictionV,ballSpeedV,holeDistV,gravityV,massV);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                  
             }
         });

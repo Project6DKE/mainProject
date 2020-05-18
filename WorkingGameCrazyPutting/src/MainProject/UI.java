@@ -103,7 +103,13 @@ public class UI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				Function2d height= new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
+				Function2d height = null;
+				try {
+					height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 				Vector2d flag = new Vector2d(0,3);
 				Vector2d start = new Vector2d(0,0);
@@ -202,6 +208,9 @@ public class UI {
 					refresh();
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(null, "File cant be found");	
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 			
