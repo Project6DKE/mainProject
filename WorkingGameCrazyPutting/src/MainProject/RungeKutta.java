@@ -111,6 +111,7 @@ public class RungeKutta extends EulerSolver{
 		vs[0]=vs[1];
 		vs[1]=vs[2];
 		vs[2]=v;
+
 		
 		Vector2d[] result = new Vector2d[2];
 		 result[0]=p;

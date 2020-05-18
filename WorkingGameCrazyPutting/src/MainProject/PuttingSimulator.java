@@ -240,6 +240,7 @@ public class PuttingSimulator {
 			
 		}
 		
+		
 		boolean conti=true;
 		while(conti&& ! isStop()) {
 			Vector2d[] data=engine.solve_AB3(position, velocity);
