@@ -2,9 +2,9 @@ package MainProject;
 
 public class RungeKutta extends EulerSolver{
 	private PuttingCourse c;
-	private double RKStep=0.11;
+	private double RKStep=0.1;
 	
-	private Vector2d p,v;
+	private Vector2d p,v,a;
 	private Vector2d[] vs= new Vector2d[3];
 	private Vector2d[] as= new Vector2d[3];
 
@@ -149,4 +149,28 @@ public class RungeKutta extends EulerSolver{
 	}
 	
 	public Vector2d get_velocity() {return v;}
+	
+	public Vector2d[] solve_Verlet(Vector2d p1, Vector2d v1) {
+		double px,py,vx,vy;
+		Vector2d a1=c.calculate_acceleration(p1, v1);
+		
+		px= p1.get_x()+h*v1.get_x()+0.5*h*h*a1.get_x();
+		py= p1.get_y()+h*v1.get_y()+0.5*h*h*a1.get_y();
+		
+		Vector2d p2 = new Vector2d(px,py);
+		Vector2d v2=solve(v1,a1);
+		
+		Vector2d a2=c.calculate_acceleration(p2, v2);
+		
+		
+		vx=v1.get_x()+0.5*h*(a1.get_x()+a2.get_x());
+		vy=v1.get_y()+0.5*h*(a1.get_y()+a2.get_y());
+		
+		v2 = new Vector2d(vx,vy);
+		
+		Vector2d[] result = new Vector2d[2];
+		result[0]=p2;
+		result[1]=v2;
+		return result;
+	}
 }
