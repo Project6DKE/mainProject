@@ -167,13 +167,13 @@ public class GA implements PuttingBot{
     }
     
     public double[] runGA(Vector2d ball_position) {
-    	long startT = System.currentTimeMillis();
     	encoding();
     	int nbr_gen = 0;
     	int check = -1;
     	int best = 0;
     	boolean flag  = true;
     	while(nbr_gen<number_of_gen) {
+    		System.out.println("NUMBER OF GEN + " + nbr_gen);
     		check = setFitness();
     		if(check != -1){
     			best = check;
@@ -224,7 +224,8 @@ public class GA implements PuttingBot{
     	//Function2d height= new FunctionH("0");
     	Function2d height= new FunctionH(" 0.04 * x ^ 2 + 0.001 * y");
     	//Function2d height= new FunctionH(" -0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
-		
+    	//Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y + 1");
+    	//Function2d height = new FunctionH("( 7 * x * y ) / ( exp ( x ^ 2 + y ^ 2 ) )");
 		Vector2d flag = new Vector2d(0,3);
 		Vector2d start = new Vector2d(0,0);
 		
@@ -233,11 +234,10 @@ public class GA implements PuttingBot{
 		
 		PuttingCourse course = new PuttingCourse(height,flag, start, mu, vmax,tol,g,m );
 		PuttingSimulator putSim = new PuttingSimulator(course, new RungeKutta());
-        //GA test = new GA(putSim); 
-        //test.runGA(putSim.get_ball_position());
-		GA test = new GA();
-		test.shot_velocity(course, start);
-		
+        GA test = new GA(putSim); 
+        test.runGA(putSim.get_ball_position());
+//		GA test = new GA();
+//		test.shot_velocity(course, start);
 //        int nbr_gen = 0;
 //       test.encoding();
 //        while(nbr_gen<number_of_gen){
