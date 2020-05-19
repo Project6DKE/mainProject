@@ -2,9 +2,9 @@ package MainProject;
 
 public class RungeKutta extends EulerSolver{
 	private PuttingCourse c;
-	private double RKStep=0.1;
+	private double RKStep=0.01;
 	
-	private Vector2d p,v,a;
+	private Vector2d p,v;
 	private Vector2d[] vs= new Vector2d[3];
 	private Vector2d[] as= new Vector2d[3];
 
@@ -74,24 +74,24 @@ public class RungeKutta extends EulerSolver{
 		Vector2d[] xs= new Vector2d[3];
 		xs[0]=p1;
 		vs[0]=v1;
-		System.out.println("p1= "+p1+"  v1= "+v1);		
+//		System.out.println("p1= "+p1+"  v1= "+v1);		
 		double tempp=RKStep;
 		RKStep=this.get_step_size();
 		
 		Vector2d[] boot_values= solve_RK(p1,v1);
-		System.out.println("x is "+boot_values[0]+"\n v is: "+boot_values[1]);
+//		System.out.println("x is "+boot_values[0]+"\n v is: "+boot_values[1]);
 		xs[1]=boot_values[0];
 		vs[1]=boot_values[1];
 		
 		boot_values= solve_RK(boot_values[0],boot_values[1]);
-		System.out.println("x is "+boot_values[0]+"\n v is: "+boot_values[1]);
+//		System.out.println("x is "+boot_values[0]+"\n v is: "+boot_values[1]);
 		
 		xs[2]=boot_values[0];
 		vs[2]=boot_values[1];
 		
 		for(int i=0;i<3;i++) {
 			as[i]=c.calculate_acceleration(xs[i], vs[i]);
-			System.out.println("a is : "+as[i]);
+//			System.out.println("a is : "+as[i]);
 		}
 		
 		p=xs[2];
