@@ -1,7 +1,5 @@
 package MainProject;
 
-import java.io.IOException;
-
 import readingOfFunctions.*;
 import botFolder.*;
 
