@@ -43,13 +43,22 @@ public class Main extends Application {
     private PuttingCourse courseNew;
     private boolean newCourse;
 
+    String prefFontFamily = "Helvetica";
+    Font smallFont = Font.font(prefFontFamily, 15);
+    Font basicFont = Font.font(prefFontFamily, 20);
+    Font mediumFont = Font.font(prefFontFamily, 40);
+    Font bigFont = Font.font(prefFontFamily, 50);
+
+    final int margin = 200;
+    final int prefBoxLength = scene_width - margin;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Golf");
-        
+
         newCourse = false;
-        
+
         musicPlayer = new MenuMusic();
         musicPlayer.playBackgroundMusic();
 
@@ -72,7 +81,7 @@ public class Main extends Application {
         if (playGolf) {
             musicPlayer.stopBackgroundMusic();
             //Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
-            Function2d height= new FunctionH("0.02");
+            Function2d height = new FunctionH("0.02");
 
             Vector2d flag = new Vector2d(0, 3);
             Vector2d start = new Vector2d(0, 0);
@@ -85,16 +94,15 @@ public class Main extends Application {
             tol = 0.2;
 
             PuttingCourse course = new PuttingCourse(height, flag, start, mu, vmax, tol, g, m);
-            
-            if(newCourse) {
-            	try {
-            	course = courseNew;
-            	}
-            	catch(NullPointerException e) {
-            		System.out.println("Null pointer Exception caught. Went on the wrong place");
-            	}
+
+            if (newCourse) {
+                try {
+                    course = courseNew;
+                } catch (NullPointerException e) {
+                    System.out.println("Null pointer Exception caught. Went on the wrong place");
+                }
             }
-            
+
             dim3 = new Game3D1(this, course, gameType);
 
             primaryStage.setScene(main3DGame);
@@ -106,34 +114,36 @@ public class Main extends Application {
     }
 
 
-    private VBox createMenuView(){
+    private VBox createMenuView() {
         VBox box = new VBox();
         box.setPrefWidth(200);
         box.setPrefHeight(scene_height);
         box.setBackground(new Background(new BackgroundFill(Color.LIGHTYELLOW, null, null)));
-        
-        Button addspace = new Button(" ");
-        addspace.setPrefHeight(235);
-        addspace.setVisible(false);
 
-        Button play_btn = new Button("Play");
-        play_btn.setFont(Font.font("Helvetica", 15));
-        play_btn.setMinWidth(150);
+        Button space = new Button(" ");
+        space.setPrefHeight(235);
+        space.setVisible(false);
 
-        Button cg_btn = new Button("Course Generator");
-        cg_btn.setFont(Font.font("Helvetica", 15));
-        cg_btn.setMinWidth(150);
+        int standardMinWidth = 150;
 
-        Button setting_btn = new Button("Settings");
-        setting_btn.setFont(Font.font("Helvetica", 15));
-        setting_btn.setMinWidth(150);
+        Button playBtn = new Button("Play");
+        playBtn.setFont(smallFont);
+        playBtn.setMinWidth(standardMinWidth);
 
-        Button exit_btn = new Button("Exit");
-        exit_btn.setFont(Font.font("Helvetica",15));
-        exit_btn.setMinWidth(150);
+        Button courseGeneratorBtn = new Button("Course Generator");
+        courseGeneratorBtn.setFont(smallFont);
+        courseGeneratorBtn.setMinWidth(standardMinWidth);
 
-        play_btn.setOnAction(new EventHandler<ActionEvent>(){
-        
+        Button settingsBtn = new Button("Settings");
+        settingsBtn.setFont(smallFont);
+        settingsBtn.setMinWidth(standardMinWidth);
+
+        Button exitBtn = new Button("Exit");
+        exitBtn.setFont(smallFont);
+        exitBtn.setMinWidth(150);
+
+        playBtn.setOnAction(new EventHandler<ActionEvent>() {
+
             public void handle(ActionEvent event) {
                 musicPlayer.playClickSound();
                 mainBox.getChildren().remove(1);
@@ -141,8 +151,8 @@ public class Main extends Application {
             }
         });
 
-        cg_btn.setOnAction(new EventHandler<ActionEvent>(){
-        
+        courseGeneratorBtn.setOnAction(new EventHandler<ActionEvent>() {
+
             public void handle(ActionEvent event) {
                 musicPlayer.playClickSound();
                 mainBox.getChildren().remove(1);
@@ -150,8 +160,8 @@ public class Main extends Application {
             }
         });
 
-        setting_btn.setOnAction(new EventHandler<ActionEvent>(){
-        
+        settingsBtn.setOnAction(new EventHandler<ActionEvent>() {
+
             public void handle(ActionEvent event) {
                 musicPlayer.playClickSound();
                 mainBox.getChildren().remove(1);
@@ -159,47 +169,45 @@ public class Main extends Application {
             }
         });
 
-        exit_btn.setOnAction(new EventHandler<ActionEvent>() {
+        exitBtn.setOnAction(new EventHandler<ActionEvent>() {
 
-            public void handle(ActionEvent event){
+            public void handle(ActionEvent event) {
                 primaryStage.hide();
             }
         });
 
-        VBox main_btn = new VBox();
-        main_btn.setAlignment(Pos.CENTER);
-        main_btn.setSpacing(20);
+        VBox frontPageBox = new VBox();
+        frontPageBox.setAlignment(Pos.CENTER);
+        frontPageBox.setSpacing(20);
 
-        main_btn.getChildren().add(addspace);
-        main_btn.getChildren().add(play_btn);
-        main_btn.getChildren().add(cg_btn);
-        main_btn.getChildren().add(setting_btn);
-        main_btn.getChildren().add(exit_btn);
-        box.getChildren().add(main_btn);
+        frontPageBox.getChildren().add(space);
+        frontPageBox.getChildren().add(playBtn);
+        frontPageBox.getChildren().add(courseGeneratorBtn);
+        frontPageBox.getChildren().add(settingsBtn);
+        frontPageBox.getChildren().add(exitBtn);
+        box.getChildren().add(frontPageBox);
 
 
         return box;
-    }   
+    }
 
-    private VBox introView(){
+    private VBox introView() {
         VBox box = new VBox();
 
         Button empty = new Button(" ");
         empty.setMinHeight(100);
         empty.setVisible(false);
 
-        Label iLabel = new Label("Welcome to group 6 project");
-        iLabel.setFont(Font.font("Verdana", 50));
-        iLabel.setUnderline(true);
-        
-        Label cLabel = new Label("By Husam, Kristian, Vladislav, Tiphanie, Nicolas, Thibault");
-        cLabel.setFont(Font.font("Verdana",FontPosture.ITALIC, 30));
-        
+        Label header = new Label("Welcome to group 6 project");
+        header.setFont(Font.font("Verdana", 50));
+        header.setUnderline(true);
+
+        Label subHeader = new Label("By Husam, Kristian, Vladislav, Tiphanie, Nicolas, Thibault");
+        subHeader.setFont(Font.font("Verdana", FontPosture.ITALIC, 30));
+
         VBox box2 = new VBox();
-        box2.setPrefWidth(scene_width-200);
-        box2.getChildren().add(empty);
-        box2.getChildren().add(iLabel);
-        box2.getChildren().add(cLabel);
+        box2.getChildren().addAll(empty, header, subHeader);
+        box2.setPrefWidth(prefBoxLength);
         box2.setAlignment(Pos.CENTER);
         box2.setSpacing(30);
 
@@ -209,34 +217,38 @@ public class Main extends Application {
 
     }
 
-    private VBox botCreationView(){
+    private VBox botCreationView() {
         VBox mainBox = new VBox();
-        mainBox.prefWidth(scene_width-200);
+
+        mainBox.prefWidth(prefBoxLength);
 
         HBox box1 = new HBox();
-        box1.setPrefWidth(scene_width-200);
+        box1.setPrefWidth(prefBoxLength);
         HBox box2 = new HBox();
-        box2.setPrefWidth(scene_width-200);
+        box2.setPrefWidth(prefBoxLength);
         HBox box3 = new HBox();
-        box3.setPrefWidth(scene_width-200);
+        box3.setPrefWidth(prefBoxLength);
+
 
         Label title = new Label("Select difficulty");
-        title.setFont(Font.font("Helvetica", 50));
+        title.setFont(bigFont);
 
-        Label empty2 = new Label("");
-        empty2.setFont(Font.font("Helvetica", 50));
+        Label empty = new Label("");
+        empty.setFont(bigFont);
+
+        int buttonWidth = 500;
 
         Button easyButton = new Button("Easy");
-        easyButton.setFont(Font.font("Helvetica", 40));
-        easyButton.setPrefWidth(500);
+        easyButton.setFont(mediumFont);
+        easyButton.setPrefWidth(buttonWidth);
 
         Button mediumButton = new Button("Expert");
-        mediumButton.setFont(Font.font("Helvetica", 40));
-        mediumButton.setPrefWidth(500);
+        mediumButton.setFont(mediumFont);
+        mediumButton.setPrefWidth(buttonWidth);
 
         Button hardButton = new Button("Impossible");
-        hardButton.setFont(Font.font("Helvetica", 40));
-        hardButton.setPrefWidth(500);
+        hardButton.setFont(mediumFont);
+        hardButton.setPrefWidth(buttonWidth);
 
         box1.getChildren().add(easyButton);
         box1.setAlignment(Pos.CENTER);
@@ -247,91 +259,91 @@ public class Main extends Application {
         box3.getChildren().add(hardButton);
         box3.setAlignment(Pos.CENTER);
 
-        mainBox.getChildren().add(title);
-        mainBox.getChildren().add(empty2);
-        mainBox.getChildren().add(box1);
-        mainBox.getChildren().add(box2);
-        mainBox.getChildren().add(box3);
+        mainBox.getChildren().addAll(title, empty, box1,
+                                     box2, box3);
         mainBox.setAlignment(Pos.CENTER);
         mainBox.setSpacing(20);
 
 
         easyButton.setOnAction(new EventHandler<ActionEvent>() {
 
-            public void handle(ActionEvent event){
+            public void handle(ActionEvent event) {
                 musicPlayer.playClickSound();
                 gameType = GameType.EASY_BOT;
                 playGolf = true;
                 try {
-					createView();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                    createView();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 
         mediumButton.setOnAction(new EventHandler<ActionEvent>() {
 
-            public void handle(ActionEvent event){
+            public void handle(ActionEvent event) {
                 musicPlayer.playClickSound();
                 gameType = GameType.MEDIUM_BOT;
                 playGolf = true;
                 try {
-					createView();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                    createView();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 
         hardButton.setOnAction(new EventHandler<ActionEvent>() {
 
-            public void handle(ActionEvent event){
+            public void handle(ActionEvent event) {
                 musicPlayer.playClickSound();
                 gameType = GameType.HARD_BOT;
                 playGolf = true;
                 try {
-					createView();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                    createView();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 
         return mainBox;
     }
 
-    private VBox playView(){
+    private VBox playView() {
         VBox box1 = new VBox();
-        box1.prefWidth(scene_width-200);
+
+        box1.prefWidth(prefBoxLength);
         HBox box = new HBox();
-        box.setPrefWidth(scene_width-200);
+        box.setPrefWidth(prefBoxLength);
 
         Label title = new Label("Select mode");
-        title.setFont(Font.font("Helvetica", 50));
+        title.setFont(bigFont);
 
         Label empty2 = new Label("");
-        empty2.setFont(Font.font("Helvetica", 50));
+        empty2.setFont(bigFont);
 
-        Button human_btn = new Button("Human player");
-        human_btn.setFont(Font.font("Helvetica", 40));
-        human_btn.setPrefWidth(500);
+        int buttonLength = 500;
 
-        human_btn.setOnAction(new EventHandler<ActionEvent>() {
+        Button humanBtn = new Button("Human player");
+        humanBtn.setFont(mediumFont);
+        humanBtn.setPrefWidth(buttonLength);
 
-            public void handle(ActionEvent event){
+        humanBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event) {
                 musicPlayer.playClickSound();
                 gameType = GameType.HUMAN;
                 playGolf = true;
                 try {
-					createView();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                    createView();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -340,10 +352,10 @@ public class Main extends Application {
         empty.setVisible(false);
 
         Button AI_btn = new Button("Bot Play");
-        AI_btn.setFont(Font.font("Helvetica", 40));
-        AI_btn.setPrefWidth(500);
+        AI_btn.setFont(mediumFont);
+        AI_btn.setPrefWidth(buttonLength);
 
-        AI_btn.setOnAction(new EventHandler<ActionEvent>(){
+        AI_btn.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event) {
                 musicPlayer.playClickSound();
@@ -353,26 +365,23 @@ public class Main extends Application {
         });
 
 
-        box.getChildren().add(human_btn);
-        box.getChildren().add(empty);
-        box.getChildren().add(AI_btn);
+        box.getChildren().addAll(humanBtn, empty, AI_btn);
         box.setAlignment(Pos.CENTER);
 
-        box1.getChildren().add(title);
-        box1.getChildren().add(empty2);
-        box1.getChildren().add(box);
+        box1.getChildren().addAll(title, empty2, box);
         box1.setAlignment(Pos.CENTER);
 
         return box1;
     }
 
-    //setprompttext
-    private VBox cgView(){
+    private VBox cgView() {
         VBox mainbox1 = new VBox();
         HBox box = new HBox();
-        box.setPrefWidth(scene_width-200);
-        VBox emptybox = new VBox();
-        emptybox.setPrefWidth(120);
+        box.setPrefWidth(prefBoxLength);
+
+        VBox emptyBox = new VBox();
+        emptyBox.setPrefWidth(120);
+
         VBox box1 = new VBox();
         box1.setPrefWidth(200);
         VBox box2 = new VBox();
@@ -383,70 +392,65 @@ public class Main extends Application {
         box4.setPrefWidth(300);
 
         Label title = new Label("Course generator");
-        title.setFont(Font.font("Helvetica", 50));
+        title.setFont(bigFont);
         Label empty2 = new Label(" ");
-        empty2.setFont(Font.font("Helvetica", 50));
+        empty2.setFont(bigFont);
 
         Label mass = new Label("   Mass");
-        mass.setFont(Font.font("Helvetica", 20));
+        mass.setFont(basicFont);
+
         Label friction = new Label("   Friction");
-        friction.setFont(Font.font("Helvetica", 20));
+        friction.setFont(basicFont);
+
         Label hole_dist = new Label("   Hole distance");
-        hole_dist.setFont(Font.font("Helvetica", 20));
+        hole_dist.setFont(basicFont);
+
         Label startX = new Label("   Starting X axis");
-        startX.setFont(Font.font("Helvetica", 20));
+        startX.setFont(basicFont);
+
         Label startY = new Label("   Starting Y axis");
-        startY.setFont(Font.font("Helvetica", 20));
+        startY.setFont(basicFont);
+
         Label file_name = new Label("   File name");
-        file_name.setFont(Font.font("Helvetica", 20));
-        box1.getChildren().add(mass);
-        box1.getChildren().add(friction);
-        box1.getChildren().add(hole_dist);
-        box1.getChildren().add(startX);
-        box1.getChildren().add(startY);
-        box1.getChildren().add(file_name);
+        file_name.setFont(basicFont);
+
+        box1.getChildren().addAll(mass, friction, hole_dist,
+                                  startX, startY, file_name);
+
         box1.setAlignment(Pos.CENTER_LEFT);
         box1.setSpacing(30);
-        
-        TextField massT = new TextField();
-        massT.setPromptText("Enter mass");
-        TextField frictionT = new TextField();
-        frictionT.setPromptText("Enter friction");
-        TextField hole_distT = new TextField();
-        hole_distT.setPromptText("Enter hole distance");
-        TextField startXT = new TextField();
-        startXT.setPromptText("Enter start X");
-        TextField startYT = new TextField();
-        startYT.setPromptText("Enter start Y");
-        TextField filenameT = new TextField();
-        filenameT.setPromptText("Enter file name");
-        box2.getChildren().add(massT);
-        box2.getChildren().add(frictionT);
-        box2.getChildren().add(hole_distT);
-        box2.getChildren().add(startXT);
-        box2.getChildren().add(startYT);
-        box2.getChildren().add(filenameT);
+
+        TextField massField = new TextField();
+        massField.setPromptText("Enter mass");
+        TextField frictionField = new TextField();
+        frictionField.setPromptText("Enter friction");
+        TextField holeDistanceField = new TextField();
+        holeDistanceField.setPromptText("Enter hole distance");
+        TextField startXField = new TextField();
+        startXField.setPromptText("Enter start X");
+        TextField startYField = new TextField();
+        startYField.setPromptText("Enter start Y");
+        TextField filenameField = new TextField();
+        filenameField.setPromptText("Enter file name");
+        box2.getChildren().addAll(massField, frictionField, holeDistanceField,
+                               startXField, startYField, filenameField);
         box2.setAlignment(Pos.CENTER);
         box2.setSpacing(30);
 
         Label ballspeed = new Label("   Ball speed");
-        ballspeed.setFont(Font.font("Helvetica", 20));
+        ballspeed.setFont(basicFont);
         Label goalX = new Label("   Goal X axis");
-        goalX.setFont(Font.font("Helvetica", 20));
+        goalX.setFont(basicFont);
         Label goalY = new Label("   Goal Y axis");
-        goalY.setFont(Font.font("Helvetica", 20));
+        goalY.setFont(basicFont);
         Label function = new Label("   Function");
-        function.setFont(Font.font("Helvetica", 20));
+        function.setFont(basicFont);
         Label gravity = new Label("   Gravity");
-        gravity.setFont(Font.font("Helvetica", 20));
+        gravity.setFont(basicFont);
         Label empty = new Label(" ");
-        empty.setFont(Font.font("Helvetica", 20));
-        box3.getChildren().add(ballspeed);
-        box3.getChildren().add(goalX);
-        box3.getChildren().add(goalY);
-        box3.getChildren().add(function);
-        box3.getChildren().add(gravity);
-        box3.getChildren().add(empty);
+        empty.setFont(basicFont);
+        box3.getChildren().addAll(ballspeed, goalX, goalY,
+                                  function, gravity, empty);
         box3.setAlignment(Pos.CENTER_LEFT);
         box3.setSpacing(30);
 
@@ -461,27 +465,23 @@ public class Main extends Application {
         TextField gravityT = new TextField();
         gravityT.setPromptText("Enter gravity");
         Button run = new Button("run");
-        run.setFont(Font.font("Helvetica", 20));
+        run.setFont(basicFont);
         run.setPrefWidth(200);
-        box4.getChildren().add(ballT);
-        box4.getChildren().add(goalXT);
-        box4.getChildren().add(goalYT);
-        box4.getChildren().add(functionT);
-        box4.getChildren().add(gravityT);
-        box4.getChildren().add(run);
+        box4.getChildren().addAll(ballT, goalXT, goalYT,
+                                  functionT, gravityT, run);
         box4.setAlignment(Pos.CENTER);
         box4.setSpacing(30);
 
-        run.setOnAction(new EventHandler<ActionEvent>(){
-        
+        run.setOnAction(new EventHandler<ActionEvent>() {
+
             public void handle(ActionEvent event) {
                 musicPlayer.playClickSound();
-                massV = Double.parseDouble(massT.getText());
-                frictionV = Double.parseDouble(frictionT.getText());
-                holeDistV = Double.parseDouble(hole_distT.getText());
-                startXV = Integer.parseInt(startXT.getText());
-                startYV = Integer.parseInt(startYT.getText());
-                fileName = filenameT.getText();
+                massV = Double.parseDouble(massField.getText());
+                frictionV = Double.parseDouble(frictionField.getText());
+                holeDistV = Double.parseDouble(holeDistanceField.getText());
+                startXV = Integer.parseInt(startXField.getText());
+                startYV = Integer.parseInt(startYField.getText());
+                fileName = filenameField.getText();
                 ballSpeedV = Double.parseDouble(ballT.getText());
                 goalXV = Integer.parseInt(goalXT.getText());
                 goalYV = Integer.parseInt(goalYT.getText());
@@ -499,45 +499,41 @@ public class Main extends Application {
                 System.out.println(functionV);
                 System.out.println(gravityV);
                 try {
-					courseNew = new PuttingCourse(new FunctionH(functionV), new Vector2d(goalXV,goalYV), new Vector2d(startXV,startYV),frictionV,ballSpeedV,holeDistV,gravityV,massV);
-					newCourse = true;
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-                 
+                    courseNew = new PuttingCourse(new FunctionH(functionV), new Vector2d(goalXV, goalYV), new Vector2d(startXV, startYV), frictionV, ballSpeedV, holeDistV, gravityV, massV);
+                    newCourse = true;
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
             }
         });
 
-        box.getChildren().add(emptybox);
-        box.getChildren().add(box1);
-        box.getChildren().add(box2);
-        box.getChildren().add(box3);
-        box.getChildren().add(box4);
+        box.getChildren().addAll(emptyBox, box1, box2, box3, box4);
 
-        mainbox1.getChildren().add(title);
-        mainbox1.getChildren().add(empty2);
-        mainbox1.getChildren().add(box);
+        mainbox1.getChildren().addAll(title, empty2, box);
         mainbox1.setAlignment(Pos.CENTER);
         return mainbox1;
     }
 
-    private VBox settingView(){
+    private VBox settingView() {
         VBox box = new VBox();
 
+        int standardMinButtonHeight = 100;
+
         Button empty = new Button(" ");
-        empty.setMinHeight(100);
+        empty.setMinHeight(standardMinButtonHeight);
         empty.setVisible(false);
 
         Button empty2 = new Button(" ");
-        empty2.setMinHeight(100);
+        empty2.setMinHeight(standardMinButtonHeight);
         empty2.setVisible(false);
 
         Label title = new Label("Settings");
-        title.setFont(Font.font("Helvetica", 50));
+        title.setFont(bigFont);
 
-        Label slider_title = new Label("Music volume");
-        slider_title.setFont(Font.font("Helvetica", 20));
+        Label sliderTitle = new Label("Music volume");
+        sliderTitle.setFont(basicFont);
 
         Slider musicvol = new Slider(0.0, 1.0, 0.5);
         musicvol.setMaxWidth(200);
@@ -545,25 +541,20 @@ public class Main extends Application {
         musicvol.setShowTickMarks(true);
         musicvol.setMajorTickUnit(0.25);
         musicvol.setBlockIncrement(0.1);
-        musicvol.valueProperty().addListener( 
-             new ChangeListener<Number>() { 
-  
-            public void changed(ObservableValue <? extends Number >  
-                      observable, Number oldValue, Number newValue) 
-            {
-                volume = (double) newValue;
-                musicPlayer.setMusicVolume(volume);
-            } 
-        }); 
+        musicvol.valueProperty().addListener(
+                new ChangeListener<Number>() {
 
-        
+                    public void changed(ObservableValue<? extends Number>
+                                                observable, Number oldValue, Number newValue) {
+                        volume = (double) newValue;
+                        musicPlayer.setMusicVolume(volume);
+                    }
+                });
+
+
         VBox box2 = new VBox();
-        box2.setPrefWidth(scene_width-200);
-        box2.getChildren().add(empty);
-        box2.getChildren().add(empty2);
-        box2.getChildren().add(title);
-        box2.getChildren().add(slider_title);
-        box2.getChildren().add(musicvol);
+        box2.setPrefWidth(prefBoxLength);
+        box2.getChildren().addAll(empty, empty2, title, sliderTitle, musicvol);
         box2.setAlignment(Pos.CENTER);
         box2.setSpacing(20);
 
@@ -572,12 +563,8 @@ public class Main extends Application {
         return box;
     }
 
-    public HBox getmainBox(){
-        return mainBox;
-    }
-
-    public static void main(String[] args){
+    public static void main(String[] args) {
         launch(args);
     }
-    
 }
+    
