@@ -23,7 +23,7 @@ public class NewAI implements PuttingBot {
     
     
     
-    static final double STEPSIZE = 100;
+    static final double STEPSIZE = 10;
     //EulerSolver odeSolver;
     RungeKutta odeSolver;
 
@@ -161,6 +161,8 @@ public class NewAI implements PuttingBot {
     	 * The issue is related to how V is calculated, I'll just deal with it later
     	 */
     	
+    	//Vector2d movement = new Vector2d(xStep, yStep);
+    	
     	for(int i=0; i<STEPSIZE;i++) {
     		double newX = flag.get_x()+i*xStep;
     		double newY = flag.get_y()+i*yStep;
@@ -187,7 +189,11 @@ public class NewAI implements PuttingBot {
     		
     		Vector2d accelStep = course.calculate_acceleration(newPos, velocity);
     		
+    		Vector2d vf= velocity;
+    		
     		velocity = findV0(velocity, accelStep, newDist);
+    		
+    		//movement = findNewD(vf,velocity,accelStep);
     		
     		
     	}
@@ -205,8 +211,8 @@ public class NewAI implements PuttingBot {
     	 *  Modified the variables so that it's Vo what's being looked for
     	 *  Additional change so that it can take into account to what direction the velocity is going
     	 */
-    	double tempx = Math.signum(vf.get_x())*Math.pow(vf.get_x(), 2)-2*accel.get_x()*Math.abs(dist.get_x());
-    	double tempy = Math.signum(vf.get_y())*Math.pow(vf.get_y(), 2)-2*accel.get_y()*Math.abs(dist.get_y());
+    	double tempx = Math.signum(vf.get_x())*Math.pow(vf.get_x(), 2)-2.0*accel.get_x()*Math.abs(dist.get_x());
+    	double tempy = Math.signum(vf.get_y())*Math.pow(vf.get_y(), 2)-2.0*accel.get_y()*Math.abs(dist.get_y());
     	
     	double vx,vy;
     	
@@ -223,6 +229,14 @@ public class NewAI implements PuttingBot {
     	}
     	
     	return new Vector2d(vx,vy);
+    	
+    }
+    
+    public static Vector2d findNewD(Vector2d vf, Vector2d vo, Vector2d accel) {
+    	double resX = ((vf.get_x()*vf.get_x())-(vo.get_x()*vo.get_x()))/(2.0*accel.get_x());
+    	double resY = ((vf.get_y()*vf.get_y())-(vo.get_y()*vo.get_y()))/(2.0*accel.get_y());
+    	
+    	return new Vector2d(-resX,-resY);
     	
     }
     
