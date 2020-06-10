@@ -42,7 +42,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
-        primaryStage.setTitle("Golf");
+        primaryStage.setTitle("GolfAcademy Pro");
 
         newCourse = false;
 
@@ -73,6 +73,7 @@ public class Main extends Application {
             Vector2d flag = new Vector2d(0, 3);
             Vector2d start = new Vector2d(0, 0);
 
+            // TODO move default variables into the CourseData class
             double g, m, mu, vmax, tol;
             g = 9.81;
             m = 45.93 / 1000;
@@ -102,10 +103,10 @@ public class Main extends Application {
 
 
     private VBox createMenuView() {
-        VBox box = new VBox();
-        box.setPrefWidth(200);
-        box.setPrefHeight(scene_height);
-        box.setBackground(new Background(new BackgroundFill(Color.LIGHTYELLOW, null, null)));
+        VBox sideMenu = new VBox();
+        sideMenu.setPrefWidth(200);
+        sideMenu.setPrefHeight(scene_height);
+        sideMenu.setBackground(new Background(new BackgroundFill(Color.LIGHTYELLOW, null, null)));
 
         Button space = new Button(" ");
         space.setPrefHeight(235);
@@ -130,29 +131,22 @@ public class Main extends Application {
         exitBtn.setMinWidth(150);
 
         playBtn.setOnAction(new EventHandler<ActionEvent>() {
-
             public void handle(ActionEvent event) {
-                musicPlayer.playClickSound();
-                mainBox.getChildren().remove(1);
-                mainBox.getChildren().add(playView());
+                changeView(playView());
             }
         });
 
         courseGeneratorBtn.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event) {
-                musicPlayer.playClickSound();
-                mainBox.getChildren().remove(1);
-                mainBox.getChildren().add(cgView());
+                changeView(cgView());
             }
         });
 
         settingsBtn.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event) {
-                musicPlayer.playClickSound();
-                mainBox.getChildren().remove(1);
-                mainBox.getChildren().add(settingView());
+                changeView(settingsView());
             }
         });
 
@@ -167,15 +161,17 @@ public class Main extends Application {
         frontPageBox.setAlignment(Pos.CENTER);
         frontPageBox.setSpacing(20);
 
-        frontPageBox.getChildren().add(space);
-        frontPageBox.getChildren().add(playBtn);
-        frontPageBox.getChildren().add(courseGeneratorBtn);
-        frontPageBox.getChildren().add(settingsBtn);
-        frontPageBox.getChildren().add(exitBtn);
-        box.getChildren().add(frontPageBox);
+        frontPageBox.getChildren().addAll(space, playBtn, courseGeneratorBtn, settingsBtn, exitBtn);
+        sideMenu.getChildren().add(frontPageBox);
 
 
-        return box;
+        return sideMenu;
+    }
+
+    private void changeView(VBox view) {
+        musicPlayer.playClickSound();
+        mainBox.getChildren().remove(1);
+        mainBox.getChildren().add(view);
     }
 
     private VBox introView() {
@@ -383,26 +379,19 @@ public class Main extends Application {
         Label empty2 = new Label(" ");
         empty2.setFont(bigFont);
 
-        Label mass = new Label("   Mass");
-        mass.setFont(basicFont);
+        String whiteSpace = "   ";
+        String[] courseParameters = {"mass", "friction", "starting Y axis", "starting X axis",
+                                     "file name"};
 
-        Label friction = new Label("   Friction");
-        friction.setFont(basicFont);
 
-        Label hole_dist = new Label("   Hole distance");
-        hole_dist.setFont(basicFont);
+        for (String parameter: courseParameters) {
+            String labelText = whiteSpace + capitalize(parameter);
+            Label label = new Label(labelText);
+            label.setFont(basicFont);
+            label.setMinHeight(42);
+            box1.getChildren().add(label);
+        }
 
-        Label startX = new Label("   Starting X axis");
-        startX.setFont(basicFont);
-
-        Label startY = new Label("   Starting Y axis");
-        startY.setFont(basicFont);
-
-        Label file_name = new Label("   File name");
-        file_name.setFont(basicFont);
-
-        box1.getChildren().addAll(mass, friction, hole_dist,
-                                  startX, startY, file_name);
 
         box1.setAlignment(Pos.CENTER_LEFT);
         box1.setSpacing(30);
@@ -424,20 +413,17 @@ public class Main extends Application {
         box2.setAlignment(Pos.CENTER);
         box2.setSpacing(30);
 
-        Label ballSpeed = new Label("   Ball speed");
-        ballSpeed.setFont(basicFont);
-        Label goalX = new Label("   Goal X axis");
-        goalX.setFont(basicFont);
-        Label goalY = new Label("   Goal Y axis");
-        goalY.setFont(basicFont);
-        Label function = new Label("   Function");
-        function.setFont(basicFont);
-        Label gravity = new Label("   Gravity");
-        gravity.setFont(basicFont);
-        Label empty = new Label(" ");
-        empty.setFont(basicFont);
-        box3.getChildren().addAll(ballSpeed, goalX, goalY,
-                                  function, gravity, empty);
+        String[] courseParameters2 = {"ball speed", "goal X axis", "goal Y axis", "function ",
+                "gravity"};
+
+        for (String parameter: courseParameters2) {
+            String labelText = whiteSpace + capitalize(parameter);
+            Label label = new Label(labelText);
+            label.setFont(basicFont);
+            label.setMinHeight(42);
+            box3.getChildren().add(label);
+        }
+
         box3.setAlignment(Pos.CENTER_LEFT);
         box3.setSpacing(30);
 
@@ -498,7 +484,11 @@ public class Main extends Application {
         return mainbox1;
     }
 
-    private VBox settingView() {
+    private String capitalize(String text) {
+        return text.substring(0,1).toUpperCase() + text.substring(1, text.length());
+    }
+
+    private VBox settingsView() {
         VBox box = new VBox();
 
         int standardMinButtonHeight = 100;
@@ -517,13 +507,13 @@ public class Main extends Application {
         Label sliderTitle = new Label("Music volume");
         sliderTitle.setFont(basicFont);
 
-        Slider musicvol = new Slider(0.0, 1.0, 0.5);
-        musicvol.setMaxWidth(200);
-        musicvol.setShowTickLabels(true);
-        musicvol.setShowTickMarks(true);
-        musicvol.setMajorTickUnit(0.25);
-        musicvol.setBlockIncrement(0.1);
-        musicvol.valueProperty().addListener(
+        Slider musicVolumeSlider = new Slider(0.0, 1.0, 0.5);
+        musicVolumeSlider.setMaxWidth(200);
+        musicVolumeSlider.setShowTickLabels(true);
+        musicVolumeSlider.setShowTickMarks(true);
+        musicVolumeSlider.setMajorTickUnit(0.25);
+        musicVolumeSlider.setBlockIncrement(0.1);
+        musicVolumeSlider.valueProperty().addListener(
                 new ChangeListener<Number>() {
 
                     public void changed(ObservableValue<? extends Number>
@@ -536,7 +526,7 @@ public class Main extends Application {
 
         VBox box2 = new VBox();
         box2.setPrefWidth(prefBoxLength);
-        box2.getChildren().addAll(empty, empty2, title, sliderTitle, musicvol);
+        box2.getChildren().addAll(empty, empty2, title, sliderTitle, musicVolumeSlider);
         box2.setAlignment(Pos.CENTER);
         box2.setSpacing(20);
 
