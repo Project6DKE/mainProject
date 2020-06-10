@@ -8,7 +8,6 @@ import javafx.event.*;
 import javafx.scene.*;
 
 import javafx.application.Application;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
@@ -21,27 +20,10 @@ public class Main extends Application {
     public Game3D1 dim3;
     public double volume = 0.5;
 
-    private MediaPlayer mediaPlayer;
     private HBox mainBox;
     private final int scene_width = 1500;
     private final int scene_height = 750;
     private GameType gameType;
-
-    private double massV;
-    private double frictionV;
-    private double holeDistV;
-    private int startXV;
-    private int startYV;
-    private String fileName;
-    private double ballSpeedV;
-    private int goalXV;
-    private int goalYV;
-    private String functionV;
-    private double gravityV;
-    private boolean playGolf;
-    private MenuMusic musicPlayer;
-    private PuttingCourse courseNew;
-    private boolean newCourse;
 
     String prefFontFamily = "Helvetica";
     Font smallFont = Font.font(prefFontFamily, 15);
@@ -51,6 +33,11 @@ public class Main extends Application {
 
     final int margin = 200;
     final int prefBoxLength = scene_width - margin;
+
+    private boolean playGolf;
+    private MenuMusic musicPlayer;
+    private PuttingCourse courseNew;
+    private boolean newCourse;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -437,8 +424,8 @@ public class Main extends Application {
         box2.setAlignment(Pos.CENTER);
         box2.setSpacing(30);
 
-        Label ballspeed = new Label("   Ball speed");
-        ballspeed.setFont(basicFont);
+        Label ballSpeed = new Label("   Ball speed");
+        ballSpeed.setFont(basicFont);
         Label goalX = new Label("   Goal X axis");
         goalX.setFont(basicFont);
         Label goalY = new Label("   Goal Y axis");
@@ -449,26 +436,26 @@ public class Main extends Application {
         gravity.setFont(basicFont);
         Label empty = new Label(" ");
         empty.setFont(basicFont);
-        box3.getChildren().addAll(ballspeed, goalX, goalY,
+        box3.getChildren().addAll(ballSpeed, goalX, goalY,
                                   function, gravity, empty);
         box3.setAlignment(Pos.CENTER_LEFT);
         box3.setSpacing(30);
 
-        TextField ballT = new TextField();
-        ballT.setPromptText("Enter ball speed");
-        TextField goalXT = new TextField();
-        goalXT.setPromptText("Enter goal X");
-        TextField goalYT = new TextField();
-        goalYT.setPromptText("Enter goal Y");
-        TextField functionT = new TextField();
-        functionT.setPromptText("Enter function");
-        TextField gravityT = new TextField();
-        gravityT.setPromptText("Enter gravity");
+        TextField ballSpeedField = new TextField();
+        ballSpeedField.setPromptText("Enter ball speed");
+        TextField goalXField = new TextField();
+        goalXField.setPromptText("Enter goal X");
+        TextField goalYField = new TextField();
+        goalYField.setPromptText("Enter goal Y");
+        TextField functionField = new TextField();
+        functionField.setPromptText("Enter function");
+        TextField gravityField = new TextField();
+        gravityField.setPromptText("Enter gravity");
         Button run = new Button("run");
         run.setFont(basicFont);
         run.setPrefWidth(200);
-        box4.getChildren().addAll(ballT, goalXT, goalYT,
-                                  functionT, gravityT, run);
+        box4.getChildren().addAll(ballSpeedField, goalXField, goalYField,
+                                  functionField, gravityField, run);
         box4.setAlignment(Pos.CENTER);
         box4.setSpacing(30);
 
@@ -476,30 +463,25 @@ public class Main extends Application {
 
             public void handle(ActionEvent event) {
                 musicPlayer.playClickSound();
-                massV = Double.parseDouble(massField.getText());
-                frictionV = Double.parseDouble(frictionField.getText());
-                holeDistV = Double.parseDouble(holeDistanceField.getText());
-                startXV = Integer.parseInt(startXField.getText());
-                startYV = Integer.parseInt(startYField.getText());
-                fileName = filenameField.getText();
-                ballSpeedV = Double.parseDouble(ballT.getText());
-                goalXV = Integer.parseInt(goalXT.getText());
-                goalYV = Integer.parseInt(goalYT.getText());
-                functionV = functionT.getText();
-                gravityV = Double.parseDouble(gravityT.getText());
-                System.out.println(massV);
-                System.out.println(frictionV);
-                System.out.println(holeDistV);
-                System.out.println(startXV);
-                System.out.println(startYV);
-                System.out.println(fileName);
-                System.out.println(ballSpeedV);
-                System.out.println(goalXV);
-                System.out.println(goalYV);
-                System.out.println(functionV);
-                System.out.println(gravityV);
+
+                CourseData.mass = Double.parseDouble(massField.getText());
+                CourseData.friction = Double.parseDouble(frictionField.getText());
+                CourseData.holeDist = Double.parseDouble(holeDistanceField.getText());
+                CourseData.startX = Integer.parseInt(startXField.getText());
+                CourseData.startY = Integer.parseInt(startYField.getText());
+                CourseData.fileName = filenameField.getText();
+                CourseData.ballSpeed = Double.parseDouble(ballSpeedField.getText());
+                CourseData.goalX = Integer.parseInt(goalXField.getText());
+                CourseData.goalY = Integer.parseInt(goalYField.getText());
+                CourseData.function = functionField.getText();
+                CourseData.gravity = Double.parseDouble(gravityField.getText());
+
+                CourseData.printAllData();
+
                 try {
-                    courseNew = new PuttingCourse(new FunctionH(functionV), new Vector2d(goalXV, goalYV), new Vector2d(startXV, startYV), frictionV, ballSpeedV, holeDistV, gravityV, massV);
+                    courseNew = new PuttingCourse(new FunctionH(CourseData.function), new Vector2d(CourseData.goalX, CourseData.goalY),
+                            new Vector2d(CourseData.startX, CourseData.startY), CourseData.friction, CourseData.ballSpeed,
+                            CourseData.holeDist, CourseData.gravity, CourseData.mass);
                     newCourse = true;
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
@@ -567,4 +549,3 @@ public class Main extends Application {
         launch(args);
     }
 }
-    
