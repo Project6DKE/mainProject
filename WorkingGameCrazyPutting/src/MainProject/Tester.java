@@ -1,7 +1,5 @@
 package MainProject;
 
-import java.io.IOException;
-
 import readingOfFunctions.*;
 import botFolder.*;
 
@@ -23,8 +21,8 @@ public class Tester {
 //		System.out.println(course1.get_height().toString());
 		
 		Function2d height= new FunctionH("2");
-		//Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y + 1");
-		//Function2d height = new FunctionH("( 7 * x * y ) / ( exp ( x ^ 2 + y ^ 2 ) )");
+		//Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
+//		Function2d height = new FunctionH("( 7 * x * y ) / ( exp ( x ^ 2 + y ^ 2 ) )");
 		
 		Vector2d flag = new Vector2d(3,0);
 		Vector2d start = new Vector2d(0,2);
@@ -42,21 +40,22 @@ public class Tester {
 		NewAI ai = new NewAI(s);
 		//BackwardsAI ai = new BackwardsAI(s);
 		
-		while(!s.course_put) {
-			Vector2d speed = ai.shot_velocity(course, s.get_ball_position());
-			s.take_shot(speed);
-			System.out.println(s.get_ball_position().toString());
-			System.out.println("The distance to flag is " + s.distToFlag());
-			
-		}
+//		while(!s.course_put) {
+//			Vector2d speed = ai.shot_velocity(course, s.get_ball_position());
+//			s.take_shot(speed);
+//			System.out.println(s.get_ball_position().toString());
+//			System.out.println("The distance to flag is " + s.distToFlag());
+//			
+//		}
 		
-		//Vector2d initial_ball_velocity= new Vector2d(2,2);
+		Vector2d initial_ball_velocity= new Vector2d(2,2);
 		
-		//s.take_shot(initial_ball_velocity);
+		s.take_shot(initial_ball_velocity);
 		
+//		
 		System.out.println(s.get_ball_position().toString());
-		System.out.println("game is over");
-		
+//		System.out.println("game is over");
+//		
 		//course.output_to_file("C:\\Users\\husam\\git\\mainProject\\course");
 	}
 }

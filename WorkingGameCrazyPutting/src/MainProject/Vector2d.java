@@ -34,6 +34,10 @@ public class Vector2d {
 		return this.x*aVec.get_x()+this.y*aVec.get_y();
 	}
 	
+	public Vector2d clone() {
+		return new Vector2d(this.get_x(),this.get_y());
+	}
+	
 	public String toString() {
 		return "X: "+x+"\t Y: "+y+"\t Scalar: "+get_scalar();
 	}

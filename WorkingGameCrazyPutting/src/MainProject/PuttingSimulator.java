@@ -17,7 +17,7 @@ public class PuttingSimulator {
 	private Vector2d stopV = new Vector2d(0.01,0.01);
 	final int pointOfAbandon = 1000000;
 
-	private int solverChoice = 0; //0 for euler, 1 for RK4, 2 for AB3
+	private int solverChoice = 3; //0 for euler, 1 for RK4, 2 for AB3,3 for Verlet
 
 	double maxV;
 	
@@ -71,6 +71,8 @@ public class PuttingSimulator {
 			return "Runge Kutta";
 		case 2:
 			return "Adams Bashforth";
+		case 3:
+			return "Verlet";
 		}
 		return "";
 	}
@@ -86,11 +88,14 @@ public class PuttingSimulator {
 		case 2:
 			take_shot_ab3(initial_ball_velocity);
 			break;
+		case 3:
+			take_shot_verlet(initial_ball_velocity);
+			break;
 		}
 	}
 	
 	public void take_shot_euler(Vector2d initial_ball_velocity) {
-		System.out.println("This is shot #"+(++shot));
+		System.out.println("This is shot #"+(++shot)+"using euler");
 		
 		/*
 		 * This is a system to make sure that a given shot is always going to be less than maxV
@@ -129,8 +134,7 @@ public class PuttingSimulator {
 		
 		if(course.is_put(position)) {
 			put();
-			System.out.println("You have putted, number of shots: "+shot);
-		}
+			}
 	}
 	
 	public ArrayList<Vector2d> take_shot_list(Vector2d initial_ball_velocity) {
@@ -191,7 +195,7 @@ public class PuttingSimulator {
 	}
 	
 	public void take_shot_RK(Vector2d initial_ball_velocity) {
-		System.out.println("This is shot #"+(++shot));
+		System.out.println("This is shot #"+(++shot)+"using RK4");
 		this.velocity=initial_ball_velocity;
 		Vector2d temp= position;
 		boolean conti=true;
@@ -207,6 +211,7 @@ public class PuttingSimulator {
 				break;
 			}
 			if(isStop())conti=false;
+//			System.out.println("failed to stop at "+position);
 		}
 		
 		if(course.is_put(position)) {
@@ -216,14 +221,14 @@ public class PuttingSimulator {
 	}
 		
 	public ArrayList<Vector2d> take_shot_ab3(Vector2d initial_ball_velocity){
-		System.out.println("This is shot #"+(++shot));
+		System.out.println("This is shot #"+(++shot)+" using ab3");
 		ArrayList<Vector2d> ballPath= new ArrayList<Vector2d>();
 		initial_Velocity_Check( initial_ball_velocity);
 		Vector2d temp= position;
 		velocity=initial_ball_velocity;
 		
 		Vector2d[] initialValues= engine.bootstrap_AB3(position, velocity);
-		
+		velocity=engine.get_velocity();
 		for(int i=0;i<initialValues.length;i++) {
 			position=initialValues[i];
 			ballPath.add(position);
@@ -234,10 +239,14 @@ public class PuttingSimulator {
 				velocity=new Vector2d(0,0);
 				return ballPath;
 			}
+			if(isStop()) {break;
+			} 
+//			else {System.out.println("failed to stop at "+position);}
+			
 		}
 		
 		boolean conti=true;
-		while(conti) {
+		while(conti&& !isStop()) {
 			Vector2d[] data=engine.solve_AB3(position, velocity);
 			position=data[0];
 			velocity=data[1];
@@ -250,8 +259,11 @@ public class PuttingSimulator {
 				conti=false;
 				return ballPath;
 			}
-			if(isStop())conti=false;
+			
+			if(isStop()) {conti=false;}
+//			else {System.out.println("failed to stop at "+position);}
 		}
+//		System.out.println("This is shot #"+(++shot)+" using ab3");
 		
 		if(course.is_put(position)) {
 			put();
@@ -260,9 +272,39 @@ public class PuttingSimulator {
 		
 		return ballPath;
 	}
+	
+	public void take_shot_verlet(Vector2d initial_ball_velocity) {
+		System.out.println("This is shot #"+(++shot)+"using verlet");	
+		this.velocity = initial_Velocity_Check( initial_ball_velocity);
+		
+		Vector2d temp= position;
+		boolean conti=true;
+//		int count = 0;
+		while((conti)/* && (count<pointOfAbandon)*/) {
+			Vector2d[] data=engine.solve_Verlet(position, velocity);
+			
+			position=data[0];
+			velocity=data[1];
+			
+			if(course.is_water(position)) {
+				System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
+				position=temp;
+				velocity=new Vector2d(0,0);
+				conti=false;
+				break;
+			}
+			//			count++;	
+			if(isStop()) conti=false;
+		}
+		
+		if(course.is_put(position)) {
+			put();
+		}
+	}
 
 	public void put() {
 		course_put=true;
+		System.out.println("You have putted, number of shots: "+shot);
 	}
 	
 	public void take_shot(double x, double y) {
@@ -333,5 +375,10 @@ public class PuttingSimulator {
 		this.velocity=new Vector2d(0,0);
 		this.shot=0;
 		this.course_put = false;
+	}
+	
+	public void setSolver(int x) {
+		if (x<0 ||x>3) return;
+		solverChoice=x;
 	}
 }
