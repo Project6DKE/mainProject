@@ -11,6 +11,7 @@ public class MergeAI extends NewAI implements PuttingBot {
 	final int popNumber = 10;
 	private Vector2d[] population = new Vector2d[popNumber];
 	double[] fitnessOfPopulation = new double[popNumber];
+	Vector2d[] popDistToFlag = new Vector2d[popNumber];
 	//Vector2d bestShot;
 	
 	// Because the GA will be generated based off final distance to flag
@@ -59,9 +60,11 @@ public class MergeAI extends NewAI implements PuttingBot {
 		// But it requiring 0.0. Place to bugtest later
 		while(bestShotInfo[1] != 0.0) {
 			
-			//this.generatePopulation(shot, distToFlag);
-			
-			
+			/*
+			 * So there's no crossover, but it currently works by generating a shot, randomly generating a new set of shots based off it
+			 * Under the idea that it will go on pinpointing towards the most accurate location as time goes on
+			 */
+			this.generatePopulation(this.population[(int)bestShotInfo[0]], this.popDistToFlag[(int)bestShotInfo[0]]);
 			bestShotInfo = this.findBestCurrentShot();
 		}
 		
@@ -143,7 +146,8 @@ public class MergeAI extends NewAI implements PuttingBot {
 			
 			Vector2d individual = new Vector2d(randomizedX,randomizedY);
 			this.population[i] = individual;
-			this.fitnessOfPopulation[i] = this.getFitness(individual);
+			this.popDistToFlag[i] = this.simulateShot(individual);
+			this.fitnessOfPopulation[i] = this.popDistToFlag[i].get_scalar();
 			
 		}
 	}
