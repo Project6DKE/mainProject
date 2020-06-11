@@ -363,11 +363,21 @@ public class PuttingSimulator {
 		take_shot(new Vector2d(x,y));
 	}
 	
+	public ArrayList<Vector2d> take_shot_list(double x, double y) {
+		return take_shot_list(new Vector2d(x,y));
+	}
+	
 	//Angle has to be in radians
 	public void take_angle_shot(double speed, double angle) {
 		double x = speed*Math.cos(angle);
 		double y = speed*Math.sin(angle);
 		take_shot(x,y);
+	}
+	
+	public ArrayList<Vector2d> take_angle_shot_list(double speed, double angle) {
+		double x = speed*Math.cos(angle);
+		double y = speed*Math.sin(angle);
+		return take_shot_list(x,y);
 	}
 	
 	public Vector2d calculate_acceleration(Vector2d vv) {
