@@ -58,6 +58,7 @@ public class PuttingSimulator {
 		if(solver.equals("euler")) solverChoice=0;
 		else if(solver.equals("rk4")) solverChoice=1;
 		else if(solver.equals("ab3")) solverChoice=2;
+		else if(solver.equals("verlet")) solverChoice=3;
 		else System.out.println("Solver not recognized");
 	}
 	
@@ -84,12 +85,26 @@ public class PuttingSimulator {
 			take_shot_RK(initial_ball_velocity);
 			break;
 		case 2:
-			take_shot_ab3(initial_ball_velocity);
+			take_shot_ab3_list(initial_ball_velocity);
 			break;
 		case 3:
 			take_shot_verlet(initial_ball_velocity);
 			break;
 		}
+	}
+	
+	public ArrayList<Vector2d> take_shot_list(Vector2d initial_ball_velocity){
+		switch(solverChoice) {
+		case 0:
+			return take_shot_euler_list(initial_ball_velocity);
+		case 1:
+			return take_shot_RK_list(initial_ball_velocity);
+		case 2:
+			return take_shot_ab3_list(initial_ball_velocity);
+		case 3:
+			return take_shot_verlet_list(initial_ball_velocity);
+		}
+		return null;
 	}
 	
 	public void take_shot_euler(Vector2d initial_ball_velocity) {
@@ -122,7 +137,7 @@ public class PuttingSimulator {
 			}
 	}
 	
-	public ArrayList<Vector2d> take_shot_list(Vector2d initial_ball_velocity) {
+	public ArrayList<Vector2d> take_shot_euler_list(Vector2d initial_ball_velocity) {
 		ArrayList<Vector2d> ballPath= new ArrayList<Vector2d>();
 		System.out.println("This is shot #"+(++shot));
 		this.velocity=initial_Velocity_Check( initial_ball_velocity);
@@ -192,16 +207,45 @@ public class PuttingSimulator {
 				break;
 			}
 			if(isStop())conti=false;
-//			System.out.println("failed to stop at "+position);
 		}
 		
 		if(course.is_put(position)) {
 			put();
-			System.out.println("You have putted, number of shots: "+shot);
 		}
 	}
 		
-	public ArrayList<Vector2d> take_shot_ab3(Vector2d initial_ball_velocity){
+	public ArrayList<Vector2d> take_shot_RK_list(Vector2d initial_ball_velocity){
+		System.out.println("This is shot #"+(++shot)+"using RK4");
+		ArrayList<Vector2d> ballPath= new ArrayList<Vector2d>();
+		
+		this.velocity=initial_Velocity_Check( initial_ball_velocity);
+		Vector2d temp= position;
+		ballPath.add(position);
+		
+		boolean conti=true;
+		while(conti) {
+			Vector2d[] data=engine.solve_RK(position, velocity);
+			position=data[0];
+			velocity=data[1];
+			ballPath.add(position);
+			if(course.is_water(position)) {
+				System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
+				position=temp;
+				ballPath.add(position);
+				velocity=new Vector2d(0,0);
+				conti=false;
+				return ballPath;
+			}
+			if(isStop())conti=false;
+		}
+		
+		if(course.is_put(position)) {
+			put();
+		}
+		return ballPath;
+	}
+
+	public ArrayList<Vector2d> take_shot_ab3_list(Vector2d initial_ball_velocity){
 		System.out.println("This is shot #"+(++shot)+" using ab3");
 		ArrayList<Vector2d> ballPath= new ArrayList<Vector2d>();
 		
@@ -275,6 +319,41 @@ public class PuttingSimulator {
 		}
 	}
 
+	public ArrayList<Vector2d> take_shot_verlet_list(Vector2d initial_ball_velocity){
+		System.out.println("This is shot #"+(++shot)+"using verlet");	
+		this.velocity = initial_Velocity_Check( initial_ball_velocity);
+		ArrayList<Vector2d> ballPath= new ArrayList<Vector2d>();
+		
+		Vector2d temp= position;
+		ballPath.add(position);
+		boolean conti=true;
+//		int count = 0;
+		while((conti)/* && (count<pointOfAbandon)*/) {
+			Vector2d[] data=engine.solve_Verlet(position, velocity);
+			
+			position=data[0];
+			velocity=data[1];
+			
+			ballPath.add(position);
+			
+			if(course.is_water(position)) {
+				System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
+				position=temp;
+				ballPath.add(position);
+				velocity=new Vector2d(0,0);
+				conti=false;
+				return ballPath;
+			}
+//			count++;	
+			if(isStop()) conti=false;
+		}
+		
+		if(course.is_put(position)) {
+			put();
+		}
+		return ballPath;
+	}
+	
 	public void put() {
 		course_put=true;
 		System.out.println("You have putted, number of shots: "+shot);
@@ -305,7 +384,6 @@ public class PuttingSimulator {
 		else return false;
 	}
 	
-	//Reads shots in the format (x.x, y.y)
 	public void read_shots(String path) {
 		String script[];
 
