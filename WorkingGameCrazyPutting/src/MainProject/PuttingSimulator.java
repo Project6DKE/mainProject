@@ -5,13 +5,11 @@ import java.io.*;
 
 public class PuttingSimulator {
 	private PuttingCourse course;
-	RungeKutta engine;
+	private RungeKutta engine;
 
-	Vector2d position;
-	Vector2d velocity;
-	Vector2d acceleration;
+	private Vector2d position, velocity, acceleration;
 
-	boolean course_put = false;
+	private boolean course_put = false;
 	
 	int shot = 0;
 	private Vector2d stopV = new Vector2d(0.01,0.01);
@@ -95,20 +93,12 @@ public class PuttingSimulator {
 	}
 	
 	public void take_shot_euler(Vector2d initial_ball_velocity) {
-		System.out.println("This is shot #"+(++shot)+"using euler");
-		
-		/*
-		 * This is a system to make sure that a given shot is always going to be less than maxV
-		 * Not hard to implement, kind of weird.
-		 * Assumes that the new value should have the same relation between x and y (so if x is twice y then this new value will do that as well)
-		 * This is done to give a focus to direction when taking a shot that's too strong.
-		 */
-		
+		System.out.println("This is shot #"+(++shot)+"using euler");	
 		this.velocity = initial_Velocity_Check( initial_ball_velocity);
 		
-		//this.velocity=initial_ball_velocity;
 		Vector2d temp= position;
 		boolean conti=true;
+		
 		int count = 0;
 		while((conti) && (count<pointOfAbandon)) {
 			acceleration=course.calculate_acceleration(position, velocity);
@@ -125,11 +115,6 @@ public class PuttingSimulator {
 			count++;
 			
 			if(isStop()) conti=false;
-			
-			
-//			System.out.println("vel: "+velocity.toString());
-//			System.out.println("acc: "+acceleration.toString());
-//			System.out.println("pos: "+position.toString()+"\n");
 		}
 		
 		if(course.is_put(position)) {
@@ -140,17 +125,8 @@ public class PuttingSimulator {
 	public ArrayList<Vector2d> take_shot_list(Vector2d initial_ball_velocity) {
 		ArrayList<Vector2d> ballPath= new ArrayList<Vector2d>();
 		System.out.println("This is shot #"+(++shot));
+		this.velocity=initial_Velocity_Check( initial_ball_velocity);
 		
-		/*
-		 * This is a system to make sure that a given shot is always going to be less than maxV
-		 * Not hard to implement, kind of weird.
-		 * Assumes that the new value should have the same relation between x and y (so if x is twice y then this new value will do that as well)
-		 * This is done to give a focus to direction when taking a shot that's too strong.
-		 */
-		
-		initial_Velocity_Check( initial_ball_velocity);
-		
-		this.velocity=initial_ball_velocity;
 		Vector2d temp= position;
 		boolean conti=true;
 		while(conti) {
@@ -178,6 +154,12 @@ public class PuttingSimulator {
 		return ballPath;
 	}
 	
+	/*
+	 * This is a system to make sure that a given shot is always going to be less than maxV
+	 * Not hard to implement, kind of weird.
+	 * Assumes that the new value should have the same relation between x and y (so if x is twice y then this new value will do that as well)
+	 * This is done to give a focus to direction when taking a shot that's too strong.
+	 */
 	public Vector2d initial_Velocity_Check(Vector2d ballVelocity) {
 		double newX = ballVelocity.get_x();
 		double newY = ballVelocity.get_y();
@@ -185,19 +167,18 @@ public class PuttingSimulator {
 		if(ballVelocity.get_scalar()> maxV) {
 			double temp = ballVelocity.get_x()/ballVelocity.get_y();
 			newY = NegativeRoot((maxV*maxV)/(temp*temp+1));
-			newX = newY*temp;
-			
-			
+			newX = newY*temp;	
 		}
-		
 		return new Vector2d(newX,newY);
 		
 	}
 	
 	public void take_shot_RK(Vector2d initial_ball_velocity) {
 		System.out.println("This is shot #"+(++shot)+"using RK4");
-		this.velocity=initial_ball_velocity;
+		
+		this.velocity=initial_Velocity_Check( initial_ball_velocity);
 		Vector2d temp= position;
+		
 		boolean conti=true;
 		while(conti) {
 			Vector2d[] data=engine.solve_RK(position, velocity);
@@ -223,15 +204,16 @@ public class PuttingSimulator {
 	public ArrayList<Vector2d> take_shot_ab3(Vector2d initial_ball_velocity){
 		System.out.println("This is shot #"+(++shot)+" using ab3");
 		ArrayList<Vector2d> ballPath= new ArrayList<Vector2d>();
-		initial_Velocity_Check( initial_ball_velocity);
+		
+		this.velocity=initial_Velocity_Check( initial_ball_velocity);
 		Vector2d temp= position;
-		velocity=initial_ball_velocity;
 		
 		Vector2d[] initialValues= engine.bootstrap_AB3(position, velocity);
 		velocity=engine.get_velocity();
 		for(int i=0;i<initialValues.length;i++) {
 			position=initialValues[i];
 			ballPath.add(position);
+			
 			if(course.is_water(position)) {
 				System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
 				position=temp;
@@ -239,10 +221,7 @@ public class PuttingSimulator {
 				velocity=new Vector2d(0,0);
 				return ballPath;
 			}
-			if(isStop()) {break;
-			} 
-//			else {System.out.println("failed to stop at "+position);}
-			
+			if(isStop()) break;
 		}
 		
 		boolean conti=true;
@@ -260,15 +239,9 @@ public class PuttingSimulator {
 				return ballPath;
 			}
 			
-			if(isStop()) {conti=false;}
-//			else {System.out.println("failed to stop at "+position);}
+			if(isStop()) conti=false;
 		}
-//		System.out.println("This is shot #"+(++shot)+" using ab3");
-		
-		if(course.is_put(position)) {
-			put();
-			System.out.println("You have putted, number of shots: "+shot);
-		}
+		if(course.is_put(position)) put();
 		
 		return ballPath;
 	}
