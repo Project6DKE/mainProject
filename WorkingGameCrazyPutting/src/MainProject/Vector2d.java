@@ -12,8 +12,20 @@ public class Vector2d {
 		return Math.abs(Math.sqrt(x*x+y*y));
 	}
 	
+	public int getXDirection() {
+		return (int)Math.signum(this.get_x());
+	}
+	
+	public int getYDirection() {
+		return (int)Math.signum(this.get_y());
+	}
+	
 	public double get_distance(Vector2d aVec){
 		return Math.sqrt(Math.pow((this.x-aVec.x),2)+Math.pow((this.y-aVec.y),2));
+	}
+	
+	public Vector2d getVectDist(Vector2d aVec) {
+		return new Vector2d(getXDistance(aVec),getYDistance(aVec));
 	}
 	
 	public double getXDistance(Vector2d aVec) {

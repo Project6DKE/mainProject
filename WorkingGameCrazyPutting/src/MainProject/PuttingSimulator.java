@@ -361,6 +361,10 @@ public class PuttingSimulator {
 	public double distToFlag() {
 		return this.position.get_distance(course.get_flag_position());
 	}
+	
+	public Vector2d distToFlagVector() {
+		return this.position.getVectDist(course.get_flag_position());
+	}
 
 	public PuttingCourse getCourse() {
 		return this.course;
