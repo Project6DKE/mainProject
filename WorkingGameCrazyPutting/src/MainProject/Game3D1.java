@@ -65,11 +65,6 @@ public class Game3D1 extends StackPane{
         playIntroTransition();
     }
 
-
-    public Sphere getBall() {
-        return ball;
-    }
-
     private void playMusic() {
         GameMusic gameMusic = new GameMusic();
         gameMusic.playBackgroundMusic();
@@ -105,14 +100,25 @@ public class Game3D1 extends StackPane{
 
     private void setAll3DObjects() {
         ObjectType flagType = ObjectType.FLAG;
+        flagType.setTranslate(0, 2, 0);
+
         flag = getObject(flagType);
         setFlagPosition();
-        setBall();
+
+        Group blenderObjects = getBlenderObjects();
 
         all3DObjects = new Group();
-        all3DObjects.getChildren().addAll(getBlenderObjects(), flag);
-        all3DObjects.getTransforms().addAll(rotateY, rotateX);
-        all3DObjects.getChildren().addAll(surface, ball);
+        all3DObjects.getChildren().addAll(blenderObjects);
+        all3DObjects.getChildren().add(flag);
+
+
+        all3DObjects.getTransforms().add(rotateY);
+        all3DObjects.getTransforms().add(rotateX);
+
+        setBall();
+
+        all3DObjects.getChildren().add(surface);
+        all3DObjects.getChildren().add(ball);
     }
 
     private void setFlagPosition() {
@@ -157,13 +163,22 @@ public class Game3D1 extends StackPane{
     }
 
     private Group getBlenderObjects() {
-        Group blenderObjects = new Group();
+        Group trees = getTrees();
+        Group arrow = getArrow();
 
-        for (Group grassElement: getGrassArray()) {
+        Group blenderObjects = new Group();
+        blenderObjects.getChildren().add(arrow);
+        blenderObjects.getChildren().add(trees);
+
+        Group[] grassArray = getGrassArray();
+
+        for (Group grassElement: grassArray) {
             blenderObjects.getChildren().add(grassElement);
         }
 
-        blenderObjects.getChildren().addAll(getArrow(), getTrees(), basicPointLight());
+        PointLight pointLight = basicPointLight();
+
+        blenderObjects.getChildren().add(pointLight);
         return blenderObjects;
     }
 
@@ -298,10 +313,10 @@ public class Game3D1 extends StackPane{
     
     private void playHuman() {
     	double angle = rotateY.getAngle();
-        ArrayList<Vector2d> array = PS.take_shot_list(speedInPercent, angle);
         setBallPosition();
+        ArrayList<Vector2d> arrayList = PS.take_shot_list(speedInPercent, angle);
 
-        animationTimer(array);
+        animationTimer(arrayList);
     }
 
     public void animationTimer(ArrayList<Vector2d> array) {
@@ -317,7 +332,7 @@ public class Game3D1 extends StackPane{
                     double y = nextValue.get_y();
 
                     ball.setTranslateX(x);
-                    ball.setTranslateZ(y);
+                    ball.setTranslateZ(-y);
                 }
             }
         };
