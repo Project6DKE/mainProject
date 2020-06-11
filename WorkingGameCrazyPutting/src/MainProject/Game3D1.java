@@ -298,7 +298,7 @@ public class Game3D1 extends StackPane{
     
     private void playHuman() {
     	double angle = rotateY.getAngle();
-        ArrayList<Vector2d> array = PS.take_shot_verlet_list(speedInPercent, angle);
+        ArrayList<Vector2d> array = PS.take_shot_list(speedInPercent, angle);
         setBallPosition();
 
         animationTimer(array);
