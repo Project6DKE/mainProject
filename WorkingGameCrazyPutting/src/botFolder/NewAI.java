@@ -23,7 +23,7 @@ public class NewAI implements PuttingBot {
     
     
     
-    static final double STEPSIZE = 10;
+    static final double STEPSIZE = 50;
     //EulerSolver odeSolver;
     RungeKutta odeSolver;
 
