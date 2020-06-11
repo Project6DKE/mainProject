@@ -1,10 +1,13 @@
 package MainProject;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 
 import botFolder.GA;
+import javafx.animation.AnimationTimer;
 import javafx.scene.transform.*;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
@@ -89,11 +92,11 @@ public class Game3D1 extends StackPane{
         VBox control = getControl();
         translateAll3DObjects();
 
-        HBox cubebox = new HBox();
-        cubebox.getChildren().add(all3DObjects);
+        HBox container3D = new HBox();
+        container3D.getChildren().add(all3DObjects);
 
         VBox mainbox = new VBox();
-        mainbox.getChildren().add(cubebox);
+        mainbox.getChildren().add(container3D);
         mainbox.getChildren().add(control);
 
         setScene(mainbox);
@@ -102,25 +105,14 @@ public class Game3D1 extends StackPane{
 
     private void setAll3DObjects() {
         ObjectType flagType = ObjectType.FLAG;
-        flagType.setTranslate(0, 2, 0);
-
         flag = getObject(flagType);
         setFlagPosition();
-
-        Group blenderObjects = getBlenderObjects();
-
-        all3DObjects = new Group();
-        all3DObjects.getChildren().addAll(blenderObjects);
-        all3DObjects.getChildren().add(flag);
-
-
-        all3DObjects.getTransforms().add(rotateY);
-        all3DObjects.getTransforms().add(rotateX);
-
         setBall();
 
-        all3DObjects.getChildren().add(surface);
-        all3DObjects.getChildren().add(ball);
+        all3DObjects = new Group();
+        all3DObjects.getChildren().addAll(getBlenderObjects(), flag);
+        all3DObjects.getTransforms().addAll(rotateY, rotateX);
+        all3DObjects.getChildren().addAll(surface, ball);
     }
 
     private void setFlagPosition() {
@@ -165,22 +157,13 @@ public class Game3D1 extends StackPane{
     }
 
     private Group getBlenderObjects() {
-        Group trees = getTrees();
-        Group arrow = getArrow();
-
         Group blenderObjects = new Group();
-        blenderObjects.getChildren().add(arrow);
-        blenderObjects.getChildren().add(trees);
 
-        Group[] grassArray = getGrassArray();
-
-        for (Group grassElement: grassArray) {
+        for (Group grassElement: getGrassArray()) {
             blenderObjects.getChildren().add(grassElement);
         }
 
-        PointLight pointLight = basicPointLight();
-
-        blenderObjects.getChildren().add(pointLight);
+        blenderObjects.getChildren().addAll(getArrow(), getTrees(), basicPointLight());
         return blenderObjects;
     }
 
@@ -226,11 +209,7 @@ public class Game3D1 extends StackPane{
         String strokeString = "Stroke : " + stroke;
         strokeLabel = createStandardLabel(strokeString, labelSize, prefWidth);
 
-        Node[] controlElements = {angleLabel, speedLabel, strokeLabel};
-
-        for (Node node: controlElements) {
-            control.getChildren().addAll(node);
-        }
+        control.getChildren().addAll(angleLabel, speedLabel, strokeLabel);
 
         control.setAlignment(Pos.TOP_LEFT);
         control.setTranslateX(0);
@@ -319,8 +298,31 @@ public class Game3D1 extends StackPane{
     
     private void playHuman() {
     	double angle = rotateY.getAngle();
-        PS.take_angle_shot(speedInPercent, angle);
+        ArrayList<Vector2d> array = PS.take_shot_verlet_list(speedInPercent, angle);
         setBallPosition();
+
+        animationTimer(array);
+    }
+
+    public void animationTimer(ArrayList<Vector2d> array) {
+        Iterator<Vector2d> iterator = array.iterator();
+
+        AnimationTimer timer = new AnimationTimer() {
+
+            @Override
+            public void handle(long now) {
+                if (iterator.hasNext()) {
+                    Vector2d nextValue = iterator.next();
+                    double x = nextValue.get_x();
+                    double y = nextValue.get_y();
+
+                    ball.setTranslateX(x);
+                    ball.setTranslateZ(y);
+                }
+            }
+        };
+
+        timer.start();
     }
     
     private void playGeneticAlgorithm() {
@@ -332,13 +334,6 @@ public class Game3D1 extends StackPane{
         setBallPosition();
     }
 
-    private void putBallAtBounds() {
-        // The diameter of the field equals 960;
-        // If we use the translateX
-        // And translateZ functions on the ball
-        // We can reach the bounds by ball.translateZ(480) or ball.translateZ(-480)
-        // The step size can be 1 or 2
-    }
 
     private void detectZoomWithScroll() {
         main.main3DGame.addEventHandler(ScrollEvent.SCROLL, scrollEvent -> {
