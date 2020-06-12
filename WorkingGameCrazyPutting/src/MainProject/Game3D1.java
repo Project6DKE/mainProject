@@ -50,6 +50,7 @@ public class Game3D1 extends StackPane{
 
     private enum controlType {ANGLE, SPEED};
     private Group surface;
+    private boolean ballMoving = false;
 
 
     public Game3D1(Main main, PuttingCourse PC, GameType gameType) {
@@ -275,8 +276,10 @@ public class Game3D1 extends StackPane{
                     controlMode = controlType.SPEED;
                     break;
                 case ENTER:
-                    playGame();
-                    setBallPosition();
+                    if (!ballMoving) {
+                        playGame();
+                        setBallPosition();
+                    }
                     break;
             }
         });
@@ -313,8 +316,9 @@ public class Game3D1 extends StackPane{
     
     private void playHuman() {
     	double angle = rotateY.getAngle();
+    	double constant = 0.000001;
         setBallPosition();
-        ArrayList<Vector2d> arrayList = PS.take_shot_list(speedInPercent, angle);
+        ArrayList<Vector2d> arrayList = PS.take_shot_list(speedInPercent, formatAngle(angle) + constant);
 
         animationTimer(arrayList);
     }
@@ -328,11 +332,16 @@ public class Game3D1 extends StackPane{
             public void handle(long now) {
                 if (iterator.hasNext()) {
                     Vector2d nextValue = iterator.next();
-                    double x = nextValue.get_x();
-                    double y = nextValue.get_y();
+                    double x = nextValue.get_x() * 30;
+                    double y = nextValue.get_y() * 30;
 
                     ball.setTranslateX(x);
-                    ball.setTranslateZ(-y);
+                    ball.setTranslateZ(y);
+
+                    System.out.println("thinking");
+                    ballMoving = true;
+                } else {
+                    ballMoving = false;
                 }
             }
         };

@@ -9,7 +9,7 @@ import MainProject.Vector2d;
 public class GA implements PuttingBot{
 	private static int number_of_gen = 150;
     private static double middle;
-    private static int size_initpopulation = 250;	
+    private static int size_initpopulation = 200;	
     private static final int param = 2;
     private double mutationrate = 0.1;    
     private double distancefromhole;
@@ -125,12 +125,12 @@ public class GA implements PuttingBot{
     }
     
     public double crossover_angle(double angle1, double angle2){
-        double newangle = ((4 * angle1) + (6 * angle2))/10;
+        double newangle = ((6 * angle1) + (4 * angle2))/10;
         return newangle;
     }
 
     public double crossover_speed(double speed1, double speed2) {
-        double newspeed = ((4 * speed1) + (6 * speed2))/10;
+        double newspeed = ((6 * speed1) + (4 * speed2))/10;
         return newspeed;
     }
     
