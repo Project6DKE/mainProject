@@ -80,7 +80,7 @@ public class Main extends Application {
             vmax = 3;
             tol = 0.2;
 
-            PuttingCourse course = new PuttingCourse(height, flag, start, mu, vmax, tol, g, m);
+            PuttingCourse course = new PuttingCourse(height, start, flag, mu, vmax, tol, g, m);
 
             if (newCourse) {
                 try {
@@ -426,8 +426,8 @@ public class Main extends Application {
         box3.setAlignment(Pos.CENTER_LEFT);
         box3.setSpacing(30);
 
-        TextField ballSpeedField = new TextField();
-        ballSpeedField.setPromptText("Enter ball speed");
+        TextField maxBallSpeedField = new TextField();
+        maxBallSpeedField.setPromptText("Enter ball speed");
         TextField goalXField = new TextField();
         goalXField.setPromptText("Enter goal X");
         TextField goalYField = new TextField();
@@ -439,35 +439,40 @@ public class Main extends Application {
         Button run = new Button("run");
         run.setFont(basicFont);
         run.setPrefWidth(200);
-        box4.getChildren().addAll(ballSpeedField, goalXField, goalYField,
+        box4.getChildren().addAll(maxBallSpeedField, goalXField, goalYField,
                                   functionField, gravityField, run);
         box4.setAlignment(Pos.CENTER);
         box4.setSpacing(30);
 
         run.setOnAction(new EventHandler<ActionEvent>() {
-
             public void handle(ActionEvent event) {
                 musicPlayer.playClickSound();
 
-                // TODO connect this directly the PuttingCourse instead of the CourseData class
-                CourseData.mass = Double.parseDouble(massField.getText());
-                CourseData.friction = Double.parseDouble(frictionField.getText());
-                CourseData.holeDist = Double.parseDouble(holeDistanceField.getText());
-                CourseData.startX = Integer.parseInt(startXField.getText());
-                CourseData.startY = Integer.parseInt(startYField.getText());
-                CourseData.fileName = filenameField.getText();
-                CourseData.ballSpeed = Double.parseDouble(ballSpeedField.getText());
-                CourseData.goalX = Integer.parseInt(goalXField.getText());
-                CourseData.goalY = Integer.parseInt(goalYField.getText());
-                CourseData.function = functionField.getText();
-                CourseData.gravity = Double.parseDouble(gravityField.getText());
+                double mass = fieldToDouble(massField);
+                double friction = fieldToDouble(frictionField);
+                double holeDist = fieldToDouble(holeDistanceField);
+                int startX = fieldToInt(startXField);
+                int startY = fieldToInt(startYField);
+                String filename = filenameField.getText();
+                double maxBallVelocity = fieldToDouble(maxBallSpeedField);
+                int goalX = fieldToInt(goalXField);
+                int goalY = fieldToInt(goalYField);
+                String function = functionField.getText();
+                double gravity = fieldToDouble(gravityField);
 
-                CourseData.printAllData();
+                Object[] parameterList = {mass, friction, holeDist, startX, startY, filename, maxBallVelocity,
+                                        function, gravity};
+
+                printAll(parameterList);
 
                 try {
-                    courseNew = new PuttingCourse(new FunctionH(CourseData.function), new Vector2d(CourseData.goalX, CourseData.goalY),
-                            new Vector2d(CourseData.startX, CourseData.startY), CourseData.friction, CourseData.ballSpeed,
-                            CourseData.holeDist, CourseData.gravity, CourseData.mass);
+                    FunctionH functionH = new FunctionH(function);
+                    Vector2d startCoordinates = new Vector2d(startX, startY);
+                    Vector2d goalCoordinates = new Vector2d(goalX, goalY);
+
+                    courseNew = new PuttingCourse(functionH, startCoordinates,
+                            goalCoordinates, friction, maxBallVelocity,
+                            holeDist, gravity, mass);
                     newCourse = true;
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
@@ -482,6 +487,22 @@ public class Main extends Application {
         mainbox1.getChildren().addAll(title, empty2, box);
         mainbox1.setAlignment(Pos.CENTER);
         return mainbox1;
+    }
+
+    private double fieldToDouble(TextField field) {
+        String text = field.getText();
+        return Double.parseDouble(text);
+    }
+
+    private int fieldToInt(TextField field) {
+        String text = field.getText();
+        return Integer.parseInt(text);
+    }
+
+    private void printAll(Object[] array) {
+        for (Object element: array) {
+            System.out.println(element);
+        }
     }
 
     private String capitalize(String text) {
