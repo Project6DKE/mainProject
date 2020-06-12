@@ -73,7 +73,6 @@ public class Main extends Application {
             Vector2d flag = new Vector2d(0, 3);
             Vector2d start = new Vector2d(0, 0);
 
-            // TODO move default variables into the CourseData class
             double g, m, mu, vmax, tol;
             g = 9.81;
             m = 45.93 / 1000;
@@ -450,6 +449,7 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 musicPlayer.playClickSound();
 
+                // TODO connect this directly the PuttingCourse instead of the CourseData class
                 CourseData.mass = Double.parseDouble(massField.getText());
                 CourseData.friction = Double.parseDouble(frictionField.getText());
                 CourseData.holeDist = Double.parseDouble(holeDistanceField.getText());
