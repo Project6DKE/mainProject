@@ -13,7 +13,6 @@ public class NewAI implements PuttingBot {
     //Vector2d modFlag;
     
     Vector2d lastBallPosition;
-    Vector2d currentBallPosition;
     
     static final double STOP0 = 0.00000000000001;
     
@@ -31,7 +30,6 @@ public class NewAI implements PuttingBot {
         this.theGame = simulator;
         this.theCourse = simulator.getCourse();
         this.flag = simulator.getCourse().get_flag_position();
-        this.currentBallPosition = simulator.get_ball_position();
         //this.odeSolver = new EulerSolver();
         this.odeSolver = new RungeKutta();
     }
@@ -42,7 +40,7 @@ public class NewAI implements PuttingBot {
     
     public void takeShot() {
     	
-    	this.currentBallPosition = theGame.get_ball_position();
+    	Vector2d initBallPosition = theGame.get_ball_position();
     	
     	
     	//List<Vector2d> posList = new ArrayList<>();
@@ -50,8 +48,8 @@ public class NewAI implements PuttingBot {
     	//Vector2d modFlag = new Vector2d(this.flag.get_x()-velocity.get_x(),this.flag.get_x()-velocity.get_y());
     	
     	
-    	double xdist = flag.getXDistance(currentBallPosition);
-    	double ydist = flag.getYDistance(currentBallPosition);
+    	double xdist = flag.getXDistance(initBallPosition);
+    	double ydist = flag.getYDistance(initBallPosition);
     	
     	/*
     	 * If one of the dist is 0 it causes problems
@@ -124,13 +122,12 @@ public class NewAI implements PuttingBot {
     @Override
 	public Vector2d shot_velocity(PuttingCourse course, Vector2d ball_position) {
 		
-		this.currentBallPosition = ball_position;
 		this.flag = course.get_flag_position();
 		this.theCourse = course;
     	  	
     	
-    	double xdist = flag.getXDistance(currentBallPosition);
-    	double ydist = flag.getYDistance(currentBallPosition);
+    	double xdist = flag.getXDistance(ball_position);
+    	double ydist = flag.getYDistance(ball_position);
     	
     	/*
     	 * If one of the dist is 0 it causes problems
@@ -141,6 +138,7 @@ public class NewAI implements PuttingBot {
     	
     	Vector2d velocity = new Vector2d(vx0, vy0);
     	
+    	// Slightly modifiying the target so that it in theory becomes more accurate
     	xdist = xdist + vx0;
     	ydist = ydist + vy0;
     	
@@ -202,6 +200,45 @@ public class NewAI implements PuttingBot {
 		
 		
 	}
+    
+    public Vector2d aimedShot(PuttingCourse course, Vector2d ball_position, Vector2d objective) {
+    	this.theCourse = course;
+    	
+    	double xdist = objective.getXDistance(ball_position);
+    	double ydist = objective.getYDistance(ball_position);
+    	
+    	double vx0 = Math.signum(-xdist)*STOP0;
+    	double vy0 = Math.signum(-ydist)*STOP0;
+    	
+    	Vector2d velocity = new Vector2d(vx0, vy0);
+    	
+    	double xStep = xdist/STEPSIZE;
+    	double yStep = ydist/STEPSIZE;
+    	
+    	for(int i=0; i<STEPSIZE;i++) {
+    		double newX = objective.get_x()+i*xStep;
+    		double newY = objective.get_y()+i*yStep;
+    		
+    		
+    		
+    		Vector2d newDist = new Vector2d(-xStep,-yStep);
+    		
+    		Vector2d newPos = new Vector2d(newX,newY);
+    		
+    		Vector2d accelStep = course.calculate_acceleration(newPos, velocity);
+    		
+    		Vector2d vf= velocity;
+    		
+    		velocity = findV0(velocity, accelStep, newDist);
+    		
+    		//movement = findNewD(vf,velocity,accelStep);
+    		
+    		
+    	}
+    	
+    	return velocity;
+    	
+    }
 
     
     public static Vector2d findV0(Vector2d vf, Vector2d accel, Vector2d dist) {
