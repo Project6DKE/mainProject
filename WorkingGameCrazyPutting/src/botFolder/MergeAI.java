@@ -12,12 +12,12 @@ public class MergeAI extends NewAI implements PuttingBot {
 	private Vector2d[] population = new Vector2d[popNumber];
 	double[] fitnessOfPopulation = new double[popNumber];
 	Vector2d[] popDistToFlag = new Vector2d[popNumber];
-	//Vector2d bestShot;
+	Vector2d bestShot;
 	
 	// Because the GA will be generated based off final distance to flag
 	// It's a good idea to play around with how the shot should be modified relative to the distance
 	// With an amplificationFactor of 2 meaning the shot will vary twice as much in X and Y values
-	final double amplificationFactor = 1.5;
+	final double amplificationFactor = 1;
 	
 	MergeAI(){
 		super();
@@ -35,16 +35,30 @@ public class MergeAI extends NewAI implements PuttingBot {
 		
 		// Add an extra check here in case the original shot is already perfect
 		
+		
+		this.generatePopulation(initShot, margin);
 		/*
 		 * Method here will take care of finding a shot that is perfect
 		 */
-		this.generatePopulation(initShot, margin);
+		
 		
 		/*
 		 * It's a place holder, as it stands it just gets the best shot out of the first 10 generated shots
 		 */
+		// In best the 0 is the index of the shot
+		// The 1 is the fitness of the shot
 		double[] best = this.findBestCurrentShot();
-		return this.population[(int) best[0]];
+		
+		// Check to make sure the best fit is = 0
+		while(best[1] != 0.0) {
+			Vector2d newError = this.simulateShot(bestShot);
+			this.generatePopulation(bestShot, newError);
+			best = this.findBestCurrentShot();
+			
+		}
+		
+		
+		return this.bestShot;
 		
 	}
 	
@@ -66,6 +80,7 @@ public class MergeAI extends NewAI implements PuttingBot {
 			 */
 			this.generatePopulation(this.population[(int)bestShotInfo[0]], this.popDistToFlag[(int)bestShotInfo[0]]);
 			bestShotInfo = this.findBestCurrentShot();
+			this.bestShot= this.population[(int)bestShotInfo[0]];
 		}
 		
 		return this.population[(int) bestShotInfo[0]];
@@ -100,6 +115,7 @@ public class MergeAI extends NewAI implements PuttingBot {
 				bestShotnFit[0] = i;
 			}
 		}
+		this.bestShot= this.population[(int)bestShotnFit[0]];
 		
 		return bestShotnFit;
 		
@@ -142,7 +158,7 @@ public class MergeAI extends NewAI implements PuttingBot {
 	public void generatePopulation(Vector2d shot, Vector2d distToFlag) {
 		for(int i=0; i<this.population.length; i++) {
 			double randomizedX = amplificationFactor*generateRandomNumber(distToFlag.get_x()) + shot.get_x();
-			double randomizedY = amplificationFactor*generateRandomNumber(distToFlag.get_y()) + shot.get_x();
+			double randomizedY = amplificationFactor*generateRandomNumber(distToFlag.get_y()) + shot.get_y();
 			
 			Vector2d individual = new Vector2d(randomizedX,randomizedY);
 			this.population[i] = individual;
