@@ -361,10 +361,12 @@ public class Game3D1 extends StackPane{
     
     private void playGeneticAlgorithm() {
         GA genAlgo = new GA(PS);
-        double[] shot = new double [2];
+        double[] shot;
         Vector2d ballP = PS.get_ball_position();
+
         shot = genAlgo.runGA(ballP);
-        PS.take_angle_shot(shot[0], shot[1]);
+        ArrayList<Vector2d> arrayList = PS.take_angle_shot_list(shot[0], shot[1]);
+        animationTimer(arrayList);
         setBallPosition();
     }
 
@@ -376,7 +378,6 @@ public class Game3D1 extends StackPane{
 
             final double translateZ = all3DObjects.getTranslateZ();
 
-            System.out.println(translateZ);
             final double zoom = getZoom(scrollEvent);
 
             final boolean outOfMinZoomBound = translateZ < minZoom;
