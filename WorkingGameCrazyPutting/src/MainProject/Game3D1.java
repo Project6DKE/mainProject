@@ -129,7 +129,7 @@ public class Game3D1 extends StackPane{
         Vector2d flagPosition = PS.getCourse().get_flag_position();
         double positionX = flagPosition.get_x();
         double positionY = PS.getCourse().get_height().evaluate(flagPosition) - 4;
-        double positionZ = flagPosition.get_y() - 5;
+        double positionZ = flagPosition.get_y() - 3;
 
         Translate translate = new Translate(positionX, positionY, positionZ);
 
