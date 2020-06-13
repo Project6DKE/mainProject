@@ -29,8 +29,8 @@ public class Game3D1 extends StackPane{
     private Group all3DObjects;
     private final Main main;
 
-    private double speedValue = 10000;
-    private int speedInPercent = 33;
+    private double speedValue = 20000;
+    private int speed = 66;
 
     private int stroke = 0;
 
@@ -52,10 +52,13 @@ public class Game3D1 extends StackPane{
     private Group surface;
     private boolean ballMoving = false;
 
+    private final PuttingCourse puttingCourse;
+
 
     public Game3D1(Main main, PuttingCourse PC, GameType gameType) {
         this.main = main;
         this.gameType = gameType;
+        this.puttingCourse = PC;
         PS = new PuttingSimulator(PC, new RungeKutta());
 
         playMusic();
@@ -149,9 +152,9 @@ public class Game3D1 extends StackPane{
 
 
     private void translateAll3DObjects() {
-        all3DObjects.setTranslateX(400);
+        all3DObjects.setTranslateX(0);
         all3DObjects.setTranslateY(1800);
-        all3DObjects.setTranslateZ(-100);
+        all3DObjects.setTranslateZ(-720);
     }
 
     private void setCam() {
@@ -215,7 +218,7 @@ public class Game3D1 extends StackPane{
         int labelSize = 20;
         int prefWidth = 250;
 
-        String speedText = "Speed: " + speedInPercent + "%";
+        String speedText = "Speed: " + speed + "%";
         speedLabel = createStandardLabel(speedText, labelSize, prefWidth);
 
         double angle = formatAngle(rotateY.getAngle());
@@ -271,16 +274,16 @@ public class Game3D1 extends StackPane{
 
     private void keyboardControlListener() {
         main.main3DGame.setOnKeyPressed(keyEvent -> {
-            switch (keyEvent.getCode()){
-                case SHIFT:
-                    controlMode = controlType.SPEED;
-                    break;
-                case ENTER:
-                    if (!ballMoving) {
+            if (!ballMoving) {
+                switch (keyEvent.getCode()) {
+                    case SHIFT:
+                        controlMode = controlType.SPEED;
+                        break;
+                    case ENTER:
                         playGame();
                         setBallPosition();
-                    }
-                    break;
+                        break;
+                }
             }
         });
 
@@ -316,9 +319,15 @@ public class Game3D1 extends StackPane{
     
     private void playHuman() {
     	double angle = rotateY.getAngle();
-    	double constant = 0.000001;
         setBallPosition();
-        ArrayList<Vector2d> arrayList = PS.take_shot_list(speedInPercent, formatAngle(angle) + constant);
+
+        double maxVelocity = puttingCourse.get_maximum_velocity();
+        double speedInPercents = ((double) speed) / 100;
+
+        double speed = speedInPercents * maxVelocity;
+        double formattedAngle = formatAngle(angle);
+
+        ArrayList<Vector2d> arrayList = PS.take_angle_shot_list(speed, formattedAngle);
 
         animationTimer(arrayList);
     }
@@ -330,15 +339,16 @@ public class Game3D1 extends StackPane{
 
             @Override
             public void handle(long now) {
+
                 if (iterator.hasNext()) {
                     Vector2d nextValue = iterator.next();
-                    double x = nextValue.get_x() * 30;
-                    double y = nextValue.get_y() * 30;
+                    double x = nextValue.get_x() * 50;
+                    double y = nextValue.get_y() * 50;
+                    nextValue.get_scalar();
 
-                    ball.setTranslateX(x);
-                    ball.setTranslateZ(y);
+                    ball.setTranslateX(-x);
+                    ball.setTranslateZ(-y);
 
-                    System.out.println("thinking");
                     ballMoving = true;
                 } else {
                     ballMoving = false;
@@ -361,25 +371,32 @@ public class Game3D1 extends StackPane{
 
     private void detectZoomWithScroll() {
         main.main3DGame.addEventHandler(ScrollEvent.SCROLL, scrollEvent -> {
-            final double minZoom = -900;
-            final double maxZoom = -100;
+            final double minZoom = -1100;
+            final double maxZoom = -700;
 
             final double translateZ = all3DObjects.getTranslateZ();
+
+            System.out.println(translateZ);
             final double zoom = getZoom(scrollEvent);
 
             final boolean outOfMinZoomBound = translateZ < minZoom;
+
             final boolean returningBackFromMinZoomBound = zoom > 0;
 
-            if (outOfMinZoomBound && returningBackFromMinZoomBound) {
-                applyZoom(zoom);
+            if (outOfMinZoomBound) {
+                if (returningBackFromMinZoomBound) {
+                    applyZoom(zoom);
+                }
                 return;
             }
 
             final boolean outOfMaxZoomBound = translateZ > maxZoom;
-            final boolean returningBackFromMaxZoomBound = zoom > 0;
+            final boolean returningBackFromMaxZoomBound = zoom < 0;
 
-            if (outOfMaxZoomBound && returningBackFromMaxZoomBound) {
-                applyZoom(zoom);
+            if (outOfMaxZoomBound) {
+                if (returningBackFromMaxZoomBound) {
+                    applyZoom(zoom);
+                }
                 return;
             }
 
@@ -437,7 +454,7 @@ public class Game3D1 extends StackPane{
                 break;
             case SPEED:
                 calculateSpeed(dragEvent);
-                speedLabel.setText("Speed: " + speedInPercent + "%");
+                speedLabel.setText("Speed: " + speed + "%");
                 break;
         }
     }
@@ -472,7 +489,7 @@ public class Game3D1 extends StackPane{
             speedValue = 0;
         }
 
-        speedInPercent = (int) ((speedValue / 30000) * 100);
+        speed = (int) ((speedValue / 30000) * 100);
     }
 
     private Group getGrass(double x, double y, double z) {
