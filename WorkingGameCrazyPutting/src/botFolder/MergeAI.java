@@ -11,12 +11,17 @@ public class MergeAI extends NewAI implements PuttingBot {
 	final int popNumber = 10;
 	private Vector2d[] population = new Vector2d[popNumber];
 	double[] fitnessOfPopulation = new double[popNumber];
-	//Vector2d bestShot;
+	Vector2d[] popDistToFlag = new Vector2d[popNumber];
+	Vector2d bestShot;
+	Vector2d initialBallPosition;
 	
 	// Because the GA will be generated based off final distance to flag
 	// It's a good idea to play around with how the shot should be modified relative to the distance
 	// With an amplificationFactor of 2 meaning the shot will vary twice as much in X and Y values
-	final double amplificationFactor = 1.5;
+	final double amplificationFactor = 1;
+	
+	// Epsilon to decide accuracy when aiming a shot towards a specific spot different than the flag
+	final double epsilon = 0.004;
 	
 	MergeAI(){
 		super();
@@ -28,22 +33,57 @@ public class MergeAI extends NewAI implements PuttingBot {
 		 * PlaceHolder, I'll add the method and make everything better in a sec
 		 */
 		
+		this.initialBallPosition = ball_position;
 		this.sim = new PuttingSimulator(course, new RungeKutta());
 		Vector2d initShot = super.shot_velocity(course, ball_position);
 		Vector2d margin = this.simulateShot(initShot);
 		
 		// Add an extra check here in case the original shot is already perfect
 		
-		/*
-		 * Method here will take care of finding a shot that is perfect
-		 */
+		
 		this.generatePopulation(initShot, margin);
 		
-		/*
-		 * It's a place holder, as it stands it just gets the best shot out of the first 10 generated shots
-		 */
+		
+		
+		// In best the 0 is the index of the shot
+		// The 1 is the fitness of the shot
 		double[] best = this.findBestCurrentShot();
-		return this.population[(int) best[0]];
+		
+		// Check to make sure the best fit is = 0
+		while(best[1] != 0.0) {
+			Vector2d newError = this.simulateShot(bestShot);
+			this.generatePopulation(bestShot, newError);
+			best = this.findBestCurrentShot();
+			
+		}
+		
+		
+		return this.bestShot;
+		
+	}
+	
+	public Vector2d findAimedShot(PuttingCourse course, Vector2d ball_position, Vector2d ballObjective) {
+	
+		this.initialBallPosition = ball_position;
+		Vector2d initShot = super.aimedShot(course, ball_position, ballObjective);
+		this.sim = new PuttingSimulator(course, new RungeKutta());
+		this.sim.set_ball_position(ball_position);
+		
+		Vector2d margin = this.simulateAimedShot(initShot, ballObjective);
+		
+		
+		this.generatePopulationAimed(initShot, margin, ballObjective);
+		
+		double[] best = this.findBestCurrentShot();
+		
+		while(best[1] > epsilon) {
+			int bestLocation = (int)best[0];
+			Vector2d currentError = this.popDistToFlag[bestLocation];
+			this.generatePopulationAimed(bestShot, currentError, ballObjective);
+			
+		}
+		
+		return this.bestShot;
 		
 	}
 	
@@ -59,29 +99,25 @@ public class MergeAI extends NewAI implements PuttingBot {
 		// But it requiring 0.0. Place to bugtest later
 		while(bestShotInfo[1] != 0.0) {
 			
-			//this.generatePopulation(shot, distToFlag);
-			
-			
+			/*
+			 * So there's no crossover, but it currently works by generating a shot, randomly generating a new set of shots based off it
+			 * Under the idea that it will go on pinpointing towards the most accurate location as time goes on
+			 */
+			this.generatePopulation(this.population[(int)bestShotInfo[0]], this.popDistToFlag[(int)bestShotInfo[0]]);
 			bestShotInfo = this.findBestCurrentShot();
+			this.bestShot= this.population[(int)bestShotInfo[0]];
 		}
 		
 		return this.population[(int) bestShotInfo[0]];
 		
 	}
 	
-	public void crossover() {
-		/*
-		 * I'll make half of the fittest individuals cross over
-		 */
-		
-		int[] sortedShots = this.sortShotsByFit();
-		
-		for(int i=0; i<this.population.length/2;i++) {
-			int indv1 = (int) Math.random()*this.popNumber/2;
-			int indv2 = (int) Math.random()*this.popNumber/2;
-			
-		}
-		
+	/*
+	 * Resets the sim and changes the ball position to be = to the initial given position
+	 */
+	public void resetSimWithDifferentBallPosition() {
+		this.sim.restart_simulation();
+		this.sim.set_ball_position(initialBallPosition);
 	}
 	
 	double[] findBestCurrentShot() {
@@ -97,6 +133,7 @@ public class MergeAI extends NewAI implements PuttingBot {
 				bestShotnFit[0] = i;
 			}
 		}
+		this.bestShot= this.population[(int)bestShotnFit[0]];
 		
 		return bestShotnFit;
 		
@@ -139,11 +176,25 @@ public class MergeAI extends NewAI implements PuttingBot {
 	public void generatePopulation(Vector2d shot, Vector2d distToFlag) {
 		for(int i=0; i<this.population.length; i++) {
 			double randomizedX = amplificationFactor*generateRandomNumber(distToFlag.get_x()) + shot.get_x();
-			double randomizedY = amplificationFactor*generateRandomNumber(distToFlag.get_y()) + shot.get_x();
+			double randomizedY = amplificationFactor*generateRandomNumber(distToFlag.get_y()) + shot.get_y();
 			
 			Vector2d individual = new Vector2d(randomizedX,randomizedY);
 			this.population[i] = individual;
-			this.fitnessOfPopulation[i] = this.getFitness(individual);
+			this.popDistToFlag[i] = this.simulateShot(individual);
+			this.fitnessOfPopulation[i] = this.popDistToFlag[i].get_scalar();
+			
+		}
+	}
+	
+	public void generatePopulationAimed(Vector2d shot, Vector2d margin, Vector2d objective) {
+		for(int i=0; i<this.population.length;i++) {
+			double randomizedX = amplificationFactor*generateRandomNumber(margin.get_x()) + shot.get_x();
+			double randomizedY = amplificationFactor*generateRandomNumber(margin.get_y()) + shot.get_y();
+			Vector2d individual = new Vector2d(randomizedX, randomizedY);
+			
+			this.population[i] = individual;
+			this.popDistToFlag[i] = this.simulateAimedShot(shot, objective);
+			this.fitnessOfPopulation[i] = this.popDistToFlag[i].get_scalar();
 			
 		}
 	}
@@ -161,8 +212,19 @@ public class MergeAI extends NewAI implements PuttingBot {
 			res = sim.distToFlagVector();
 		}
 		
-		sim.restart_simulation();
+		this.resetSimWithDifferentBallPosition();
 		return res;
+	}
+	
+	// Aiming at something different than the flag
+	public Vector2d simulateAimedShot(Vector2d shot, Vector2d objective) {
+		this.sim.take_shot(shot);
+		
+		Vector2d res = sim.get_ball_position().getVectDist(objective);
+		this.resetSimWithDifferentBallPosition();
+		
+		return res;
+		
 	}
 	
 	// Generates a random double such that 
@@ -181,6 +243,11 @@ public class MergeAI extends NewAI implements PuttingBot {
 		
 	}
 	
+	/*
+	 * Generates a random value between 0-100
+	 * If rvalue < chance then return true
+	 * Else return false
+	 */
 	static boolean takeChance(double chance) {
 		double num = Math.random()*100.0;
 		

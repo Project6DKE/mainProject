@@ -48,9 +48,10 @@ public class Tester {
 //			
 //		}
 		
-		Vector2d initial_ball_velocity= new Vector2d(2,2);
+		Vector2d initial_ball_velocity= new Vector2d(0,2);
 		
-		s.take_shot(initial_ball_velocity);
+//		s.take_shot(0,2);
+		s.take_angle_shot(1,90);
 		
 //		
 		System.out.println(s.get_ball_position().toString());

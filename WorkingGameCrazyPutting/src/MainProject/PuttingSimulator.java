@@ -367,16 +367,23 @@ public class PuttingSimulator {
 		return take_shot_list(new Vector2d(x,y));
 	}
 	
-	//Angle has to be in radians
+	//Angle has to be in degrees
 	public void take_angle_shot(double speed, double angle) {
+		angle=angle*Math.PI/180;
 		double x = speed*Math.cos(angle);
 		double y = speed*Math.sin(angle);
+		x=Math.round(x*1000000000)/1000000000;
+		y=Math.round(y*1000000000)/1000000000;
+//		System.out.println("angle in rad is:"+ angle+"x: "+x+" y:"+y);
 		take_shot(x,y);
 	}
 	
 	public ArrayList<Vector2d> take_angle_shot_list(double speed, double angle) {
+		angle=angle*Math.PI/180;
 		double x = speed*Math.cos(angle);
 		double y = speed*Math.sin(angle);
+		x=Math.round(x*1000000000)/1000000000;
+		y=Math.round(y*1000000000)/1000000000;
 		return take_shot_list(x,y);
 	}
 	
@@ -389,8 +396,7 @@ public class PuttingSimulator {
 	}
 	
 	public boolean isStop() {
-		if(velocity.get_scalar()<stopV.get_scalar() && calculate_acceleration(position,new Vector2d(0,0)).get_scalar()< 0.01) 
-			return true;
+		if(velocity.get_scalar()<stopV.get_scalar() && calculate_acceleration(position,new Vector2d(0,0)).get_scalar()< 0.01) return true;
 		else return false;
 	}
 	
