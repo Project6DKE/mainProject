@@ -372,6 +372,9 @@ public class PuttingSimulator {
 		angle=angle*Math.PI/180;
 		double x = speed*Math.cos(angle);
 		double y = speed*Math.sin(angle);
+		x=Math.round(x*1000000000)/1000000000;
+		y=Math.round(y*1000000000)/1000000000;
+//		System.out.println("angle in rad is:"+ angle+"x: "+x+" y:"+y);
 		take_shot(x,y);
 	}
 	
@@ -379,6 +382,8 @@ public class PuttingSimulator {
 		angle=angle*Math.PI/180;
 		double x = speed*Math.cos(angle);
 		double y = speed*Math.sin(angle);
+		x=Math.round(x*1000000000)/1000000000;
+		y=Math.round(y*1000000000)/1000000000;
 		return take_shot_list(x,y);
 	}
 	
