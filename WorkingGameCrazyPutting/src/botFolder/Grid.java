@@ -1,7 +1,6 @@
 package botFolder;
 
 import java.awt.Point;
-import javafx.geometry.Point2D;
 import java.util.HashSet;
 import java.util.ArrayList;
 import javafx.scene.shape.Rectangle;
@@ -29,13 +28,13 @@ public class Grid {
         }
     
     //name explains
-    private boolean inBounds(Point id){
-        return 0 <= id.x && id.x <= width && 0 <= id.y && id.y <= height;
+    private boolean inBounds(Vector2d id){
+        return 0 <= id.get_x() && id.get_x() <= width && 0 <= id.get_y() && id.get_y() <= height;
     }
 
     private boolean passable(Vector2d neighbour){
-        for(int i = neighbour.x-10; i < neighbour.x+10; i++){
-            for(int j = neighbour.y-10; j < neighbour.y+10;j++){
+        for(double i = neighbour.get_x()-10; i < neighbour.get_x()+10; i++){
+            for(double j = neighbour.get_y()-10; j < neighbour.get_y()+10;j++){
                 if(obstacles.contains(new Vector2d(i,j))){return false;}
 
                 if(!inBounds(new Vector2d(i,j))){
@@ -50,11 +49,11 @@ public class Grid {
     public double cost(Vector2d a, Vector2d b){return 1;}
 
     //name explains
-    public ArrayList<Vector2d> neighbours(Point id){
+    public ArrayList<Vector2d> neighbours(Vector2d id){
         ArrayList<Vector2d> neighbours = new ArrayList<>();
 
         for(Vector2d p : dirs){
-            Vector2d neighbour = new Vector2d(id.x + p.x, id.y +p.y);
+            Vector2d neighbour = new Vector2d(id.get_x() + p.get_x(), id.get_y() +p.get_y());
             if(passable(neighbour)){
                 neighbours.add(neighbour);
             }
