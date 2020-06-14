@@ -96,8 +96,18 @@ public class PuttingCourse {
 		return false;
 	}
 	
+	public boolean is_sand(Vector2d p) {
+		return false;
+	}
+	
+	public boolean is_tree(Vector2d p) {
+		return false;
+	}
+	
 	public int collisionDetector(Vector2d p) {
 		if(is_water(p))return 0;
+		if(is_sand(p))return 1;
+		if(is_tree(p))return 2;
 		return -1;
 	}
 	
