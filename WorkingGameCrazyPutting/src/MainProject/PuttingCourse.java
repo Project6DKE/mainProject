@@ -96,6 +96,10 @@ public class PuttingCourse {
 		return false;
 	}
 	
+	public boolean is_traversable(Vector2d p) {
+		return is_water(p);
+	}
+	
 	public String toString() {
 		String ff="<html>Course Details<br>";
 		ff+=("g = "+g+";<br>");
