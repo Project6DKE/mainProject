@@ -71,7 +71,7 @@ public class GraphBot {
        String path = new String();
        path.concat(pointer.toString());
        while(cameFrom.containsKey(pointer)){
-    	   System.out.println("bet i m never here " + pointer.toString());
+    	   System.out.println(pointer.toString());
            pointer = cameFrom.get(pointer);
             path.concat(pointer.toString());
             System.out.println("path is : " + path);
