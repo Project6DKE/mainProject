@@ -47,4 +47,8 @@ public class Node {
     public ArrayList<Node> getCameFrom() {
         return cameFrom;
     }
+    
+    public String toString() {
+    	return location.toString();
+    }
 }

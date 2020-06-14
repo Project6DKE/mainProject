@@ -43,6 +43,8 @@ public class GraphBot {
 
 
             if (pointer == goal) {
+            	System.out.println("GOAL");
+            	System.out.println("The pointer to string : " + pointer.toString());
                 return reconstruct_path(pointer);
             }
 
@@ -56,9 +58,6 @@ public class GraphBot {
                 }
                 gScore.put(neighbour, start.distanceTo(neighbour));
                 double optionalDST = gScore.get(pointer) + pointer.getLocation().get_distance(neighbour.getLocation());
-                if (optionalDST >= gScore.get(neighbour)) {
-                    continue;
-                }
                 cameFrom.put(neighbour,pointer);
                 gScore.put(neighbour, optionalDST);
                 fScore.put(neighbour, gScore.get(neighbour) + neighbour.distanceTo(goal));
@@ -72,6 +71,7 @@ public class GraphBot {
        String path = new String();
        path.concat(pointer.toString());
        while(cameFrom.containsKey(pointer)){
+    	   System.out.println("bet i m never here " + pointer.toString());
            pointer = cameFrom.get(pointer);
             path.concat(pointer.toString());
             System.out.println("path is : " + path);
