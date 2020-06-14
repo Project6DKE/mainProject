@@ -96,6 +96,11 @@ public class PuttingCourse {
 		return false;
 	}
 	
+	public int collisionDetector(Vector2d p) {
+		if(is_water(p))return 0;
+		return -1;
+	}
+	
 	public boolean is_traversable(Vector2d p) {
 		return is_water(p);
 	}
