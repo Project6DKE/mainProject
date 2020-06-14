@@ -68,13 +68,15 @@ public class GraphBot {
     }
 
     public String reconstruct_path(Node pointer) {
-       String path = new String();
-       path.concat(pointer.toString());
+       //String path = new String();
+       //path.concat(pointer.toString());
+    	String path = " ";
+    	path = path + pointer.toString();
        while(cameFrom.containsKey(pointer)){
-    	   System.out.println(pointer.toString());
+    	   //System.out.println(pointer.toString());
            pointer = cameFrom.get(pointer);
-            path.concat(pointer.toString());
-            System.out.println("path is : " + path);
+           //path.concat(pointer.toString());
+           path = path + " " + pointer.toString();
         }
         return path;
     }
