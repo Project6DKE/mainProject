@@ -1,69 +1,89 @@
 package botFolder;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.awt.Point;
-import java.util.PriorityQueue;
-import javafx.util.Pair;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.PriorityQueue;
 
 public class GraphBot {
+    //Instantiate the needed variables
+    private ArrayList<Node> closedSet = new ArrayList<>();
+    private HashMap<Node, Double> gScore = new HashMap<>();
+    private HashMap<Node, Double> fScore = new HashMap<>();
+    private HashMap<Node, Node> cameFrom = new HashMap<>();
+    private final int initAmount = 200;
+    private Node goal;
+    private Node start;
+    private PriorityQueue<Node> openSet;
 
-    public static ArrayList<Point> search(Grid graph, Point start, Point goal){
-        HashMap<Point, Point> cameFrom = new HashMap<Point,Point>();
-        HashMap<Point, Double> costSoFar = new HashMap<Point, Double>();
-
-
-        PriorityQueue<Pair<Point,Double>> pq = new PriorityQueue<Pair<Point,Double>>((v,o) -> Double.compare(v.getValue(), o.getValue()));
-        costSoFar.put(start,0.0);
-        cameFrom.put(start,start);
-
-        pq.add(new Pair(start,0.0));
-
-        while(!pq.isEmpty()){
-            Point current = pq.poll().getKey();
-
-            if(current.equals(goal)) {
-                //the goal has been reached
-                break;
-            }
-
-            for(Point next : graph.neighbours(current)){
-                double newCost = costSoFar.get(current) + graph.cost(current, next);
-
-                if (!costSoFar.containsKey(next) || newCost < costSoFar.get(next)) {
-
-                    costSoFar.put(next,newCost);
-                    double priority = newCost + heuristic(next, goal);
-                    pq.add(new Pair(next, priority));
-                    cameFrom.put(next, current);
+    public GraphBot(Node start, Node goal) {
+        this.start = start;
+        this.goal = goal;
+        Comparator<Node> comparator = new Comparator<Node>() {
+            @Override
+            public int compare(Node node1, Node node2) {
+                if (node1.distanceTo(goal) > node2.distanceTo(node2)) {
+                    return -1;
+                } else if (node1 == node2) {
+                    return 0;
+                } else {
+                    return 1;
                 }
             }
-        }
-        //to give us back the path
-        return calculatePath(cameFrom, start, goal);
+        };
+        openSet = new PriorityQueue<>(initAmount,comparator);
+        openSet.add(start);
+        fScore.put(start, heuristicEstimate(start, goal));
+        gScore.put(start, start.distanceTo(start));
     }
 
-    private static ArrayList<Point> calculatePath(HashMap<Point,Point> cameFrom, Point start, Point goal){
-        ArrayList<Point> path = new ArrayList<>();
-        path.add(goal);
-        System.out.println(start);
-        System.out.println(goal);
-        
-        //I have a null pointer exception i don t get why
-        while(!goal.equals(start)){
-            goal = cameFrom.get(goal);
-            path.add(goal);
+    public String getShortestPath() {
+        while (openSet.isEmpty() != true) {
+            Node pointer = openSet.poll();
+
+
+            if (pointer == goal) {
+                return reconstruct_path(pointer);
+            }
+
+            closedSet.add(pointer);
+            ArrayList<Node> neighbours = pointer.getNeighbours();
+            for (Node neighbour : neighbours) {
+                if (closedSet.contains(neighbour)) {
+                    continue;
+                } else {
+                    openSet.offer(neighbour);
+                }
+                gScore.put(neighbour, start.distanceTo(neighbour));
+                double optionalDST = gScore.get(pointer) + pointer.getLocation().get_distance(neighbour.getLocation());
+                if (optionalDST >= gScore.get(neighbour)) {
+                    continue;
+                }
+                cameFrom.put(neighbour,pointer);
+                gScore.put(neighbour, optionalDST);
+                fScore.put(neighbour, gScore.get(neighbour) + neighbour.distanceTo(goal));
+
+            }
         }
-        Collections.reverse(path);
-        System.out.println(path.size());
-        //System.out.println(Arrays.toString(path.toArray()));
+        return null;
+    }
+
+    public String reconstruct_path(Node pointer) {
+       String path = new String();
+       path.concat(pointer.toString());
+       while(cameFrom.containsKey(pointer)){
+           pointer = cameFrom.get(pointer);
+            path.concat(pointer.toString());
+            System.out.println("path is : " + path);
+        }
         return path;
     }
 
-    private static double heuristic(Point a, Point b){
-        return Math.sqrt(Math.pow(a.x-b.x,2)+Math.pow(a.y-b.y,2));
+
+
+   //Linear distance heuristic
+    public double heuristicEstimate(Node from, Node to) {
+        return from.distanceTo(to);
     }
 
 }

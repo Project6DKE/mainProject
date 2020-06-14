@@ -1,46 +1,50 @@
 package botFolder;
 
-import MainProject.Vector2d;
 import java.util.ArrayList;
 
+import MainProject.Vector2d;
+
 public class Node {
-	private Vector2d pos;
-	private ArrayList<Node> cameFrom;
-	private ArrayList<Node> neighbours;
-	
-	public Node(Vector2d pos, ArrayList<Node> cameFrom) {
-		this.pos = pos;
-		this.cameFrom = cameFrom;
-		this.neighbours = new ArrayList<>();
-		if(cameFrom == null) {
-			this.cameFrom = new ArrayList<>();
-		}
-	}
-	
-	public double distanceTo(Node nodeB) {
-		return this.pos.get_distance(nodeB.getPos());
-	}
-	
-	public void addNeighbour(Node node) {
-		this.neighbours.add(node);
-	}
-	
-	public void addToPath(Node node) {
-		this.cameFrom.add(node);
-		
-	}
-	
-	public ArrayList<Node> getNeighbours() {
-		return this.neighbours;
-	}
-	
-	public Vector2d getPos() {
-		return this.pos;
-	}
-	
-	public ArrayList<Node> getPath(){
-		return this.cameFrom;
+
+    private Vector2d location;
+    private ArrayList<Node> cameFrom;
+    private ArrayList<Node> neighbours;
+
+    public Node(Vector2d location, ArrayList<Node> cameFrom){
+        this.location = location;
+        this.cameFrom = cameFrom;
+        this.neighbours = new ArrayList<>();
+        if(cameFrom == null)
+        {
+            this.cameFrom = new ArrayList<>();
+        }
     }
-	
-	
+
+    public double distanceTo(Node to){
+        return this.location.get_distance(to.location);
+    }
+
+    public void connectTo(Node neighbour){
+        this.neighbours.add(neighbour);
+       // neighbour.addNeighbour(this);
+    }
+    private void addNeighbour(Node n){
+        this.neighbours.add(n);
+    }
+
+    public ArrayList<Node>getNeighbours(){
+        return this.neighbours;
+    }
+
+    public Vector2d getLocation() {
+        return location;
+    }
+
+    public void addPrevious(Node n){
+        cameFrom.add(n);
+    }
+
+    public ArrayList<Node> getCameFrom() {
+        return cameFrom;
+    }
 }
