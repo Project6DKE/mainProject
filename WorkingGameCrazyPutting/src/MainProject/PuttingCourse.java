@@ -7,7 +7,7 @@ public class PuttingCourse {
 	
 	private Function2d height;
 	private Vector2d flag,start;
-	private double friction, maxV, tol, g, mass;
+	private double friction, maxV, tol, g, mass, sandFriction;
 	
 	public PuttingCourse(Function2d height,Vector2d flag, Vector2d start) {
 		this.height = height;
@@ -66,8 +66,14 @@ public class PuttingCourse {
 			Ay=(-g*gradient.get_y());
 		}
 		else {
-			Ax=(-g*gradient.get_x())-((friction*g*vv.get_x())/vv.get_scalar());
-			Ay=(-g*gradient.get_y())-((friction*g*vv.get_y())/vv.get_scalar());
+			if(is_sand(position)) {
+				Ax=(-g*gradient.get_x())-((sandFriction*g*vv.get_x())/vv.get_scalar());
+				Ay=(-g*gradient.get_y())-((sandFriction*g*vv.get_y())/vv.get_scalar());
+			}
+			else {
+				Ax=(-g*gradient.get_x())-((friction*g*vv.get_x())/vv.get_scalar());
+				Ay=(-g*gradient.get_y())-((friction*g*vv.get_y())/vv.get_scalar());
+			}
 		}
 		return new Vector2d(Ax,Ay);
 	}
