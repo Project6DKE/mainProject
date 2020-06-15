@@ -27,12 +27,12 @@ public class GA implements PuttingBot{
     private Vector2d holepos;
     private static double dist;
     
-//    public GA(PuttingCourse PC){
-//        PS = new PuttingSimulator(PC, new RungeKutta());
-//        this.maxspeed = PS.getCourse().get_maximum_velocity();
-//        this.maxangle = 360 * Math.PI / 180;
-//        this.holepos = PS.getCourse().get_flag_position();
-//    }
+    public GA(PuttingCourse PC){
+        PS = new PuttingSimulator(PC, new RungeKutta());
+        this.maxspeed = PS.getCourse().get_maximum_velocity();
+        this.maxangle = 360 * Math.PI / 180;
+        this.holepos = PS.getCourse().get_flag_position();
+    }
     public GA(PuttingSimulator PS){
         this.PS = PS;
         this.maxspeed = PS.getCourse().get_maximum_velocity();

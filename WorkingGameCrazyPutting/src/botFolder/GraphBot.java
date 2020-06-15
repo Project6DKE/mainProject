@@ -44,7 +44,6 @@ public class GraphBot {
 
             if (pointer == goal) {
             	System.out.println("GOAL");
-            	System.out.println("The pointer to string : " + pointer.toString());
                 return pointer;
             }
 
