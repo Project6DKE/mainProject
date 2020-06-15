@@ -37,7 +37,7 @@ public class GraphBot {
         gScore.put(start, start.distanceTo(start));
     }
 
-    public String getShortestPath() {
+    public Node runShortestPath() {
         while (openSet.isEmpty() != true) {
             Node pointer = openSet.poll();
 
@@ -45,7 +45,7 @@ public class GraphBot {
             if (pointer == goal) {
             	System.out.println("GOAL");
             	System.out.println("The pointer to string : " + pointer.toString());
-                return reconstruct_path(pointer);
+                return pointer;
             }
 
             closedSet.add(pointer);
@@ -66,22 +66,35 @@ public class GraphBot {
         }
         return null;
     }
-
-    public String reconstruct_path(Node pointer) {
-       //String path = new String();
-       //path.concat(pointer.toString());
-    	String path = " ";
-    	path = path + pointer.toString();
-       while(cameFrom.containsKey(pointer)){
-    	   //System.out.println(pointer.toString());
-           pointer = cameFrom.get(pointer);
-           //path.concat(pointer.toString());
-           path = path + " " + pointer.toString();
-        }
-        return path;
+    
+    public Node[] reconstructPathToArray(Node pointer) {
+    	Node[] pathArray = new Node[cameFrom.size()];
+    	int i = 0;
+    	pathArray[i] = pointer;
+    	i++;
+    	while(cameFrom.containsKey(pointer)) {
+    		pointer = cameFrom.get(pointer);
+    		pathArray[i] = pointer;
+    		i++;
+    	}
+    	pathArray = reverseArray(pathArray);
+    	System.out.println("Array of node : ");
+    	for(int j = 0; j < pathArray.length; j++) {
+    		System.out.print(pathArray[j] + "  ---  ");
+    	}
+    	return pathArray;
     }
 
-
+    public Node[] reverseArray(Node[] array) {
+    	Node[] reversedArray = new Node[array.length];
+    	int j = 0;
+    	for(int i = array.length - 1; i>=0; i--) {
+    		reversedArray[j] = array[i];
+    		j++;
+    	}
+    	return reversedArray;
+    }
+    
 
    //Linear distance heuristic
     public double heuristicEstimate(Node from, Node to) {

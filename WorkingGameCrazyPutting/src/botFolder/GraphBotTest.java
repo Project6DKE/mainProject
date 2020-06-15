@@ -10,9 +10,8 @@ public class GraphBotTest{
 	 private static ArrayList<Node> nodes = new ArrayList<>();
 	    public static void main(String[] args){
 	        initNetwork();
-	        GraphBot pathfinder = new GraphBot(nodes.get(0), nodes.get(10));
-	        String path = pathfinder.getShortestPath();
-	        System.out.println("the path is : " + path);
+	        GraphBot pathFinder = new GraphBot(nodes.get(0), nodes.get(10));
+	        pathFinder.reconstructPathToArray(pathFinder.runShortestPath());
 
 	    }
 	    public static void initNetwork(){
