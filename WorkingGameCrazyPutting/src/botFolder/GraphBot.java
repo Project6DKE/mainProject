@@ -67,7 +67,7 @@ public class GraphBot {
     }
     
     public Node[] reconstructPathToArray(Node pointer) {
-    	Node[] pathArray = new Node[cameFrom.size()];
+    	Node[] pathArray = new Node[cameFrom.size()+1];
     	int i = 0;
     	pathArray[i] = pointer;
     	i++;
