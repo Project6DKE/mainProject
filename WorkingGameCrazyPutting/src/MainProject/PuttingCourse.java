@@ -8,6 +8,7 @@ public class PuttingCourse {
 	private Function2d height;
 	private Vector2d flag,start;
 	private double friction, maxV, tol, g, mass, sandFriction;
+	private SandPit SandPit;
 	
 	public PuttingCourse(Function2d height,Vector2d flag, Vector2d start) {
 		this.height = height;
@@ -103,7 +104,7 @@ public class PuttingCourse {
 	}
 	
 	public boolean is_sand(Vector2d p) {
-		return false;
+		return SandPit.isSand(p);
 	}
 	
 	public boolean is_tree(Vector2d p) {
