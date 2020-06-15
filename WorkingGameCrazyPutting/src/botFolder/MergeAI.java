@@ -15,6 +15,8 @@ public class MergeAI extends NewAI implements PuttingBot {
 	Vector2d bestShot;
 	Vector2d initialBallPosition;
 	
+	final int totalTestShots = 30;
+	
 	// Because the GA will be generated based off final distance to flag
 	// It's a good idea to play around with how the shot should be modified relative to the distance
 	// With an amplificationFactor of 2 meaning the shot will vary twice as much in X and Y values
@@ -26,6 +28,8 @@ public class MergeAI extends NewAI implements PuttingBot {
 	MergeAI(){
 		super();
 	}
+	
+	// TODO: Add a method to check if a shot is doable or not, setting a max amount of tries
 	
 	@Override
 	public Vector2d shot_velocity(PuttingCourse course, Vector2d ball_position) {
@@ -62,6 +66,46 @@ public class MergeAI extends NewAI implements PuttingBot {
 		
 	}
 	
+	// It's literally just findAimedShot but checking a max of 30 times
+	// TODO: Bugtest this shit
+	public boolean findIfShotIsValid(PuttingCourse course, Vector2d ball_position, Vector2d ballObjective) {
+		this.initialBallPosition = ball_position;
+		Vector2d initShot = super.aimedShot(course, ball_position, ballObjective);
+		this.sim = new PuttingSimulator(course, new RungeKutta());
+		this.sim.set_ball_position(ball_position);
+		boolean validShot = false;
+		
+		Vector2d margin = this.simulateAimedShot(initShot, ballObjective);
+		
+		
+		this.generatePopulationAimed(initShot, margin, ballObjective);
+		
+		double[] best = this.findBestCurrentShot();
+		
+		int count = 0;
+		while((best[1] > epsilon) && (count < totalTestShots))  {
+			int bestLocation = (int)best[0];
+			Vector2d currentError = this.popDistToFlag[bestLocation];
+			this.generatePopulationAimed(bestShot, currentError, ballObjective);
+			
+			best = this.findBestCurrentShot();
+			count++;
+			
+			if(best[1] < epsilon) {
+				validShot = true;
+				break;
+			}
+			
+			
+		}
+		
+		return validShot;
+		
+		
+		
+	}
+	
+	// TODO: Bug test this shit cause it seems like it shouldn't work
 	public Vector2d findAimedShot(PuttingCourse course, Vector2d ball_position, Vector2d ballObjective) {
 	
 		this.initialBallPosition = ball_position;
@@ -80,6 +124,7 @@ public class MergeAI extends NewAI implements PuttingBot {
 			int bestLocation = (int)best[0];
 			Vector2d currentError = this.popDistToFlag[bestLocation];
 			this.generatePopulationAimed(bestShot, currentError, ballObjective);
+			best = this.findBestCurrentShot();
 			
 		}
 		
