@@ -7,7 +7,7 @@ public class PuttingCourse {
 	
 	private Function2d height;
 	private Vector2d flag,start;
-	private double friction, maxV, tol, g, mass, sandFriction;
+	private double friction, maxV, tol, g, mass;
 	private SandPit SandPit;
 	
 	public PuttingCourse(Function2d height,Vector2d flag, Vector2d start) {
@@ -68,8 +68,8 @@ public class PuttingCourse {
 		}
 		else {
 			if(is_sand(position)) {
-				Ax=(-g*gradient.get_x())-((sandFriction*g*vv.get_x())/vv.get_scalar());
-				Ay=(-g*gradient.get_y())-((sandFriction*g*vv.get_y())/vv.get_scalar());
+				Ax=(-g*gradient.get_x())-((SandPit.getSandFriction()*g*vv.get_x())/vv.get_scalar());
+				Ay=(-g*gradient.get_y())-((SandPit.getSandFriction()*g*vv.get_y())/vv.get_scalar());
 			}
 			else {
 				Ax=(-g*gradient.get_x())-((friction*g*vv.get_x())/vv.get_scalar());
@@ -104,7 +104,8 @@ public class PuttingCourse {
 	}
 	
 	public boolean is_sand(Vector2d p) {
-		return SandPit.isSand(p);
+		return false;
+//		return SandPit.isSand(p);
 	}
 	
 	public boolean is_tree(Vector2d p) {
