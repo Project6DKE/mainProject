@@ -2,6 +2,7 @@ package MainProject;
 
 import readingOfFunctions.Function2d;
 import java.io.*;
+import java.util.ArrayList;
 
 public class PuttingCourse {
 	
@@ -9,6 +10,7 @@ public class PuttingCourse {
 	private Vector2d flag,start;
 	private double friction, maxV, tol, g, mass;
 	private SandPit SandPit;
+	private ArrayList<Wall> walls= new ArrayList<Wall>();
 	
 	public PuttingCourse(Function2d height,Vector2d flag, Vector2d start) {
 		this.height = height;
@@ -59,6 +61,14 @@ public class PuttingCourse {
 		return g;
 	}
 
+	public void add_wall(Wall wall) {
+		walls.add(wall);
+	}
+	
+	public ArrayList<Wall> get_walls(){
+		return walls;
+	}
+	
 	public Vector2d calculate_acceleration(Vector2d position, Vector2d vv) {
 		double Ax, Ay;
 		Vector2d gradient=height.gradient(position);
@@ -104,11 +114,16 @@ public class PuttingCourse {
 	}
 	
 	public boolean is_sand(Vector2d p) {
-		return false;
-//		return SandPit.isSand(p);
+		if(SandPit==null) return false;
+//		return false;
+		return SandPit.isSand(p);
 	}
 	
 	public boolean is_tree(Vector2d p) {
+		return false;
+	}
+	
+	public boolean is_wall(Vector2d p) {
 		return false;
 	}
 	
