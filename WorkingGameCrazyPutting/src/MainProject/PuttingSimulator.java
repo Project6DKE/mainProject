@@ -24,6 +24,7 @@ public class PuttingSimulator {
 	private ArrayList<Vector2d> ballPath=new ArrayList<Vector2d>();;
 
 	private boolean course_put = false;
+	private boolean water_penalty=false;
 
 	int shot = 0;
 	private Vector2d stopV = new Vector2d(0.01,0.01);
@@ -310,10 +311,18 @@ public class PuttingSimulator {
 	}
 	
 	private boolean waterHandler() {
-		System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
-		position=temp;
-		ballPath.add(position);
-		velocity=new Vector2d(0,0);
+		if(water_penalty) {
+			System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
+			position=ballPath.get(ballPath.size()-2);
+			ballPath.add(position);
+			velocity=new Vector2d(0,0);
+		}
+		else {
+			System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
+			position=temp;
+			ballPath.add(position);
+			velocity=new Vector2d(0,0);
+		}
 		return false;
 	}
 	
@@ -324,6 +333,10 @@ public class PuttingSimulator {
 	private boolean wallHandler() {
 		return true;
 	}
+	
+	public void set_water_penalty(boolean x) {water_penalty=x;}
+	
+	public boolean get_water_penalty() {return water_penalty;}
 
 	public void read_shots(String path) {
 		String script[];
