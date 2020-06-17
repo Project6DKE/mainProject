@@ -106,7 +106,7 @@ public class Game3D1 extends StackPane{
         ObjectType flagType = ObjectType.FLAG;
         flagType.setTranslate(0, 2, 0);
 
-        flag = getObject(flagType);
+        flag = new BlenderObject(flagType).get();
         setFlagPosition();
 
         Group blenderObjects = getBlenderObjects();
@@ -190,13 +190,13 @@ public class Game3D1 extends StackPane{
         ObjectType treesType = ObjectType.TREES;
         treesType.setTranslate(-18, 1, 13);
 
-        return getObject(treesType);
+        return new BlenderObject(treesType).get();
     }
 
     private Group getArrow() {
         ObjectType arrowType = ObjectType.ARROW;
         arrowType.setTranslate(0, -40, 3.3);
-        Group arrow = getObject(arrowType);
+        Group arrow = new BlenderObject(arrowType).get();
         arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
 
         return arrow;
@@ -316,9 +316,9 @@ public class Game3D1 extends StackPane{
                 break;
         }
     }
-    
+
     private void playHuman() {
-    	double angle = rotateY.getAngle();
+        double angle = rotateY.getAngle();
         setBallPosition();
 
         double maxVelocity = puttingCourse.get_maximum_velocity();
@@ -358,7 +358,7 @@ public class Game3D1 extends StackPane{
 
         timer.start();
     }
-    
+
     private void playGeneticAlgorithm() {
         GA genAlgo = new GA(PS);
         double[] shot;
@@ -501,21 +501,9 @@ public class Game3D1 extends StackPane{
         ObjectType grassType = ObjectType.GRASS;
         grassType.setTranslate(translateX, translateY, translateZ);
 
-        return getObject(grassType);
+        return new BlenderObject(grassType).get();
     }
 
-    private Group getObject(ObjectType objectType) {
-        String pathName = objectType.getPathName();
-        Group object = loadModel(getClass().getResource("Objects/" + pathName + ".obj"));
-
-        double scaling = objectType.getScalingFactor();
-        object.getTransforms().add(new Scale(scaling, scaling, scaling));
-
-        object.getTransforms().add(new Rotate(0, Rotate.Y_AXIS));
-        object.getTransforms().add(objectType.getTranslate());
-
-        return object;
-    }
 
     private Label createStandardLabel(String text, int size, int prefWidth) {
         Label label = new Label(text);
@@ -530,19 +518,6 @@ public class Game3D1 extends StackPane{
     private void updateStrokeLabel() {
         stroke += 1;
         strokeLabel.setText("Stroke : " + stroke);
-    }
-
-    private Group loadModel(URL url) {
-        Group modelRoot = new Group();
-
-        ObjModelImporter importer = new ObjModelImporter();
-        importer.read(url);
-
-        for (MeshView view : importer.getImport()) {
-            modelRoot.getChildren().add(view);
-        }
-
-        return modelRoot;
     }
 
     private void zoomOnObject(Group control) {  //control is the object we are zooming in
@@ -571,6 +546,40 @@ public class Game3D1 extends StackPane{
         }
 
         return zoomValue;
+    }
+}
+
+class BlenderObject {
+    private final ObjectType objectType;
+
+    public BlenderObject(ObjectType objectType) {
+        this.objectType = objectType;
+    }
+
+    public Group get() {
+        String pathName = objectType.getPathName();
+        Group object = loadModel(getClass().getResource("Objects/" + pathName + ".obj"));
+
+        double scaling = objectType.getScalingFactor();
+        object.getTransforms().add(new Scale(scaling, scaling, scaling));
+
+        object.getTransforms().add(new Rotate(0, Rotate.Y_AXIS));
+        object.getTransforms().add(objectType.getTranslate());
+
+        return object;
+    }
+
+    private Group loadModel(URL url) {
+        Group modelRoot = new Group();
+
+        ObjModelImporter importer = new ObjModelImporter();
+        importer.read(url);
+
+        for (MeshView view : importer.getImport()) {
+            modelRoot.getChildren().add(view);
+        }
+
+        return modelRoot;
     }
 }
 
