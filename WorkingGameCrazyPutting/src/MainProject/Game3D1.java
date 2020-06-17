@@ -1,10 +1,7 @@
 package MainProject;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 
 import botFolder.GA;
 import javafx.animation.AnimationTimer;
@@ -106,10 +103,10 @@ public class Game3D1 extends StackPane{
         ObjectType flagType = ObjectType.FLAG;
         flagType.setTranslate(0, 2, 0);
 
-        flag = new BlenderObject(flagType).get();
+        flag = new BlenderModel(flagType).get();
         setFlagPosition();
 
-        Group blenderObjects = getBlenderObjects();
+        Group blenderObjects = new DefaultBlenderObjects().get();
 
         all3DObjects = new Group();
         all3DObjects.getChildren().addAll(blenderObjects);
@@ -166,51 +163,6 @@ public class Game3D1 extends StackPane{
         cam.setFarClip(farClip);
     }
 
-    private Group getBlenderObjects() {
-        Group trees = getTrees();
-        Group arrow = getArrow();
-
-        Group blenderObjects = new Group();
-        blenderObjects.getChildren().add(arrow);
-        blenderObjects.getChildren().add(trees);
-
-        Group[] grassArray = getGrassArray();
-
-        for (Group grassElement: grassArray) {
-            blenderObjects.getChildren().add(grassElement);
-        }
-
-        PointLight pointLight = basicPointLight();
-
-        blenderObjects.getChildren().add(pointLight);
-        return blenderObjects;
-    }
-
-    private Group getTrees() {
-        ObjectType treesType = ObjectType.TREES;
-        treesType.setTranslate(-18, 1, 13);
-
-        return new BlenderObject(treesType).get();
-    }
-
-    private Group getArrow() {
-        ObjectType arrowType = ObjectType.ARROW;
-        arrowType.setTranslate(0, -40, 3.3);
-        Group arrow = new BlenderObject(arrowType).get();
-        arrow.getTransforms().add(new Rotate(180, Rotate.X_AXIS));
-
-        return arrow;
-    }
-
-    private PointLight basicPointLight() {
-        PointLight pointLight = new PointLight();
-        pointLight.setColor(Color.GRAY);
-        pointLight.setTranslateY(pointLight.getTranslateY() - 100);
-        pointLight.setOpacity(0.4);
-
-        return pointLight;
-    }
-
     private VBox getControl() {
         VBox control = new VBox();
         control.setSpacing(20);
@@ -234,20 +186,6 @@ public class Game3D1 extends StackPane{
         control.setTranslateX(0);
         control.setTranslateY(1300);
         return control;
-    }
-
-    private Group[] getGrassArray() {
-        Group grass = getGrass(-30, 0, 50);
-        Group grass2 = getGrass(-60, 0, 50);
-        Group grass3 = getGrass(-30, 0, 70);
-        Group grass4 = getGrass(-45, 0, 40);
-        Group grass5 = getGrass(-10, 0, 50);
-        Group grass6 = getGrass(-40, 0, 50);
-        Group grass7 = getGrass(-35, 0, 40);
-
-        Group[] grassArray = {grass, grass2, grass3, grass4, grass5, grass6, grass7};
-
-        return grassArray;
     }
 
 
@@ -493,17 +431,6 @@ public class Game3D1 extends StackPane{
         speed = (int) ((speedValue / 30000) * 100);
     }
 
-    private Group getGrass(double x, double y, double z) {
-        double translateX = 60 + x;
-        double translateY =  y;
-        double translateZ = 70 + z;
-
-        ObjectType grassType = ObjectType.GRASS;
-        grassType.setTranslate(translateX, translateY, translateZ);
-
-        return new BlenderObject(grassType).get();
-    }
-
 
     private Label createStandardLabel(String text, int size, int prefWidth) {
         Label label = new Label(text);
@@ -519,69 +446,6 @@ public class Game3D1 extends StackPane{
         stroke += 1;
         strokeLabel.setText("Stroke : " + stroke);
     }
-
-    private void zoomOnObject(Group control) {  //control is the object we are zooming in
-        control.addEventFilter(ScrollEvent.ANY, event -> {
-            double delta = 1.2;
-            double scale = control.getScaleX();
-
-            if (event.getDeltaY() < 0) scale /= delta;
-            else scale *= delta;
-
-            scale = clamp(scale);
-            control.setScaleX(scale);
-            control.setScaleY(scale);
-
-            event.consume();
-        });
-    }
-
-    //scale the zoom value
-    private static double clamp(double zoomValue) {
-        if (Double.compare(zoomValue, 0.1) < 0) {
-            return 0.1;
-        }
-        if (Double.compare(zoomValue, 10.0) > 0) {
-            return 10.0;
-        }
-
-        return zoomValue;
-    }
 }
-
-class BlenderObject {
-    private final ObjectType objectType;
-
-    public BlenderObject(ObjectType objectType) {
-        this.objectType = objectType;
-    }
-
-    public Group get() {
-        String pathName = objectType.getPathName();
-        Group object = loadModel(getClass().getResource("Objects/" + pathName + ".obj"));
-
-        double scaling = objectType.getScalingFactor();
-        object.getTransforms().add(new Scale(scaling, scaling, scaling));
-
-        object.getTransforms().add(new Rotate(0, Rotate.Y_AXIS));
-        object.getTransforms().add(objectType.getTranslate());
-
-        return object;
-    }
-
-    private Group loadModel(URL url) {
-        Group modelRoot = new Group();
-
-        ObjModelImporter importer = new ObjModelImporter();
-        importer.read(url);
-
-        for (MeshView view : importer.getImport()) {
-            modelRoot.getChildren().add(view);
-        }
-
-        return modelRoot;
-    }
-}
-
 
 
