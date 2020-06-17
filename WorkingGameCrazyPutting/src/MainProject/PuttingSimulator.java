@@ -196,13 +196,8 @@ public class PuttingSimulator {
 			position=initialValues[i];
 			ballPath.add(position);
 			
-			if(course.is_water(position)) {
-				System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
-				position=temp;
-				ballPath.add(position);
-				velocity=new Vector2d(0,0);
-				return ballPath;
-			}
+			if(!collisionHandler(course.collisionDetector(position))) {return ballPath;}
+			
 			if(isStop()) break;
 		}
 		
@@ -212,14 +207,8 @@ public class PuttingSimulator {
 			position=data[0];
 			velocity=data[1];
 			ballPath.add(position);
-			if(course.is_water(position)) {
-				System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
-				position=temp;
-				ballPath.add(position);
-				velocity=new Vector2d(0,0);
-				conti=false;
-				return ballPath;
-			}
+			
+			conti=collisionHandler(course.collisionDetector(position));
 			
 			if(isStop()) conti=false;
 		}
