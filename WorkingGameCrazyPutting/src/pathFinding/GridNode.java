@@ -64,8 +64,16 @@ public class GridNode {
 		
 	}
 	
-	boolean hasFlag() {
+	public boolean hasFlag() {
 		return this.hasFlag;
+	}
+	
+	public boolean hasBall() {
+		return this.hasBall;
+	}
+	
+	void setCenter(Vector2d newCenter) {
+		this.centerPoint = newCenter;
 	}
 	
 	void setFlag(boolean contains) {
@@ -74,6 +82,10 @@ public class GridNode {
 	
 	void setBall(boolean contains) {
 		this.hasBall = contains;
+	}
+	
+	public Vector2d getCenter() {
+		return this.centerPoint;
 	}
 	
 	void setBallDistance(double newDist) {

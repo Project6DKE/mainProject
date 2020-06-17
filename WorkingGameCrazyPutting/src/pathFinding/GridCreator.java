@@ -13,6 +13,9 @@ public class GridCreator {
 	
 	// The distance between the centerpoint of each node
 	double nodeDistance;
+	double nodeDistMultiplier;
+	
+	double gridLengthMultiplier;
 	
 	Vector2d ballPosition;
 	Vector2d flagPosition;
@@ -30,15 +33,44 @@ public class GridCreator {
 	
 	// TODO: Modify GridCreator to be the main class that interacts with/explores all of the nodes
 	// TODO: Update the piece of shit so that it can create a new map with smaller nodes in case a solution isn't found.
-	// TODO: 
-	GridCreator(PuttingCourse aCourse){
+	
+	
+	// I'll modify things to have a default constructor, because the existence of createGrid makes things a bit more annoying for me
+	// Means I'll have to add a boolean check at the end of the super, but it ain't a biggie
+	public GridCreator(PuttingCourse aCourse){
 		this.theCourse = aCourse;
 		this.ballPosition = aCourse.get_start_position();
 		this.flagPosition = aCourse.get_flag_position();
+		
+		this.gridLengthMultiplier = 4.0;
+		
 		this.setNodeDistance();
 		this.createGrid();
 		
 	}
+	
+	
+	// TODO: Modify the gridCreator to be a much better constructed constructor
+	// This will be the default contructor, as take shot gives a ball position always
+	
+	// TODO: Add a way of generating a new map that'll double the gridLength multiplier and half the nodeSize
+	public GridCreator(PuttingCourse aCourse, Vector2d ball_position) {
+		this.theCourse = aCourse;
+		this.ballPosition = ball_position;
+		this.flagPosition = aCourse.get_flag_position();
+		
+		this.gridLengthMultiplier = 4.0;
+		
+		this.setNodeDistance();
+		this.createGrid();
+	}
+	
+	// This method will recreate the grid but twice as large
+	void recreateGrid() {
+		this.gridLengthMultiplier = this.gridLengthMultiplier*2;
+		this.createGrid();
+	}
+	
 	
 	// There needs to be a way of increasing the grid size in case no path can be found
 	// Let's do that and decrease nodeSize at the same time because fuck it
@@ -47,7 +79,7 @@ public class GridCreator {
 	void createGrid() {
 		
 		// TODO: Think of a fucking better way to make the gridLength method nicer
-		double totalGridLength = Math.abs(((ballPosition.get_distance(flagPosition)*2.5)));
+		double totalGridLength = Math.abs(((ballPosition.get_distance(flagPosition)*this.gridLengthMultiplier)));
 		
 		int nodeGridSize = (int)(totalGridLength/this.nodeDistance);
 		this.nodeList = new GridNode[nodeGridSize][nodeGridSize];
@@ -73,6 +105,7 @@ public class GridCreator {
 				
 				if (newNode.checkIfLocationIsContained(flagPosition)) {
 					newNode.setFlag(true);
+					newNode.setCenter(flagPosition);
 					this.endNode = newNode;
 					this.specialNodeCount++;
 				}
@@ -107,28 +140,7 @@ public class GridCreator {
 	// And just dividing it by 100
 	void setNodeDistance() {
 		
-		/*
-		double ballFlagDist = ballPosition.get_distance(flagPosition);
-		double vMax = this.theCourse.get_maximum_velocity();
-		
-		double nodeSize;
-		
-		if (ballFlagDist > vMax) {
-			nodeSize = vMax;
-		} else {
-			nodeSize = ballFlagDist;
-		}
-		*/
-		
-		// This is me modifying nodeSize to make it easier for me to think about stuff
-		// I should definitely refine it, but fuck it works for me
-		
-		
-		
-		this.nodeDistance = 0.1;
-		//= Math.abs(nodeSize)/100.0;
-		
-		
+		this.nodeDistance = 0.25/this.gridLengthMultiplier;
 	}
 	
 	List<GridNode> findSurroundingNodes(GridNode aNode) throws Exception{
@@ -204,10 +216,11 @@ public class GridCreator {
 	boolean checkIfTraversable(Vector2d point) {
 		
 		// BUGTEST EXTRA METHOD
+		/*
 		if ((Math.abs(point.get_x()) < 2) && (Math.abs(point.get_y()-0.5) < 0.05)) {
 			System.out.println("The bad boi of a point is " + point.toString());
 			return false;
-		}
+		}*/
 		
 		
 		

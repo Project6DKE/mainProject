@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import MainProject.PuttingCourse;
+import MainProject.Vector2d;
 
 public class GridTraversal {
 	/*
@@ -20,10 +21,11 @@ public class GridTraversal {
 	List<GridNode> toExploreList = new ArrayList<>();
 	GridCreator gridInfo;
 	boolean foundSolution;
+	List<GridNode> solution;
 	
 	// Having the map elsewhere might be useless
 	
-	// TODO: Update GridTraversal to only focus on the abstract exploration, let GridCreator take care of the raw implementation.
+	// TODO: Update the method so that it can receive a different ball location, in case the traversal needs to be updated
 	GridTraversal(GridCreator gridCreator) throws Exception{
 		this.startNode = gridCreator.startNode;
 		this.endNode = gridCreator.endNode;
@@ -31,12 +33,14 @@ public class GridTraversal {
 		this.gridInfo = gridCreator;
 		this.foundSolution = false;
 		this.createPath();
-		
 	}
 	
-	GridTraversal(PuttingCourse aCourse) throws Exception{
+	public GridTraversal(PuttingCourse aCourse) throws Exception{
 		this(new GridCreator(aCourse));
-		
+	}
+	
+	public GridTraversal(PuttingCourse aCourse, Vector2d ball_position) throws Exception {
+		this(new GridCreator(aCourse, ball_position));
 	}
 	
 	void createPath() throws Exception {
@@ -52,10 +56,32 @@ public class GridTraversal {
 			exploreNode.setExplored(true);
 			this.updateNearbyNodes(exploreNode);
 			
+			if(this.toExploreList.size() == 0) {
+				this.restartInternalInfo();
+				break;
+			}
+			
 		}
 		
+		if(!this.foundSolution) {
+			this.createPath();
+		}
 		
+	}
+	
+	public void createNewPath() throws Exception {
+		this.restartInternalInfo();
+		this.createPath();
 		
+	}
+	
+	// Restarts the information it has, based off the current gridInfo
+	void restartInternalInfo() {
+		this.gridInfo.recreateGrid();
+		this.startNode = this.gridInfo.startNode;
+		this.endNode = this.gridInfo.endNode;
+		this.map = this.gridInfo.nodeList;
+		this.foundSolution = false;
 		
 	}
 	
@@ -109,7 +135,9 @@ public class GridTraversal {
 		
 	}
 	
-	List<GridNode> processedSolution() {
+	public List<GridNode> processedSolution() {
+		
+		
 		List<GridNode> list = new ArrayList<>();
 		
 		list.add(endNode);
@@ -120,6 +148,8 @@ public class GridTraversal {
 			curNode = curNode.comesFrom;
 			list.add(curNode);
 		}
+		
+		this.solution = list;
 		
 		return list;
 		
