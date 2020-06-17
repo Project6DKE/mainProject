@@ -52,7 +52,7 @@ public class PuttingCourse {
 	public double get_hole_tolerance() {
 		return tol;
 	}
-	
+	 
 	public double get_ball_mass() {
 		return mass;
 	}
@@ -124,14 +124,23 @@ public class PuttingCourse {
 	}
 	
 	public boolean is_wall(Vector2d p) {
-		return false;
+		if(this.find_wall(p)==null)return false;
+		return true;
 	}
 	
 	public int collisionDetector(Vector2d p) {
 		if(is_water(p))return 0;
 		if(is_sand(p))return 1;
 		if(is_tree(p))return 2;
+		if(is_wall(p))return 3;
 		return -1;
+	}
+	
+	public Wall find_wall(Vector2d p) {
+		for(Wall w: walls) {
+			if (w.inWallBounds(p)) return w;
+		}
+		return null;
 	}
 	
 	public boolean is_traversable(Vector2d p) {
