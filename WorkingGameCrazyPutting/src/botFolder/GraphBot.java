@@ -40,14 +40,14 @@ public class GraphBot {
     public Node runShortestPath() {
         while (openSet.isEmpty() != true) {
             Node pointer = openSet.poll();
-
-
+            
             if (pointer == goal) {
             	System.out.println("GOAL");
                 return pointer;
             }
 
             closedSet.add(pointer);
+//            ArrayList<Node> neighbours = pointer.getNeighbours();
             ArrayList<Node> neighbours = pointer.getNeighbours();
             for (Node neighbour : neighbours) {
                 if (closedSet.contains(neighbour)) {

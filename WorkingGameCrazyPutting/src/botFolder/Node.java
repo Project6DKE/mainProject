@@ -24,12 +24,13 @@ public class Node {
         return this.location.get_distance(to.location);
     }
 
-    public void connectTo(Node neighbour){
-        this.neighbours.add(neighbour);
-       // neighbour.addNeighbour(this);
+    public void addNeighbour(Node n) {
+    	this.neighbours.add(n);
     }
-    private void addNeighbour(Node n){
-        this.neighbours.add(n);
+    
+    public static void addNeighbour(Node n, Node m){
+        n.neighbours.add(m);
+        //m.neighbours.add(n);
     }
 
     public ArrayList<Node>getNeighbours(){

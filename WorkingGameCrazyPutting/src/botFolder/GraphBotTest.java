@@ -13,7 +13,7 @@ public class GraphBotTest{
 	 
 	 public static void main(String[] args){
 		 createGraph();
-	     GraphBot pathFinder = new GraphBot(nodes.get(0), nodes.get(54));
+	     GraphBot pathFinder = new GraphBot(nodes.get(54), nodes.get(0));
 	     pathFinder.reconstructPathToArray(pathFinder.runShortestPath());
 
 	 }
@@ -26,10 +26,10 @@ public class GraphBotTest{
 		 }
 		 for(int i = 0; i < nodes.size(); i++) {
 			 if(i%(HEIGHT-1)!=0 || i==0) {
-				 nodes.get(i).connectTo(nodes.get(i+1));
+				 nodes.get(i).addNeighbour(nodes.get(i+1));
 			 }
 			 if(i+HEIGHT<nodes.size()) {
-				 nodes.get(i).connectTo(nodes.get(i+HEIGHT));
+				 nodes.get(i).addNeighbour(nodes.get(i+HEIGHT));
 			 }
 		 }
 	 }
