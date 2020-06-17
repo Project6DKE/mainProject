@@ -48,12 +48,16 @@ public class Grid {
 		 }
 		 for(int i = 0; i < nodes.size(); i++) {
 			 if(i%(HEIGHT-1)!=0 || i==0) {
-				 nodes.get(i).connectTo(nodes.get(i+1));
-				 nodes.get(i+1).connectTo(nodes.get(i));
+				 //nodes.get(i).connectTo(nodes.get(i+1));
+				 //nodes.get(i+1).connectTo(nodes.get(i));
+				 Node.addNeighbour(nodes.get(i), nodes.get(i+1));
+				 //Node.addNeighbour(nodes.get(i+1), nodes.get(i));
 			 }
 			 if(i+HEIGHT<nodes.size()) {
-				 nodes.get(i).connectTo(nodes.get(i+HEIGHT));
-				 nodes.get(i+HEIGHT).connectTo(nodes.get(i));
+				 //nodes.get(i).connectTo(nodes.get(i+HEIGHT));
+				 //nodes.get(i+HEIGHT).connectTo(nodes.get(i));
+				 Node.addNeighbour(nodes.get(i), nodes.get(i+HEIGHT));
+				 //Node.addNeighbour(nodes.get(i+HEIGHT), nodes.get(i));
 			 }
 		 }
 	 }
