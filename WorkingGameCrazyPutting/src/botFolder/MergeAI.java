@@ -32,7 +32,7 @@ public class MergeAI extends NewAI implements PuttingBot {
 	// TODO: Add a method to check if a shot is doable or not, setting a max amount of tries
 	
 	@Override
-	public Vector2d shot_velocity(PuttingCourse course, Vector2d ball_position) {
+	public Vector2d shot_velocity(PuttingCourse course, Vector2d ball_position) throws Exception {
 		/*
 		 * PlaceHolder, I'll add the method and make everything better in a sec
 		 */

@@ -68,6 +68,7 @@ public class GridCreator {
 	// This method will recreate the grid but twice as large
 	void recreateGrid() {
 		this.gridLengthMultiplier = this.gridLengthMultiplier*2;
+		System.out.println("We need to go deeper");
 		this.createGrid();
 	}
 	
@@ -139,12 +140,13 @@ public class GridCreator {
 	// Setting initial distance on which is smaller between vMax and distance between ball and flag
 	// And just dividing it by 100
 	void setNodeDistance() {
-		
 		this.nodeDistance = 0.25/this.gridLengthMultiplier;
 	}
 	
-	List<GridNode> findSurroundingNodes(GridNode aNode) throws Exception{
-		List<GridNode> list = new ArrayList<>();
+	
+		List<GridNode> findSurroundingNodes(GridNode aNode) throws Exception {
+		
+			List<GridNode> list = new ArrayList<>();
 		
 		int xPos = 0;
 		int yPos = 0;
@@ -172,14 +174,19 @@ public class GridCreator {
 			throw new Exception();
 		}
 		
-		// The idea is to check the 9 surrounding objects
-		// TODO: Bugtest this for loop
+		// The idea is to check the 8 surrounding objects
 		for(int i=-1; i<2; i++) {
 			for(int j=-1; j<2; j++) {
 				try {
-					// A check to not return the same value again
-					if((i != 0) && (j != 0)) {
-						list.add(this.nodeList[xPos+i][yPos+j]);
+					
+					
+					
+					if((i != j) || (i != 0)) {
+						
+						if(this.nodeList[xPos+i][yPos+j].isTraversable()) {
+							list.add(this.nodeList[xPos+i][yPos+j]);
+						}
+						
 					}
 					
 				} catch(ArrayIndexOutOfBoundsException e) {
@@ -222,14 +229,70 @@ public class GridCreator {
 			return false;
 		}*/
 		
+		// Checks at the center point, and at the four corners of each node
+		// Assumes that the given point is the center point
 		
+		double pointDist = this.nodeDistance/2;
 		
-		if(this.theCourse.is_water(point)) {
-			return false;
-		}else {
-			return true;
+		// I'm checking five points and storing them in the array
+		Vector2d[] points = getCornersAndCenter(point, pointDist);
+		
+		for(Vector2d aPoint : points) {
+			
+			// TODO: Update the method to check all kinds of traversable
+			// Should also do an extra update to make sure the point doesn't have too high a gradient
+			if(this.theCourse.is_water(aPoint)) {
+				return false;
+			}
+			
 		}
 		
+		return true;
+		
+		
+	}
+	
+	public String toString() {
+		int count = 0;
+		int countTraverse = 0;
+		for(GridNode[] nodeArr : this.nodeList) {
+			for(GridNode node : nodeArr) {
+				if (node.explored) {
+					count++;
+				} else if (!node.traversable) {
+					countTraverse++;
+				}
+				
+				
+				
+				
+			}
+			
+			
+		}
+		
+		int totalArea = this.nodeList.length*this.nodeList[0].length;
+		
+		return ("Explored:" + count + ", untraversable:" + countTraverse + ", Total:" + totalArea);
+		
+	}
+	
+	// Assumes the given point is the center
+	// Hardcoded and not visually nice, but it's good enough for what's needed
+	static Vector2d[] getCornersAndCenter(Vector2d aPoint, double dist) {
+		Vector2d[] points = new Vector2d[5];
+		
+		points[0] = aPoint;
+		
+		points[1] = new Vector2d(aPoint.get_x()+dist,aPoint.get_y()+dist);
+		
+		points[2] = new Vector2d(aPoint.get_x()+dist,aPoint.get_y()-dist);
+		
+		points[3] = new Vector2d(aPoint.get_x()-dist,aPoint.get_y()+dist);
+		
+		points[4] = new Vector2d(aPoint.get_x()-dist,aPoint.get_y()-dist);
+		
+		return points;
 		
 	}
 	

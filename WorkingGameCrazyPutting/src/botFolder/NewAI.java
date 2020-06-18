@@ -120,7 +120,7 @@ public class NewAI implements PuttingBot {
     }
     
     @Override
-	public Vector2d shot_velocity(PuttingCourse course, Vector2d ball_position) {
+	public Vector2d shot_velocity(PuttingCourse course, Vector2d ball_position) throws Exception {
 		
 		this.flag = course.get_flag_position();
 		this.theCourse = course;

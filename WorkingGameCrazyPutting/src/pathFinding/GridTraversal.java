@@ -1,6 +1,7 @@
 package pathFinding;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import MainProject.PuttingCourse;
@@ -18,7 +19,7 @@ public class GridTraversal {
 	GridNode startNode;
 	GridNode endNode;
 	GridNode[][] map;
-	List<GridNode> toExploreList = new ArrayList<>();
+	//List<GridNode> toExploreList = new ArrayList<>();
 	GridCreator gridInfo;
 	boolean foundSolution;
 	List<GridNode> solution;
@@ -47,16 +48,25 @@ public class GridTraversal {
 		
 		GridNode exploreNode = this.startNode;
 		
-		this.updateNearbyNodes(exploreNode);
+		List<GridNode> firstBatch = this.updateNearbyNodes(exploreNode);
+		
+		HashSet<GridNode> toExplore = new HashSet<>();
+		
+		toExplore.addAll(firstBatch);
+		
+		//List<GridNode> toExplore = new ArrayList<GridNode>();
 		
 		while(!this.foundSolution) {
-			exploreNode = findBestNode(this.toExploreList);
-			this.toExploreList.remove(exploreNode);
+			exploreNode = findBestNode(toExplore);
+			
+			toExplore.remove(exploreNode);
 			
 			exploreNode.setExplored(true);
-			this.updateNearbyNodes(exploreNode);
 			
-			if(this.toExploreList.size() == 0) {
+			//exploreNode.setExplored(true);
+			toExplore.addAll(this.updateNearbyNodes(exploreNode));
+			
+			if(toExplore.size() == 0) {
 				this.restartInternalInfo();
 				break;
 			}
@@ -64,6 +74,7 @@ public class GridTraversal {
 		}
 		
 		if(!this.foundSolution) {
+			System.out.println("Weeo we gotta enlarge");
 			this.createPath();
 		}
 		
@@ -87,7 +98,7 @@ public class GridTraversal {
 	
 	// Extra method
 	// It's probably too freaking long, so I'll try to make it nicer somehow
-	void cleanToExploreList() {
+	/*void cleanToExploreList() {
 		for(GridNode aNode : this.toExploreList) {
 			if(aNode.explored) {
 				this.toExploreList.remove(aNode);
@@ -95,15 +106,17 @@ public class GridTraversal {
 			
 		}
 		
-	}
+	}*/
 	
 	
 	// Given node is the node I'm exploring
-	void updateNearbyNodes(GridNode givenNode) throws Exception {
+	List<GridNode> updateNearbyNodes(GridNode givenNode) throws Exception {
 		
-		givenNode.setExplored(true);
+		//givenNode.setExplored(true);
 		
 		List<GridNode> toUpdate = this.gridInfo.findSurroundingNodes(givenNode);
+		
+		List<GridNode> updated = new ArrayList<GridNode>();
 		
 		for(GridNode aNode : toUpdate) {
 			
@@ -115,25 +128,51 @@ public class GridTraversal {
 				
 				this.foundSolution = true;
 				
-				System.out.println("I found the flag fucko");
+				updated.add(aNode);
 				
+				System.out.println("I found the flag fucko");
+				break;
 				
 				
 			}
 			
-			if((aNode.traversable) && (!aNode.explored)) {
+			if((aNode.isTraversable()) && (!aNode.explored)) {
 				aNode.setBallDistance(givenNode);
 				
-				toExploreList.add(aNode);
+				updated.add(aNode);
 			}
 			
 		}
 		
 		
-		
+		return updated;
 		
 		
 	}
+	
+	/*GridNode getBestNode() {
+		int place = 0;
+		double exploreValue = Double.MAX_VALUE;
+		GridNode bestNode = null;
+		
+		for(int i=0; i<this.toExploreList.size(); i++) {
+			GridNode aNode = this.toExploreList.get(i);
+			
+			if(aNode.getTotalDistance() < exploreValue) {
+				place = i;
+				exploreValue = aNode.getTotalDistance();
+				bestNode = aNode;
+				
+			}
+			
+		}
+		
+		bestNode.setExplored(true);
+		this.toExploreList.remove(place);
+		
+		return bestNode;
+		
+	}*/
 	
 	public List<GridNode> processedSolution() {
 		
@@ -157,7 +196,7 @@ public class GridTraversal {
 	
 	// Finds the node with the lowest traverse value
 	// List has to be non-empty
-	static GridNode findBestNode(List<GridNode> aList) {
+	static GridNode findBestNode(Iterable<GridNode> aList) {
 		
 		// Just initializing to a really high value blah
 		double exploreValue = Double.MAX_VALUE;
@@ -166,9 +205,7 @@ public class GridTraversal {
 		for(GridNode aNode : aList) {
 			if(aNode.getTotalDistance() < exploreValue) {
 				exploreValue = aNode.getTotalDistance();
-				bestNode = aNode;
-				
-				
+				bestNode = aNode;	
 			}
 			
 			
@@ -181,6 +218,8 @@ public class GridTraversal {
 		return bestNode;
 		
 	}
+	
+	
 	
 	
 	
