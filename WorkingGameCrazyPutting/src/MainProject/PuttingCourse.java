@@ -132,13 +132,13 @@ public class PuttingCourse {
 	}
 	
 	public boolean is_sand(Vector2d p) {
-		if(SandPit==null) return false;
-//		return false;
-		return SandPit.isSand(p);
+		if(this.find_sand(p)==null)return false;
+		return true;
 	}
 	
 	public boolean is_tree(Vector2d p) {
-		return false;
+		if(this.find_tree(p)==null)return false;
+		return true;
 	}
 	
 	public boolean is_wall(Vector2d p) {
@@ -157,6 +157,20 @@ public class PuttingCourse {
 	public Wall find_wall(Vector2d p) {
 		for(Wall w: walls) {
 			if (w.inWallBounds(p)) return w;
+		}
+		return null;
+	}
+	
+	public Tree find_tree(Vector2d p) {
+		for(Tree t: trees) {
+			if (t.inTree(p)) return t;
+		}
+		return null;
+	}
+	
+	public SandPit find_sand(Vector2d p) {
+		for(SandPit s: sandPits) {
+			if (s.isSand(p)) return s;
 		}
 		return null;
 	}
