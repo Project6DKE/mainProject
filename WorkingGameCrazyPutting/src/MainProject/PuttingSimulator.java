@@ -292,6 +292,14 @@ public class PuttingSimulator {
 		else return false;
 	}
 	
+	public boolean stopsAtPoint(Vector2d aPoint) {
+		if(calculate_acceleration(aPoint, new Vector2d(0,0)).get_scalar()<0.01)
+			return true;
+		else
+			return false;
+		
+	}
+	
 	public boolean collisionHandler(int type) {
 		if(type==0) return waterHandler();
 		if(type==2) return treeHandler();

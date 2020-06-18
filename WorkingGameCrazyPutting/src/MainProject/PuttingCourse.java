@@ -179,6 +179,14 @@ public class PuttingCourse {
 		return is_water(p);
 	}
 	
+	public boolean stopsAtPoint(Vector2d aPoint) {
+		if(calculate_acceleration(aPoint, new Vector2d(0,0)).get_scalar()<0.01)
+			return true;
+		else
+			return false;
+		
+	}
+	
 	public String toString() {
 		String ff="<html>Course Details<br>";
 		ff+=("g = "+g+";<br>");
