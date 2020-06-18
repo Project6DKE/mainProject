@@ -11,6 +11,8 @@ public class PuttingCourse {
 	private double friction, maxV, tol, g, mass;
 	private SandPit SandPit;
 	private ArrayList<Wall> walls= new ArrayList<Wall>();
+	private ArrayList<SandPit> sandPits= new ArrayList<SandPit>();
+	private ArrayList<Tree> trees= new ArrayList<Tree>();
 	
 	public PuttingCourse(Function2d height,Vector2d flag, Vector2d start) {
 		this.height = height;
@@ -60,7 +62,23 @@ public class PuttingCourse {
 	public double get_gravity() {
 		return g;
 	}
+	
+	public void add_tree(Tree tree) {
+		trees.add(tree);
+	}
+	
+	public ArrayList<Tree> get_trees(){
+		return trees;
+	}
 
+	public void add_sandPit(SandPit sand) {
+		sandPits.add(sand);
+	}
+	
+	public ArrayList<SandPit> get_sandPits(){
+		return sandPits;
+	}
+	
 	public void add_wall(Wall wall) {
 		walls.add(wall);
 	}
