@@ -11,10 +11,28 @@ public class Wall {
 	 * @param end 	upper right corner of the wall
 	 */
 	public Wall(Vector2d start, Vector2d end) {
-		this.start=start;
-		this.end=end;
+		this.start = start;
+		this.end = end;
 	}
-	
+
+	public Vector2d getMidpoint() {
+		double midpointX = (start.x + end.x) / 2;
+		double midpointY = (start.y + end.y) / 2;
+
+		return new Vector2d(midpointX, midpointY);
+	}
+
+	public double getWidth() {
+		return start.get_distance(end);
+	}
+
+	public double getRotationInDegrees() {
+		double differenceX = start.x - end.x;
+		double differenceY = start.y - end.y;
+
+		return Math.atan2(differenceY, differenceX) * 90 / Math.PI;
+	}
+
 	public Vector2d getStart() {
 		return start;
 	}
@@ -24,17 +42,17 @@ public class Wall {
 	}
 
 	public void setStart(Vector2d start) {
-		this.start=start;
+		this.start = start;
 	}
 	
 	public void setEnd(Vector2d end) {
-		this.end=end;
+		this.end = end;
 		}
 
 	public boolean inWallBounds(Vector2d p) {
 		double x,y;
-		x=p.get_x();
-		y=p.get_y();
+		x = p.get_x();
+		y = p.get_y();
 		
 		if(x>=start.get_x() && x<=end.get_x()) {
 			if(y>=start.get_y() && y<=end.get_y()) return true;
