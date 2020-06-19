@@ -17,11 +17,14 @@ public class PathTester {
 		// Three nice functions for testing
 		//Function2d height= new FunctionH("2");
 		//Function2d height = new FunctionH("-0.01 * x + 0.003 * x ^ 2 + 0.04 * y");
-		Function2d height = new FunctionH("( 3 * x * y ) / ( exp ( x ^ 2 + y ^ 2 ) )");
+		Function2d height = new FunctionH("( ( 3 * x * y ) / ( exp ( x ^ 2 + y ^ 2 ) ) ) + 0.01");
 		
 		
-		Vector2d flag = new Vector2d(-3,0);
-		Vector2d start = new Vector2d(2,3);
+		Vector2d flag = new Vector2d(1,3);
+		Vector2d start = new Vector2d(-4,1);
+		
+		//Vector2d flag = new Vector2d(3,3);
+		//Vector2d start = new Vector2d(0,0);
 		
 		double g,m,mu,vmax,tol;
 		g=9.81;m=45.93/1000;mu=0.131;vmax=10000;tol=0.03;

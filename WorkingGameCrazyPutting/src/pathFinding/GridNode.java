@@ -72,6 +72,10 @@ public class GridNode {
 		return this.hasBall;
 	}
 	
+	public boolean isTraversable() {
+		return this.traversable;
+	}
+	
 	void setCenter(Vector2d newCenter) {
 		this.centerPoint = newCenter;
 	}

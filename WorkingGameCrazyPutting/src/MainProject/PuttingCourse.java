@@ -11,6 +11,8 @@ public class PuttingCourse {
 	private double friction, maxV, tol, g, mass;
 	private SandPit SandPit;
 	private ArrayList<Wall> walls= new ArrayList<Wall>();
+	private ArrayList<SandPit> sandPits= new ArrayList<SandPit>();
+	private ArrayList<Tree> trees= new ArrayList<Tree>();
 	
 	public PuttingCourse(Function2d height,Vector2d flag, Vector2d start) {
 		this.height = height;
@@ -52,7 +54,7 @@ public class PuttingCourse {
 	public double get_hole_tolerance() {
 		return tol;
 	}
-	
+	 
 	public double get_ball_mass() {
 		return mass;
 	}
@@ -60,7 +62,23 @@ public class PuttingCourse {
 	public double get_gravity() {
 		return g;
 	}
+	
+	public void add_tree(Tree tree) {
+		trees.add(tree);
+	}
+	
+	public ArrayList<Tree> get_trees(){
+		return trees;
+	}
 
+	public void add_sandPit(SandPit sand) {
+		sandPits.add(sand);
+	}
+	
+	public ArrayList<SandPit> get_sandPits(){
+		return sandPits;
+	}
+	
 	public void add_wall(Wall wall) {
 		walls.add(wall);
 	}
@@ -114,28 +132,59 @@ public class PuttingCourse {
 	}
 	
 	public boolean is_sand(Vector2d p) {
-		if(SandPit==null) return false;
-//		return false;
-		return SandPit.isSand(p);
+		if(this.find_sand(p)==null)return false;
+		return true;
 	}
 	
 	public boolean is_tree(Vector2d p) {
-		return false;
+		if(this.find_tree(p)==null)return false;
+		return true;
 	}
 	
 	public boolean is_wall(Vector2d p) {
-		return false;
+		if(this.find_wall(p)==null)return false;
+		return true;
 	}
 	
 	public int collisionDetector(Vector2d p) {
 		if(is_water(p))return 0;
 		if(is_sand(p))return 1;
 		if(is_tree(p))return 2;
+		if(is_wall(p))return 3;
 		return -1;
+	}
+	
+	public Wall find_wall(Vector2d p) {
+		for(Wall w: walls) {
+			if (w.inWallBounds(p)) return w;
+		}
+		return null;
+	}
+	
+	public Tree find_tree(Vector2d p) {
+		for(Tree t: trees) {
+			if (t.inTree(p)) return t;
+		}
+		return null;
+	}
+	
+	public SandPit find_sand(Vector2d p) {
+		for(SandPit s: sandPits) {
+			if (s.isSand(p)) return s;
+		}
+		return null;
 	}
 	
 	public boolean is_traversable(Vector2d p) {
 		return is_water(p);
+	}
+	
+	public boolean stopsAtPoint(Vector2d aPoint) {
+		if(calculate_acceleration(aPoint, new Vector2d(0,0)).get_scalar()<0.01)
+			return true;
+		else
+			return false;
+		
 	}
 	
 	public String toString() {
