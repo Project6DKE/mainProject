@@ -109,9 +109,9 @@ public class Game3D1 extends StackPane{
         Group blenderObjects = new DefaultBlenderObjects().get();
 
         all3DObjects = new Group();
+        
         all3DObjects.getChildren().addAll(blenderObjects);
         all3DObjects.getChildren().add(flag);
-
 
         all3DObjects.getTransforms().add(rotateY);
         all3DObjects.getTransforms().add(rotateX);
@@ -120,6 +120,38 @@ public class Game3D1 extends StackPane{
 
         all3DObjects.getChildren().add(surface);
         all3DObjects.getChildren().add(ball);
+    }
+
+    private void wallsTest(Vector2d beginVector, Vector2d endVector) {
+        Wall wall1 = new Wall(beginVector, endVector);
+
+        setWall(wall1);
+    }
+
+    private void setWall(Wall wall) {
+        Vector2d midpoint = wall.getMidpoint();
+        double width = wall.getWidth();
+        double rotation = wall.getRotationInDegrees();
+        System.out.println(rotation);
+
+        Box wallObject = new Box();
+        double height = 50;
+        wallObject.setHeight(height);
+        wallObject.setDepth(50);
+        wallObject.setWidth(width);
+
+        double moveUpHalfHeight = -(height / 2);
+        double courseHeight = PS.getCourse().get_height().evaluate(midpoint) ;
+        double yTranslation = courseHeight + moveUpHalfHeight;
+
+        Rotate rotationTransform = new Rotate(rotation * 0.5 - 12, Rotate.Y_AXIS);
+        Translate moveUpTranslation = new Translate(midpoint.x, yTranslation, midpoint.y);
+
+        wallObject.getTransforms().add(moveUpTranslation);
+        wallObject.getTransforms().add(rotationTransform);
+
+        all3DObjects.getChildren().add(wallObject);
+
     }
 
     private void setFlagPosition() {
