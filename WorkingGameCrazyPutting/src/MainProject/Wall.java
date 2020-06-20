@@ -21,6 +21,37 @@ public class Wall {
 
 		return new Vector2d(midpointX, midpointY);
 	}
+	
+	public int reflectSide(Vector2d pos1, Vector2d pos2) {
+		double x1,y1,x2,y2,sx,sy,ex,ey;
+		x1=pos1.get_x();
+		y1=pos1.get_y();
+		
+		x2=pos2.get_x();
+		y2=pos2.get_y();
+
+		sx=start.get_x();
+		sy=start.get_y();
+
+		ex=end.get_x();
+		ey=end.get_y();
+		
+		if(x1<x2) {
+			if(x1<sx && sx<x2)return 1;
+		}
+		else {
+			if(x2<sx && sx<x1)return 1;
+		}
+		
+		if(y1<y2) {
+			if(y1<sy && sy<y2)return 0;
+		}
+		else {
+			if(y2<sy && sy<y1)return 0;
+		}
+		
+		return -1;
+	}
 
 	public double getWidth() {
 		return start.get_distance(end);

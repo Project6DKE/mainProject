@@ -328,7 +328,28 @@ public class PuttingSimulator {
 	}
 	
 	private boolean wallHandler() {
+		Vector2d pos1, pos2, lr,ul;
+		pos1=ballPath.get(ballPath.size()-1);
+		pos2=ballPath.get(ballPath.size()-2);		
+		
+		Wall w= course.find_wall(pos1);
+		switch(w.reflectSide(pos1, pos2)) {
+		case 0:
+			reflect_x();
+			break;
+		case 1:
+			reflect_y();
+			break;
+		}
 		return true;
+	}
+	
+	private void reflect_x() {
+		velocity.set_y(velocity.get_y()*-1);
+	}
+	
+	private void reflect_y() {
+		velocity.set_x(velocity.get_x()*-1);
 	}
 	
 	public void set_water_penalty(boolean x) {water_penalty=x;}
