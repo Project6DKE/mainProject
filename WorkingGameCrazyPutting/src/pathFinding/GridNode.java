@@ -2,6 +2,7 @@ package pathFinding;
 
 import MainProject.PuttingCourse;
 import MainProject.Vector2d;
+import botFolder.MergeAI;
 
 // I'm not delimiting the size of the grid node here, it's probably for the best
 // But that means I'll have to do an extra check elsewhere for if the grid has the flag
@@ -25,6 +26,15 @@ public class GridNode {
 	// If true then this point can be walked through
 	// If false it can't
 	boolean traversable;
+	
+	// If true then the ball can stop in the space
+	// If false then the ball won't stop if it gets there
+	
+	// A traversable node can be stoppable, but a stoppable node will always be traversable
+	// And an untraversable node will not be stoppable
+	
+	boolean stoppable;
+	
 	
 	// Centerpoint, used more than all for when the AI has to take a shot
 	Vector2d centerPoint;
@@ -50,6 +60,10 @@ public class GridNode {
 		// The check for if a point is traversable shouldn't be done in the gridNode
 		// The gridNode would need the course, and having multiple gridNodes share that reference doesn't sound good
 		this.traversable = traverse;
+		
+		if(!traverse) {
+			this.stoppable = false;
+		}
 		
 		// Length should always be positive and this check should be redundant
 		// But I don't want to take chances
@@ -134,6 +148,14 @@ public class GridNode {
 		this.explored = exploredState;
 	}
 	
+	void setStoppable(boolean stop) {
+		this.stoppable = stop;
+	}
+	
+	boolean getStoppable() {
+		return this.stoppable;
+	}
+	
 	// Only works because the nodes are meant to be squares
 	// So it checks if something is in the square's area
 	public boolean checkIfLocationIsContained(Vector2d objectLocation) {
@@ -148,10 +170,17 @@ public class GridNode {
 		
 	}
 	
+	public boolean checkIfReachable(GridNode aNode, PuttingCourse aCourse) {
+		MergeAI testAI = new MergeAI();
+		
+		 return testAI.findIfShotIsValid(aCourse, this.getCenter(), aNode.getCenter());
+		
+	}
+	
 	
 	public String toString() {
-		String a = this.centerPoint.toString() + " distFlag " + this.distToFlag + " distBall " + this.distToBall + " totalScore " + this.univDistScore;
-		String b = " hasBall " + this.hasBall + " hasFlag " + this.hasFlag();
+		String a = this.centerPoint.toString() + " distFlag " + this.distToFlag + " distBall " + this.distToBall + " totalScore " + this.univDistScore + "\n";
+		String b = " hasBall " + this.hasBall + " hasFlag " + this.hasFlag() + ",Stop:" + this.getStoppable() + ",Travers: " + this.isTraversable();
 		
 		return (a + b);
 	}

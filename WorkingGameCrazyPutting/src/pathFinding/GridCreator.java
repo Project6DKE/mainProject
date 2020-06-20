@@ -104,6 +104,13 @@ public class GridCreator {
 				
 				this.nodeList[i][j] = newNode;
 				
+				// Because of how I'm defining stoppable, this extra check makes things easier
+				if(traversable) {
+					newNode.setStoppable(this.theCourse.stopsAtPoint(newNode.getCenter()));
+				}
+				
+				
+				
 				if (newNode.checkIfLocationIsContained(flagPosition)) {
 					newNode.setFlag(true);
 					newNode.setCenter(flagPosition);
@@ -120,6 +127,7 @@ public class GridCreator {
 					
 					// TODO: Fix this garbage so that the node has the ball in its center or something so that this shit's natural
 					newNode.setBall(true);
+					newNode.setCenter(ballPosition);
 					this.startNode = newNode;
 					double distToBall = newNode.findDistanceToCenter(ballPosition);
 					newNode.setBallDistance(distToBall);
@@ -143,10 +151,11 @@ public class GridCreator {
 		this.nodeDistance = 0.25/this.gridLengthMultiplier;
 	}
 	
+	// TODO: Bug-test the new grid creation
 	
-		List<GridNode> findSurroundingNodes(GridNode aNode) throws Exception {
+	List<GridNode> findSurroundingNodes(GridNode aNode) throws Exception {
 		
-			List<GridNode> list = new ArrayList<>();
+		List<GridNode> list = new ArrayList<>();
 		
 		int xPos = 0;
 		int yPos = 0;
@@ -174,17 +183,33 @@ public class GridCreator {
 			throw new Exception();
 		}
 		
+		
 		// The idea is to check the 8 surrounding objects
 		for(int i=-1; i<2; i++) {
 			for(int j=-1; j<2; j++) {
 				try {
 					
-					
-					
 					if((i != j) || (i != 0)) {
 						
-						if(this.nodeList[xPos+i][yPos+j].isTraversable()) {
-							list.add(this.nodeList[xPos+i][yPos+j]);
+						GridNode toAdd = this.nodeList[xPos+i][yPos+j];
+						
+						if(toAdd.isTraversable()) {
+							
+							if(!this.nodeList[xPos+i][yPos+j].getStoppable()) {
+								
+								GridNode nextNode = this.leadsToStoppable(xPos, yPos, i, j);
+								
+								if(nextNode != null) {
+									
+									// TODO: Add one extra check to make sure the shot is doable between the two points
+									
+									list.add(nextNode);
+								}
+								
+								
+							} else {
+								list.add(toAdd);
+							}
 						}
 						
 					}
@@ -200,6 +225,49 @@ public class GridCreator {
 		
 		return list;
 		
+	}
+	
+	// returns null if this list doesn't lead to a stoppable node
+	
+	// For the given X and Y spot just increase in that direction until it finds the non stopped value
+	
+	// TODO: Bug-test this boi
+	GridNode leadsToStoppable(int xPos, int yPos, int xDir, int yDir) {
+		
+		// Just cheating a bit with java
+		// If the dir is + then It'll increase in that diagonal
+		// If it's negative it'll increase in that direction
+		// If negative it won't increase
+		int xValIncrease = (int) Math.signum(xDir);
+		int yValIncrease = (int) Math.signum(yDir);
+		
+		int newX = xPos;
+		int newY = yPos;
+		
+		
+		for(int i=0; i<this.nodeList.length; i++) {
+			newX = newX + xValIncrease;
+			newY = newY + yValIncrease;
+			
+			try {
+				
+				GridNode aNode = this.nodeList[newX][newY];
+				
+				if(aNode.getStoppable()) {
+					return aNode;
+				} else if (!aNode.isTraversable()) {
+					return null;
+				}
+				
+			} catch (ArrayIndexOutOfBoundsException e) {
+				// If there's an index out of bounds that means we're just going on past the grid
+				// So for practical purposes there ain't anything to look for
+				return null;
+			}
+			
+		}
+		
+		return null;
 	}
 	
 	public GridNode[][] getGrid(){
@@ -218,8 +286,20 @@ public class GridCreator {
 	// Everything else is traversable
 	
 	// TODO: Update method to check for other types of untraversable
-	// TODO: Update method to check various points, not just the center
-	// Well, guess that update would go to the method that uses checkIfTraversable, not this method specifically
+	
+	boolean checkIfStoppable(Vector2d point) {
+		
+		boolean testo = this.theCourse.stopsAtPoint(point);
+		
+		if(this.theCourse.stopsAtPoint(point)) {
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+	
+	
 	boolean checkIfTraversable(Vector2d point) {
 		
 		// BUGTEST EXTRA METHOD
@@ -234,16 +314,29 @@ public class GridCreator {
 		
 		double pointDist = this.nodeDistance/2;
 		
+		
+		
+		
 		// I'm checking five points and storing them in the array
 		Vector2d[] points = getCornersAndCenter(point, pointDist);
+		
+		
+		
 		
 		for(Vector2d aPoint : points) {
 			
 			// TODO: Update the method to check all kinds of traversable
 			// Should also do an extra update to make sure the point doesn't have too high a gradient
-			if(this.theCourse.is_water(aPoint)) {
+			if(this.theCourse.is_traversable(aPoint)) {
 				return false;
 			}
+			
+			/*if(this.theCourse.get_height().gradient(aPoint).get_scalar() > 0.5) {
+				return false;
+			}*/
+			
+			
+			
 			
 		}
 		

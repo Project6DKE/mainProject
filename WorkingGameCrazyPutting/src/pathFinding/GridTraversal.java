@@ -48,11 +48,11 @@ public class GridTraversal {
 		
 		GridNode exploreNode = this.startNode;
 		
-		List<GridNode> firstBatch = this.updateNearbyNodes(exploreNode);
+		//List<GridNode> firstBatch = this.updateNearbyNodes(exploreNode);
 		
 		HashSet<GridNode> toExplore = new HashSet<>();
 		
-		toExplore.addAll(firstBatch);
+		toExplore.addAll(this.updateNearbyNodes(exploreNode));
 		
 		//List<GridNode> toExplore = new ArrayList<GridNode>();
 		
@@ -64,19 +64,20 @@ public class GridTraversal {
 			exploreNode.setExplored(true);
 			
 			//exploreNode.setExplored(true);
-			toExplore.addAll(this.updateNearbyNodes(exploreNode));
+			
+			List<GridNode> surroundingNodes = this.updateNearbyNodes(exploreNode);
+			
+			toExplore.addAll(surroundingNodes);
 			
 			if(toExplore.size() == 0) {
 				this.restartInternalInfo();
-				break;
+				exploreNode = this.startNode;
+				toExplore.addAll(this.updateNearbyNodes(exploreNode));
+				
 			}
 			
 		}
 		
-		if(!this.foundSolution) {
-			System.out.println("Weeo we gotta enlarge");
-			this.createPath();
-		}
 		
 	}
 	
@@ -110,6 +111,9 @@ public class GridTraversal {
 	
 	
 	// Given node is the node I'm exploring
+	
+	// TODO: Bug test the updates for stoppable vs traversable
+	
 	List<GridNode> updateNearbyNodes(GridNode givenNode) throws Exception {
 		
 		//givenNode.setExplored(true);

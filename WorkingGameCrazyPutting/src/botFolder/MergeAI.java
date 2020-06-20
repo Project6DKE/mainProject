@@ -15,7 +15,7 @@ public class MergeAI extends NewAI implements PuttingBot {
 	Vector2d bestShot;
 	Vector2d initialBallPosition;
 	
-	final int totalTestShots = 30;
+	final int totalTestShots;
 	
 	// Because the GA will be generated based off final distance to flag
 	// It's a good idea to play around with how the shot should be modified relative to the distance
@@ -23,10 +23,16 @@ public class MergeAI extends NewAI implements PuttingBot {
 	final double amplificationFactor = 1;
 	
 	// Epsilon to decide accuracy when aiming a shot towards a specific spot different than the flag
-	final double epsilon = 0.004;
+	final double epsilon = 0.04;
 	
-	MergeAI(){
+	public MergeAI(){
 		super();
+		this.totalTestShots = 10;
+	}
+	
+	public MergeAI(int val) {
+		super();
+		this.totalTestShots = val;
 	}
 	
 	// TODO: Add a method to check if a shot is doable or not, setting a max amount of tries
@@ -93,11 +99,18 @@ public class MergeAI extends NewAI implements PuttingBot {
 			
 			if(best[1] < epsilon) {
 				validShot = true;
+				//System.out.println("Shot is valido!");
 				break;
 			}
 			
 			
 		}
+		
+		if(best[1]<epsilon) {
+			validShot = true;
+			//System.out.println("Shot is valido");
+		}
+		
 		
 		return validShot;
 		
