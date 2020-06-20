@@ -9,9 +9,8 @@ public class PuttingCourse {
 	private Function2d height;
 	private Vector2d flag,start;
 	private double friction, maxV, tol, g, mass;
-	private SandPit SandPit;
 	private ArrayList<Wall> walls= new ArrayList<Wall>();
-	private ArrayList<SandPit> sandPits= new ArrayList<SandPit>();
+	private ArrayList<SquareSand> sandPits= new ArrayList<SquareSand>();
 	private ArrayList<Tree> trees= new ArrayList<Tree>();
 	
 	public PuttingCourse(Function2d height,Vector2d flag, Vector2d start) {
@@ -71,11 +70,11 @@ public class PuttingCourse {
 		return trees;
 	}
 
-	public void add_sandPit(SandPit sand) {
+	public void add_sandPit(SquareSand sand) {
 		sandPits.add(sand);
 	}
 	
-	public ArrayList<SandPit> get_sandPits(){
+	public ArrayList<SquareSand> get_sandPits(){
 		return sandPits;
 	}
 	
@@ -96,8 +95,8 @@ public class PuttingCourse {
 		}
 		else {
 			if(is_sand(position)) {
-				Ax=(-g*gradient.get_x())-((SandPit.getSandFriction()*g*vv.get_x())/vv.get_scalar());
-				Ay=(-g*gradient.get_y())-((SandPit.getSandFriction()*g*vv.get_y())/vv.get_scalar());
+				Ax=(-g*gradient.get_x())-((find_sand(position).getSandFriction()*g*vv.get_x())/vv.get_scalar());
+				Ay=(-g*gradient.get_y())-((find_sand(position).getSandFriction()*g*vv.get_y())/vv.get_scalar());
 			}
 			else {
 				Ax=(-g*gradient.get_x())-((friction*g*vv.get_x())/vv.get_scalar());
@@ -168,8 +167,8 @@ public class PuttingCourse {
 		return null;
 	}
 	
-	public SandPit find_sand(Vector2d p) {
-		for(SandPit s: sandPits) {
+	public SquareSand find_sand(Vector2d p) {
+		for(SquareSand s: sandPits) {
 			if (s.isSand(p)) return s;
 		}
 		return null;
