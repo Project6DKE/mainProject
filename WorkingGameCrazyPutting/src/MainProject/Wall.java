@@ -36,18 +36,18 @@ public class Wall {
 		ex=end.get_x();
 		ey=end.get_y();
 		
-		if(x1<x2) {
-			if(x1<sx && sx<x2)return 1;
-		}
-		else {
+		if(x2<x1) {
 			if(x2<sx && sx<x1)return 1;
 		}
+		else {
+			if(x1<ex && ex<x2)return 1;
+		}
 		
-		if(y1<y2) {
+		if(y2<y1) {
 			if(y1<sy && sy<y2)return 0;
 		}
 		else {
-			if(y2<sy && sy<y1)return 0;
+			if(y2<ey && ey<y1)return 0;
 		}
 		
 		return -1;
@@ -103,5 +103,5 @@ public class Wall {
 		bounds.add(end);
 		return bounds;
 	}
-	
+
 }
