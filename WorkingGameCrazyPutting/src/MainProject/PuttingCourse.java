@@ -10,7 +10,7 @@ public class PuttingCourse {
 	private Vector2d flag,start;
 	private double friction, maxV, tol, g, mass;
 	private ArrayList<Wall> walls= new ArrayList<Wall>();
-	private ArrayList<SquareSand> sandPits= new ArrayList<SquareSand>();
+	private ArrayList<SandPit> sandPits= new ArrayList<SandPit>();
 	private ArrayList<Tree> trees= new ArrayList<Tree>();
 	
 	public PuttingCourse(Function2d height,Vector2d flag, Vector2d start) {
@@ -70,11 +70,11 @@ public class PuttingCourse {
 		return trees;
 	}
 
-	public void add_sandPit(SquareSand sand) {
+	public void add_sandPit(SandPit sand) {
 		sandPits.add(sand);
 	}
 	
-	public ArrayList<SquareSand> get_sandPits(){
+	public ArrayList<SandPit> get_sandPits(){
 		return sandPits;
 	}
 	
@@ -167,8 +167,8 @@ public class PuttingCourse {
 		return null;
 	}
 	
-	public SquareSand find_sand(Vector2d p) {
-		for(SquareSand s: sandPits) {
+	public SandPit find_sand(Vector2d p) {
+		for(SandPit s: sandPits) {
 			if (s.isSand(p)) return s;
 		}
 		return null;
