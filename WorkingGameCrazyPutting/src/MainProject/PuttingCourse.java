@@ -175,7 +175,7 @@ public class PuttingCourse {
 	}
 	
 	public boolean is_traversable(Vector2d p) {
-		return collisionDetector(p)==-1;
+		return collisionDetector(p)==-1 || collisionDetector(p)==1;
 	}
 	
 	public boolean stopsAtPoint(Vector2d aPoint) {
