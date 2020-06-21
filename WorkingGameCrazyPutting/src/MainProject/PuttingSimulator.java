@@ -406,8 +406,25 @@ public class PuttingSimulator {
 		this.shot=0;
 		this.course_put = false;
 	}
-
+	
 	public void setSolver(Solver solver) {
 		solverChoice = solver;
+	}
+
+	public void setSolver(int x) {
+		boolean invalidIndex = x < 0 || x > 3;
+		if (invalidIndex) return;
+
+		switch (x) {
+			case 0:
+				solverChoice = Solver.EULER;
+				break;
+			case 1:
+				solverChoice = Solver.RUNGE_KUTTA4;
+			case 2:
+				solverChoice = Solver.ADAMS_BASHFORTH;
+			case 3:
+				solverChoice = Solver.VERLET;
+		}
 	}
 }
