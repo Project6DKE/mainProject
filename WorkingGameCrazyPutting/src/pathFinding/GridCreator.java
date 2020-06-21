@@ -230,7 +230,9 @@ public class GridCreator {
 	// returns null if this list doesn't lead to a stoppable node
 	
 	// For the given X and Y spot just increase in that direction until it finds the non stopped value
-	
+	// If it gets out of bounds then the traverseval path is deemed as invalid
+	// If it leads to a stoppable it will return the GridNode
+	// It it leads to a nontraversable node then the path will be deemed as invalid
 	// TODO: Bug-test this boi
 	GridNode leadsToStoppable(int xPos, int yPos, int xDir, int yDir) {
 		
@@ -282,10 +284,10 @@ public class GridCreator {
 		return this.startNode;
 	}
 	
-	// Currently only takes water as untraversable
-	// Everything else is traversable
 	
-	// TODO: Update method to check for other types of untraversable
+	/*
+	 * Checks if a ball will stop at a given point in the original course
+	 */
 	
 	boolean checkIfStoppable(Vector2d point) {
 		

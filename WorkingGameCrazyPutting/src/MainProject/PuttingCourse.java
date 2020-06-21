@@ -145,6 +145,8 @@ public class PuttingCourse {
 		return true;
 	}
 	
+	
+	
 	public int collisionDetector(Vector2d p) {
 		if(is_water(p))return 0;
 		if(is_sand(p))return 1;
