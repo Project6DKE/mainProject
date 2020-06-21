@@ -66,6 +66,10 @@ public class Game3D1 extends StackPane{
         createVisualization();
         playIntroTransition();
     }
+    
+    public void setWaterPenalty(boolean t) {
+    	PS.set_water_penalty(t);
+    }
 
     private void playMusic() {
         GameMusic gameMusic = new GameMusic();

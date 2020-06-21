@@ -308,7 +308,6 @@ public class PuttingSimulator {
 	}
 
 	private boolean waterHandler() {
-		shot++;
 		if(water_penalty) {
 			System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
 			position=ballPath.get(ballPath.size()-2);

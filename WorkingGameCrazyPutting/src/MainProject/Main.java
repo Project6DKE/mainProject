@@ -36,6 +36,7 @@ public class Main extends Application {
     final int prefBoxLength = scene_width - margin;
 
     private boolean playGolf;
+    private boolean waterPenalty=false;
     private MenuMusic musicPlayer;
     private PuttingCourse courseNew;
     private boolean newCourse;
@@ -92,7 +93,8 @@ public class Main extends Application {
             }
 
             dim3 = new Game3D1(this, course, gameType, solver);
-
+            dim3.setWaterPenalty(waterPenalty);
+         
             primaryStage.setScene(main3DGame);
             return mainBox;
         }
@@ -601,14 +603,17 @@ public class Main extends Application {
         resetToLastPosition.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 System.out.println("Ball spawned at last position");
+                waterPenalty=false;
             }
         });
         resetToLastPosition.setToggleGroup(toggleGroup);
+        resetToLastPosition.setSelected(true);
 
         RadioButton resetBetweenWaterAndField = new RadioButton("Reset between water and field");
         resetBetweenWaterAndField.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 System.out.println("Ball spawned between water and field");
+                waterPenalty=true;
             }
         });
         resetBetweenWaterAndField.setToggleGroup(toggleGroup);
