@@ -329,7 +329,7 @@ public class PuttingSimulator {
 	}
 	
 	private boolean wallHandler() {
-		Vector2d pos1, pos2, lr,ul;
+		Vector2d pos1, pos2;
 		pos1=ballPath.get(ballPath.size()-1);
 		pos2=ballPath.get(ballPath.size()-2);		
 		
