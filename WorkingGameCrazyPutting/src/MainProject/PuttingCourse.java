@@ -175,7 +175,7 @@ public class PuttingCourse {
 	}
 	
 	public boolean is_traversable(Vector2d p) {
-		return is_water(p);
+		return collisionDetector(p)==-1;
 	}
 	
 	public boolean stopsAtPoint(Vector2d aPoint) {
