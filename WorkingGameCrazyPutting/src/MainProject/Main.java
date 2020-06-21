@@ -19,6 +19,7 @@ public class Main extends Application {
     public Scene gameMenu, main3DGame;
     public Game3D1 dim3;
     public double volume = 0.5;
+    public Solver solver = Solver.VERLET;
 
     private HBox mainBox;
     private final int scene_width = 1500;
@@ -90,7 +91,7 @@ public class Main extends Application {
                 }
             }
 
-            dim3 = new Game3D1(this, course, gameType);
+            dim3 = new Game3D1(this, course, gameType, solver);
 
             primaryStage.setScene(main3DGame);
             return mainBox;
@@ -518,10 +519,6 @@ public class Main extends Application {
         empty.setMinHeight(standardMinButtonHeight);
         empty.setVisible(false);
 
-        Button empty2 = new Button(" ");
-        empty2.setMinHeight(standardMinButtonHeight);
-        empty2.setVisible(false);
-
         Label title = new Label("Settings");
         title.setFont(bigFont);
 
@@ -544,12 +541,13 @@ public class Main extends Application {
                     }
                 });
 
-        VBox box2 = new VBox();
-        box2.setPrefWidth(prefBoxLength);
-        box2.getChildren().addAll(empty, empty2, title,
-                sliderTitle, musicVolumeSlider);
-        box2.setAlignment(Pos.CENTER);
-        box2.setSpacing(20);
+        VBox sliderAndTitleBox = new VBox();
+        sliderAndTitleBox.setPrefWidth(prefBoxLength);
+        sliderAndTitleBox.getChildren().addAll(empty, title,
+                                               sliderTitle, musicVolumeSlider);
+
+        sliderAndTitleBox.setAlignment(Pos.CENTER);
+        sliderAndTitleBox.setSpacing(20);
 
         ToggleGroup toggleGroup = new ToggleGroup();
 
@@ -557,6 +555,7 @@ public class Main extends Application {
         buttonEuler.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 System.out.println("Euler");
+                solver = Solver.EULER;
             }
         });
         buttonEuler.setToggleGroup(toggleGroup);
@@ -565,6 +564,7 @@ public class Main extends Application {
         buttonVerlet.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 System.out.println("Verlet");
+                solver = Solver.VERLET;
             }
         });
 
@@ -574,6 +574,7 @@ public class Main extends Application {
         buttonAdamsBashforth.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 System.out.println("Adams Bashforth");
+                solver = Solver.ADAMS_BASHFORTH;
             }
         });
         buttonAdamsBashforth.setToggleGroup(toggleGroup);
@@ -582,20 +583,54 @@ public class Main extends Application {
         buttonRK4.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 System.out.println("RK4");
+                solver = Solver.RUNGE_KUTTA4;
             }
         });
         buttonRK4.setToggleGroup(toggleGroup);
 
-        HBox box3 = new HBox();
-        box3.setPrefWidth(prefBoxLength);
-        box3.setAlignment(Pos.CENTER);
-        box3.setSpacing(20);
-        box3.getChildren().addAll(buttonEuler, buttonVerlet,
-                                  buttonAdamsBashforth, buttonRK4);
+        HBox solverSelectionBox = new HBox();
+        solverSelectionBox.setPrefWidth(prefBoxLength);
+        solverSelectionBox.setAlignment(Pos.CENTER);
+        solverSelectionBox.setSpacing(20);
+        solverSelectionBox.getChildren().addAll(buttonEuler, buttonVerlet,
+                                                buttonAdamsBashforth, buttonRK4);
 
-        empty.setMinHeight(30);
 
-        box.getChildren().addAll(box2, empty, box3);
+        RadioButton resetToLastPosition = new RadioButton("Reset to previous position");
+        resetToLastPosition.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Ball spawned at last position");
+            }
+        });
+        resetToLastPosition.setToggleGroup(toggleGroup);
+
+        RadioButton resetBetweenWaterAndField = new RadioButton("Reset between water and field");
+        resetBetweenWaterAndField.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Ball spawned between water and field");
+            }
+        });
+        resetBetweenWaterAndField.setToggleGroup(toggleGroup);
+
+
+        HBox waterPenaltyBox = new HBox();
+        waterPenaltyBox.setPrefWidth(prefBoxLength);
+        waterPenaltyBox.setAlignment(Pos.CENTER);
+        waterPenaltyBox.setSpacing(20);
+        waterPenaltyBox.getChildren().addAll(resetToLastPosition,
+                                             resetBetweenWaterAndField);
+
+        Button empty2 = new Button(" ");
+        empty2.setMinHeight(30);
+        empty2.setVisible(false);
+
+        Button empty3 = new Button(" ");
+        empty3.setMinHeight(30);
+        empty3.setVisible(false);
+
+        box.getChildren().addAll(sliderAndTitleBox, empty2,
+                                 solverSelectionBox, empty3,
+                                 waterPenaltyBox);
 
         return box;
     }
