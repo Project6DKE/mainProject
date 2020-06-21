@@ -94,7 +94,7 @@ public class Main extends Application {
 
             dim3 = new Game3D1(this, course, gameType, solver);
             dim3.setWaterPenalty(waterPenalty);
-         
+
             primaryStage.setScene(main3DGame);
             return mainBox;
         }
@@ -245,7 +245,7 @@ public class Main extends Application {
         box3.setAlignment(Pos.CENTER);
 
         mainBox.getChildren().addAll(title, empty, box1,
-                                     box2, box3);
+                box2, box3);
         mainBox.setAlignment(Pos.CENTER);
         mainBox.setSpacing(20);
 
@@ -383,7 +383,7 @@ public class Main extends Application {
 
         String whiteSpace = "   ";
         String[] courseParameters = {"mass", "friction", "starting Y axis", "starting X axis",
-                                     "file name"};
+                "file name"};
 
 
         for (String parameter: courseParameters) {
@@ -411,7 +411,7 @@ public class Main extends Application {
         TextField filenameField = new TextField();
         filenameField.setPromptText("Enter file name");
         box2.getChildren().addAll(massField, frictionField, holeDistanceField,
-                               startXField, startYField, filenameField);
+                startXField, startYField, filenameField);
         box2.setAlignment(Pos.CENTER);
         box2.setSpacing(30);
 
@@ -443,7 +443,7 @@ public class Main extends Application {
         run.setFont(basicFont);
         run.setPrefWidth(200);
         box4.getChildren().addAll(maxBallSpeedField, goalXField, goalYField,
-                                  functionField, gravityField, run);
+                functionField, gravityField, run);
         box4.setAlignment(Pos.CENTER);
         box4.setSpacing(30);
 
@@ -464,7 +464,7 @@ public class Main extends Application {
                 double gravity = fieldToDouble(gravityField);
 
                 Object[] parameterList = {mass, friction, holeDist, startX, startY, filename, maxBallVelocity,
-                                        function, gravity};
+                        function, gravity};
 
                 printAll(parameterList);
 
@@ -546,7 +546,7 @@ public class Main extends Application {
         VBox sliderAndTitleBox = new VBox();
         sliderAndTitleBox.setPrefWidth(prefBoxLength);
         sliderAndTitleBox.getChildren().addAll(empty, title,
-                                               sliderTitle, musicVolumeSlider);
+                sliderTitle, musicVolumeSlider);
 
         sliderAndTitleBox.setAlignment(Pos.CENTER);
         sliderAndTitleBox.setSpacing(20);
@@ -596,8 +596,10 @@ public class Main extends Application {
         solverSelectionBox.setAlignment(Pos.CENTER);
         solverSelectionBox.setSpacing(20);
         solverSelectionBox.getChildren().addAll(buttonEuler, buttonVerlet,
-                                                buttonAdamsBashforth, buttonRK4);
+                buttonAdamsBashforth, buttonRK4);
 
+
+        ToggleGroup toggleGroup2 = new ToggleGroup();
 
         RadioButton resetToLastPosition = new RadioButton("Reset to previous position");
         resetToLastPosition.setOnAction(new EventHandler<ActionEvent>() {
@@ -606,7 +608,7 @@ public class Main extends Application {
                 waterPenalty=false;
             }
         });
-        resetToLastPosition.setToggleGroup(toggleGroup);
+        resetToLastPosition.setToggleGroup(toggleGroup2);
         resetToLastPosition.setSelected(true);
 
         RadioButton resetBetweenWaterAndField = new RadioButton("Reset between water and field");
@@ -616,7 +618,7 @@ public class Main extends Application {
                 waterPenalty=true;
             }
         });
-        resetBetweenWaterAndField.setToggleGroup(toggleGroup);
+        resetBetweenWaterAndField.setToggleGroup(toggleGroup2);
 
 
         HBox waterPenaltyBox = new HBox();
@@ -624,7 +626,7 @@ public class Main extends Application {
         waterPenaltyBox.setAlignment(Pos.CENTER);
         waterPenaltyBox.setSpacing(20);
         waterPenaltyBox.getChildren().addAll(resetToLastPosition,
-                                             resetBetweenWaterAndField);
+                resetBetweenWaterAndField);
 
         Button empty2 = new Button(" ");
         empty2.setMinHeight(30);
@@ -635,8 +637,8 @@ public class Main extends Application {
         empty3.setVisible(false);
 
         box.getChildren().addAll(sliderAndTitleBox, empty2,
-                                 solverSelectionBox, empty3,
-                                 waterPenaltyBox);
+                solverSelectionBox, empty3,
+                waterPenaltyBox);
 
         return box;
     }
