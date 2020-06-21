@@ -567,6 +567,7 @@ public class Main extends Application {
                 solver = Solver.VERLET;
             }
         });
+        buttonVerlet.setSelected(true);
 
         buttonVerlet.setToggleGroup(toggleGroup);
 
