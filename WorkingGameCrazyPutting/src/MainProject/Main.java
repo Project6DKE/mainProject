@@ -544,14 +544,58 @@ public class Main extends Application {
                     }
                 });
 
-
         VBox box2 = new VBox();
         box2.setPrefWidth(prefBoxLength);
-        box2.getChildren().addAll(empty, empty2, title, sliderTitle, musicVolumeSlider);
+        box2.getChildren().addAll(empty, empty2, title,
+                sliderTitle, musicVolumeSlider);
         box2.setAlignment(Pos.CENTER);
         box2.setSpacing(20);
 
-        box.getChildren().add(box2);
+        ToggleGroup toggleGroup = new ToggleGroup();
+
+        RadioButton buttonEuler = new RadioButton("Euler");
+        buttonEuler.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Euler");
+            }
+        });
+        buttonEuler.setToggleGroup(toggleGroup);
+
+        RadioButton buttonVerlet = new RadioButton("Verlet");
+        buttonVerlet.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Verlet");
+            }
+        });
+
+        buttonVerlet.setToggleGroup(toggleGroup);
+
+        RadioButton buttonAdamsBashforth = new RadioButton("Adams Bashforth");
+        buttonAdamsBashforth.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Adams Bashforth");
+            }
+        });
+        buttonAdamsBashforth.setToggleGroup(toggleGroup);
+
+        RadioButton buttonRK4 = new RadioButton("RK4");
+        buttonRK4.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("RK4");
+            }
+        });
+        buttonRK4.setToggleGroup(toggleGroup);
+
+        HBox box3 = new HBox();
+        box3.setPrefWidth(prefBoxLength);
+        box3.setAlignment(Pos.CENTER);
+        box3.setSpacing(20);
+        box3.getChildren().addAll(buttonEuler, buttonVerlet,
+                                  buttonAdamsBashforth, buttonRK4);
+
+        empty.setMinHeight(30);
+
+        box.getChildren().addAll(box2, empty, box3);
 
         return box;
     }
