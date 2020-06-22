@@ -11,6 +11,9 @@ public class FunctionH implements Function2d {
     ArrayDeque<Something> themagic;
 
     Something root;
+    
+    ArrayList<FunctionH> subfunc= new ArrayList<FunctionH>();
+    ArrayList<double[]> ranges = new ArrayList<double[]>();
 
     public FunctionH(String aFunction) throws Exception{
         this.function = aFunction.trim();
@@ -132,9 +135,21 @@ public class FunctionH implements Function2d {
     }
 
     public double evaluate(double x, double y){
-
-        Something traverse = this.root;
-
+    	
+    	FunctionH subFunc = this.find_subfunc_XY(x, y);
+    	
+    	Something traverse;
+    	Something root;
+    	
+    	if (subFunc == null) {
+    		traverse = this.root;
+    		root = this.root;
+    	} else {
+    		traverse = subFunc.root;
+    		root = subFunc.root;
+    		
+    	}
+    	
         assign(x,y,traverse);
 
         return root.solve();
@@ -194,6 +209,40 @@ public class FunctionH implements Function2d {
 
     public String toString(){
     	return function;
+    }
+    
+    public void add_subfunct(String funct, double x_lower, double x_upper, double y_lower, double y_upper ) throws Exception{
+        this.add_subfunct(new FunctionH(funct), x_lower, x_upper, y_lower, y_upper);
+    }
+    
+    public void add_subfunct(FunctionH funct, double x_lower, double x_upper, double y_lower, double y_upper ) throws Exception{
+        subfunc.add(funct);
+        
+        double[] values = new double[4];
+        
+        values[0] = x_lower;
+        values[1] = x_upper;
+        values[2] = y_lower;
+        values[3] = y_upper;
+        
+        
+        ranges.add(values);
+        
+    }
+
+    // find the right subfunction based on X and Y ranges, if none is found it will return the main/height function
+    public FunctionH find_subfunc_XY(double wanted_X, double wanted_Y){
+        
+    	for (int i=0; i<ranges.size();i++){
+        	
+        	double[] rangeToUse = this.ranges.get(i);
+        	
+                if ((wanted_X>=rangeToUse[0]) && (wanted_X<=rangeToUse[1]) && (wanted_Y>=rangeToUse[2]) && (wanted_Y<=rangeToUse[3])) {
+                	return subfunc.get(i);
+                }
+                
+        }
+        return null;
     }
 
 }

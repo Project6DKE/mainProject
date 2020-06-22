@@ -92,7 +92,7 @@ public class PuttingSimulator {
 	public String getSolver() {
 		return solverChoice.name;
 	}
-	
+
 	/*
 	 * This is a system to make sure that a given shot is always going to be less than maxV
 	 * Not hard to implement, kind of weird.
@@ -134,21 +134,21 @@ public class PuttingSimulator {
 		ArrayList<Vector2d> ballPath= new ArrayList<Vector2d>();
 		System.out.println("This is shot #"+(++shot));
 		this.velocity=initial_Velocity_Check( initial_ball_velocity);
-		
+
 		temp= position;
 		boolean conti=true;
 		while(conti) {
 			acceleration=course.calculate_acceleration(position, velocity);
 			position=engine.solve(position, velocity);
 			ballPath.add(position);
-			
+
 			conti=collisionHandler(course.collisionDetector(position));
-			
+
 			velocity=engine.solve(velocity, acceleration);
 			if(isStop()) conti=false;
-			
+
 		}
-		
+
 		if(course.is_put(position)) {
 			put();
 			System.out.println("You have putted, number of shots: "+shot);
@@ -156,27 +156,27 @@ public class PuttingSimulator {
 		return ballPath;
 	}
 
-	
+
 	public ArrayList<Vector2d> take_shot_RK_list(Vector2d initial_ball_velocity){
 		System.out.println("This is shot #"+(++shot)+"using RK4");
 		ballPath= new ArrayList<Vector2d>();
-		
+
 		this.velocity=initial_Velocity_Check( initial_ball_velocity);
 		temp= position;
 		ballPath.add(position);
-		
+
 		boolean conti=true;
 		while(conti) {
 			Vector2d[] data=engine.solve_RK(position, velocity);
 			position=data[0];
 			velocity=data[1];
 			ballPath.add(position);
-			
+
 			conti=collisionHandler(course.collisionDetector(position));
-			
+
 			if(isStop())conti=false;
 		}
-		
+
 		if(course.is_put(position)) {
 			put();
 		}
@@ -186,60 +186,60 @@ public class PuttingSimulator {
 	public ArrayList<Vector2d> take_shot_ab3_list(Vector2d initial_ball_velocity){
 		System.out.println("This is shot #"+(++shot)+" using ab3");
 		ballPath= new ArrayList<Vector2d>();
-		
+
 		this.velocity=initial_Velocity_Check( initial_ball_velocity);
 		temp= position;
-		
+
 		Vector2d[] initialValues= engine.bootstrap_AB3(position, velocity);
 		velocity=engine.get_velocity();
 		for(int i=0;i<initialValues.length;i++) {
 			position=initialValues[i];
 			ballPath.add(position);
-			
+
 			if(!collisionHandler(course.collisionDetector(position))) {return ballPath;}
-			
+
 			if(isStop()) break;
 		}
-		
+
 		boolean conti=true;
 		while(conti&& !isStop()) {
 			Vector2d[] data=engine.solve_AB3(position, velocity);
 			position=data[0];
 			velocity=data[1];
 			ballPath.add(position);
-			
+
 			conti=collisionHandler(course.collisionDetector(position));
-			
+
 			if(isStop()) conti=false;
 		}
 		if(course.is_put(position)) put();
-		
+
 		return ballPath;
 	}
 
 
 	public ArrayList<Vector2d> take_shot_verlet_list(Vector2d initial_ball_velocity){
-		System.out.println("This is shot #"+(++shot)+"using verlet");	
+		System.out.println("This is shot #"+(++shot)+"using verlet");
 		this.velocity = initial_Velocity_Check( initial_ball_velocity);
 		ballPath= new ArrayList<Vector2d>();
-		
+
 		temp= position;
 		ballPath.add(position);
 		boolean conti=true;
 //		int count = 0;
 		while((conti)/* && (count<pointOfAbandon)*/) {
 			Vector2d[] data=engine.solve_Verlet(position, velocity);
-			
+
 			position=data[0];
 			velocity=data[1];
-			
+
 			ballPath.add(position);
-			
+
 			conti=collisionHandler(course.collisionDetector(position));
-//			count++;	
+//			count++;
 			if(isStop()) conti=false;
 		}
-		
+
 		if(course.is_put(position)) {
 			put();
 		}
@@ -291,22 +291,22 @@ public class PuttingSimulator {
 		if(velocity.get_scalar()<stopV.get_scalar() && calculate_acceleration(position,new Vector2d(0,0)).get_scalar()< 0.01) return true;
 		else return false;
 	}
-	
+
 	public boolean stopsAtPoint(Vector2d aPoint) {
 		if(calculate_acceleration(aPoint, new Vector2d(0,0)).get_scalar()<0.01)
 			return true;
 		else
 			return false;
-		
+
 	}
-	
+
 	public boolean collisionHandler(int type) {
 		if(type==0) return waterHandler();
 		if(type==2) return treeHandler();
 		if(type==3) return wallHandler();
 		return true;
 	}
-	
+
 	private boolean waterHandler() {
 		if(water_penalty) {
 			System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
@@ -322,17 +322,38 @@ public class PuttingSimulator {
 		}
 		return false;
 	}
-	
+
 	private boolean treeHandler() {
 		return true;
 	}
-	
+
 	private boolean wallHandler() {
+		Vector2d pos1, pos2;
+		pos1=ballPath.get(ballPath.size()-1);
+		pos2=ballPath.get(ballPath.size()-2);
+
+		Wall w= course.find_wall(pos1);
+		switch(w.reflectSide(pos1, pos2)) {
+			case 0:
+				reflect_x();
+				break;
+			case 1:
+				reflect_y();
+				break;
+		}
 		return true;
 	}
-	
+
+	private void reflect_x() {
+		velocity.set_y(velocity.get_y()*-1);
+	}
+
+	private void reflect_y() {
+		velocity.set_x(velocity.get_x()*-1);
+	}
+
 	public void set_water_penalty(boolean x) {water_penalty=x;}
-	
+
 	public boolean get_water_penalty() {return water_penalty;}
 
 	public void read_shots(String path) {
@@ -383,6 +404,10 @@ public class PuttingSimulator {
 		this.velocity=new Vector2d(0,0);
 		this.shot=0;
 		this.course_put = false;
+	}
+	
+	public void setSolver(Solver solver) {
+		solverChoice = solver;
 	}
 
 	public void setSolver(int x) {

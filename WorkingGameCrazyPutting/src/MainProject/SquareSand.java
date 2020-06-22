@@ -1,10 +1,10 @@
 package MainProject;
 
-public class SandPit {
+public class SquareSand implements SandPit{
 	
 	private double friction, startX, startY, endX, endY;
 	
-	public SandPit(double friction, double x1, double y1, double x2, double y2) {
+	public SquareSand(double friction, double x1, double y1, double x2, double y2) {
 		this.friction=friction;
 		this.startX=x1;
 		this.startY=y1;

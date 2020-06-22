@@ -9,7 +9,6 @@ public class PuttingCourse {
 	private Function2d height;
 	private Vector2d flag,start;
 	private double friction, maxV, tol, g, mass;
-	private SandPit SandPit;
 	private ArrayList<Wall> walls= new ArrayList<Wall>();
 	private ArrayList<SandPit> sandPits= new ArrayList<SandPit>();
 	private ArrayList<Tree> trees= new ArrayList<Tree>();
@@ -96,8 +95,8 @@ public class PuttingCourse {
 		}
 		else {
 			if(is_sand(position)) {
-				Ax=(-g*gradient.get_x())-((SandPit.getSandFriction()*g*vv.get_x())/vv.get_scalar());
-				Ay=(-g*gradient.get_y())-((SandPit.getSandFriction()*g*vv.get_y())/vv.get_scalar());
+				Ax=(-g*gradient.get_x())-((find_sand(position).getSandFriction()*g*vv.get_x())/vv.get_scalar());
+				Ay=(-g*gradient.get_y())-((find_sand(position).getSandFriction()*g*vv.get_y())/vv.get_scalar());
 			}
 			else {
 				Ax=(-g*gradient.get_x())-((friction*g*vv.get_x())/vv.get_scalar());
@@ -146,6 +145,8 @@ public class PuttingCourse {
 		return true;
 	}
 	
+	
+	
 	public int collisionDetector(Vector2d p) {
 		if(is_water(p))return 0;
 		if(is_sand(p))return 1;
@@ -176,7 +177,7 @@ public class PuttingCourse {
 	}
 	
 	public boolean is_traversable(Vector2d p) {
-		return is_water(p);
+		return collisionDetector(p)==-1 || collisionDetector(p)==1;
 	}
 	
 	public boolean stopsAtPoint(Vector2d aPoint) {

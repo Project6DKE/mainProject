@@ -19,6 +19,7 @@ public class Main extends Application {
     public Scene gameMenu, main3DGame;
     public Game3D1 dim3;
     public double volume = 0.5;
+    public Solver solver = Solver.VERLET;
 
     private HBox mainBox;
     private final int scene_width = 1500;
@@ -35,6 +36,7 @@ public class Main extends Application {
     final int prefBoxLength = scene_width - margin;
 
     private boolean playGolf;
+    private boolean waterPenalty=false;
     private MenuMusic musicPlayer;
     private PuttingCourse courseNew;
     private boolean newCourse;
@@ -90,7 +92,8 @@ public class Main extends Application {
                 }
             }
 
-            dim3 = new Game3D1(this, course, gameType);
+            dim3 = new Game3D1(this, course, gameType, solver);
+            dim3.setWaterPenalty(waterPenalty);
 
             primaryStage.setScene(main3DGame);
             return mainBox;
@@ -242,7 +245,7 @@ public class Main extends Application {
         box3.setAlignment(Pos.CENTER);
 
         mainBox.getChildren().addAll(title, empty, box1,
-                                     box2, box3);
+                box2, box3);
         mainBox.setAlignment(Pos.CENTER);
         mainBox.setSpacing(20);
 
@@ -380,7 +383,7 @@ public class Main extends Application {
 
         String whiteSpace = "   ";
         String[] courseParameters = {"mass", "friction", "starting Y axis", "starting X axis",
-                                     "file name"};
+                "file name"};
 
 
         for (String parameter: courseParameters) {
@@ -408,7 +411,7 @@ public class Main extends Application {
         TextField filenameField = new TextField();
         filenameField.setPromptText("Enter file name");
         box2.getChildren().addAll(massField, frictionField, holeDistanceField,
-                               startXField, startYField, filenameField);
+                startXField, startYField, filenameField);
         box2.setAlignment(Pos.CENTER);
         box2.setSpacing(30);
 
@@ -440,7 +443,7 @@ public class Main extends Application {
         run.setFont(basicFont);
         run.setPrefWidth(200);
         box4.getChildren().addAll(maxBallSpeedField, goalXField, goalYField,
-                                  functionField, gravityField, run);
+                functionField, gravityField, run);
         box4.setAlignment(Pos.CENTER);
         box4.setSpacing(30);
 
@@ -461,7 +464,7 @@ public class Main extends Application {
                 double gravity = fieldToDouble(gravityField);
 
                 Object[] parameterList = {mass, friction, holeDist, startX, startY, filename, maxBallVelocity,
-                                        function, gravity};
+                        function, gravity};
 
                 printAll(parameterList);
 
@@ -518,10 +521,6 @@ public class Main extends Application {
         empty.setMinHeight(standardMinButtonHeight);
         empty.setVisible(false);
 
-        Button empty2 = new Button(" ");
-        empty2.setMinHeight(standardMinButtonHeight);
-        empty2.setVisible(false);
-
         Label title = new Label("Settings");
         title.setFont(bigFont);
 
@@ -544,14 +543,102 @@ public class Main extends Application {
                     }
                 });
 
+        VBox sliderAndTitleBox = new VBox();
+        sliderAndTitleBox.setPrefWidth(prefBoxLength);
+        sliderAndTitleBox.getChildren().addAll(empty, title,
+                sliderTitle, musicVolumeSlider);
 
-        VBox box2 = new VBox();
-        box2.setPrefWidth(prefBoxLength);
-        box2.getChildren().addAll(empty, empty2, title, sliderTitle, musicVolumeSlider);
-        box2.setAlignment(Pos.CENTER);
-        box2.setSpacing(20);
+        sliderAndTitleBox.setAlignment(Pos.CENTER);
+        sliderAndTitleBox.setSpacing(20);
 
-        box.getChildren().add(box2);
+        ToggleGroup toggleGroup = new ToggleGroup();
+
+        RadioButton buttonEuler = new RadioButton("Euler");
+        buttonEuler.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Euler");
+                solver = Solver.EULER;
+            }
+        });
+        buttonEuler.setToggleGroup(toggleGroup);
+
+        RadioButton buttonVerlet = new RadioButton("Verlet");
+        buttonVerlet.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Verlet");
+                solver = Solver.VERLET;
+            }
+        });
+        buttonVerlet.setSelected(true);
+
+        buttonVerlet.setToggleGroup(toggleGroup);
+
+        RadioButton buttonAdamsBashforth = new RadioButton("Adams Bashforth");
+        buttonAdamsBashforth.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Adams Bashforth");
+                solver = Solver.ADAMS_BASHFORTH;
+            }
+        });
+        buttonAdamsBashforth.setToggleGroup(toggleGroup);
+
+        RadioButton buttonRK4 = new RadioButton("RK4");
+        buttonRK4.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("RK4");
+                solver = Solver.RUNGE_KUTTA4;
+            }
+        });
+        buttonRK4.setToggleGroup(toggleGroup);
+
+        HBox solverSelectionBox = new HBox();
+        solverSelectionBox.setPrefWidth(prefBoxLength);
+        solverSelectionBox.setAlignment(Pos.CENTER);
+        solverSelectionBox.setSpacing(20);
+        solverSelectionBox.getChildren().addAll(buttonEuler, buttonVerlet,
+                buttonAdamsBashforth, buttonRK4);
+
+
+        ToggleGroup toggleGroup2 = new ToggleGroup();
+
+        RadioButton resetToLastPosition = new RadioButton("Reset to previous position");
+        resetToLastPosition.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Ball spawned at last position");
+                waterPenalty=false;
+            }
+        });
+        resetToLastPosition.setToggleGroup(toggleGroup2);
+        resetToLastPosition.setSelected(true);
+
+        RadioButton resetBetweenWaterAndField = new RadioButton("Reset between water and field");
+        resetBetweenWaterAndField.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Ball spawned between water and field");
+                waterPenalty=true;
+            }
+        });
+        resetBetweenWaterAndField.setToggleGroup(toggleGroup2);
+
+
+        HBox waterPenaltyBox = new HBox();
+        waterPenaltyBox.setPrefWidth(prefBoxLength);
+        waterPenaltyBox.setAlignment(Pos.CENTER);
+        waterPenaltyBox.setSpacing(20);
+        waterPenaltyBox.getChildren().addAll(resetToLastPosition,
+                resetBetweenWaterAndField);
+
+        Button empty2 = new Button(" ");
+        empty2.setMinHeight(30);
+        empty2.setVisible(false);
+
+        Button empty3 = new Button(" ");
+        empty3.setMinHeight(30);
+        empty3.setVisible(false);
+
+        box.getChildren().addAll(sliderAndTitleBox, empty2,
+                solverSelectionBox, empty3,
+                waterPenaltyBox);
 
         return box;
     }

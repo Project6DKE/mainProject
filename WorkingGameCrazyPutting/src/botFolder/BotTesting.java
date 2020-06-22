@@ -18,7 +18,7 @@ public class BotTesting {
 	
 	static int numberOfTests = 1000;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
 		try(PrintWriter writer = new PrintWriter(new File("botresults.csv"))){
 			

@@ -38,7 +38,7 @@ public class NewAI implements PuttingBot {
     	
     }
     
-    public void takeShot() {
+    void takeShot() {
     	
     	Vector2d initBallPosition = theGame.get_ball_position();
     	
@@ -333,9 +333,6 @@ public class NewAI implements PuttingBot {
     	return v;
     }
     
-    public String toString() {
-    	return "NewAI";
-    }
     
 	
 }

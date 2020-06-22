@@ -52,11 +52,12 @@ public class Game3D1 extends StackPane{
     private final PuttingCourse puttingCourse;
 
 
-    public Game3D1(Main main, PuttingCourse PC, GameType gameType) {
+    public Game3D1(Main main, PuttingCourse PC, GameType gameType, Solver solver) {
         this.main = main;
         this.gameType = gameType;
         this.puttingCourse = PC;
         PS = new PuttingSimulator(PC, new RungeKutta());
+        PS.setSolver(solver);
 
         playMusic();
         setCam();
@@ -64,6 +65,10 @@ public class Game3D1 extends StackPane{
 
         createVisualization();
         playIntroTransition();
+    }
+    
+    public void setWaterPenalty(boolean t) {
+    	PS.set_water_penalty(t);
     }
 
     private void playMusic() {
@@ -122,11 +127,6 @@ public class Game3D1 extends StackPane{
         all3DObjects.getChildren().add(ball);
     }
 
-    private void wallsTest(Vector2d beginVector, Vector2d endVector) {
-        Wall wall1 = new Wall(beginVector, endVector);
-
-        setWall(wall1);
-    }
 
     private void setWall(Wall wall) {
         Vector2d midpoint = wall.getMidpoint();
