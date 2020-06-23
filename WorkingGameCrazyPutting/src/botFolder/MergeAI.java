@@ -20,14 +20,14 @@ public class MergeAI extends NewAI implements PuttingBot {
 	// Because the GA will be generated based off final distance to flag
 	// It's a good idea to play around with how the shot should be modified relative to the distance
 	// With an amplificationFactor of 2 meaning the shot will vary twice as much in X and Y values
-	final double amplificationFactor = 1;
+	final double amplificationFactor = 2;
 	
 	// Epsilon to decide accuracy when aiming a shot towards a specific spot different than the flag
-	final double epsilon = 0.04;
+	double epsilon = 0.02;
 	
 	public MergeAI(){
 		super();
-		this.totalTestShots = 10;
+		this.totalTestShots = 50;	
 	}
 	
 	public MergeAI(int val) {
@@ -72,14 +72,21 @@ public class MergeAI extends NewAI implements PuttingBot {
 		
 	}
 	
-	// It's literally just findAimedShot but checking a max of 30 times
+	// It's literally just findAimedShot but checking a set amount of times
 	// TODO: Bugtest this shit
+	// TODO: Bugtest this method to see if returning the best shot is a viable thing to do
+	
 	public boolean findIfShotIsValid(PuttingCourse course, Vector2d ball_position, Vector2d ballObjective) {
 		this.initialBallPosition = ball_position;
 		Vector2d initShot = super.aimedShot(course, ball_position, ballObjective);
 		this.sim = new PuttingSimulator(course, new RungeKutta());
 		this.sim.set_ball_position(ball_position);
 		boolean validShot = false;
+		
+		// If the ball can stop at the objective, then we can just avoid going through the whole method
+		if(!course.stopsAtPoint(ballObjective)) {
+			return false;
+		}
 		
 		Vector2d margin = this.simulateAimedShot(initShot, ballObjective);
 		
@@ -89,13 +96,35 @@ public class MergeAI extends NewAI implements PuttingBot {
 		double[] best = this.findBestCurrentShot();
 		
 		int count = 0;
+		
+		// Idea is that the best hasn't changed in 10 shots, it probably won't change in the future
+		int resetCount = 0;
+		
 		while((best[1] > epsilon) && (count < totalTestShots))  {
 			int bestLocation = (int)best[0];
 			Vector2d currentError = this.popDistToFlag[bestLocation];
-			this.generatePopulationAimed(bestShot, currentError, ballObjective);
+			// I'm pretty sure I won't be generating more populations
+			//this.generatePopulationAimed(bestShot, currentError, ballObjective);
 			
+			int[] valSort = this.sortShotsByFit();
+			this.crossoverPopulation(ballObjective);
+			
+			double[] prevBest = best;
 			best = this.findBestCurrentShot();
+			
+			if(prevBest[1] == best[1]) {
+				resetCount++;
+			} else {
+				resetCount = 0;
+			}
+			
+			if(resetCount >=20) {
+				break;
+			}
+			
+			
 			count++;
+			
 			
 			if(best[1] < epsilon) {
 				validShot = true;
@@ -113,9 +142,100 @@ public class MergeAI extends NewAI implements PuttingBot {
 		
 		
 		return validShot;
+	}
+	
+	void crossoverPopulation(Vector2d objective) {
+		int[] sortedShot = this.sortShotsByFit();
+		
+		int cutoff = sortedShot.length/2;
+		int count = 0;
+		
+		while(count<cutoff) {
+			int v1val = sortedShot[this.generateRandomNumber(cutoff)];
+			Vector2d vec1 = this.population[v1val];
+			Vector2d err1 = this.popDistToFlag[v1val];
+			
+			int v2val = sortedShot[this.generateRandomNumber(cutoff)];
+			
+			while(v1val == v2val) {
+				v2val = this.generateRandomNumber(cutoff);
+			}
+			
+			Vector2d vec2 = this.population[v2val];
+			Vector2d err2 = this.popDistToFlag[v2val];
+			
+			
+			double chance = 20.0;
+			
+			// So no matter what there's a 40% chance of crossover happening
+			// If one of the directions is different, it increases to 70
+			// If both are different it ramps up to 70%
+			if(err1.getXDirection() != err2.getXDirection()) {
+				chance+=40.0;
+			}
+			
+			if(err1.getYDirection() != err2.getYDirection()) {
+				chance+=40.0;
+			}
+			
+			if(takeChance(chance)) {
+				Vector2d result = this.crossoverIndividual(v1val, v2val);
+				int newPlace = sortedShot[cutoff+count];
+				this.population[newPlace] = result;
+				this.popDistToFlag[newPlace] = this.simulateAimedShot(result, objective);
+				this.fitnessOfPopulation[newPlace] = this.popDistToFlag[newPlace].get_scalar();
+				
+				count++;
+				
+				
+			}
+			
+			
+			
+		}
 		
 		
+	}
+	
+	// In this case there's no mutation in the crossover
+	static Vector2d crossoverIndividual(Vector2d v1, Vector2d v2) {
+		double xVal = (v1.get_x()+v2.get_x())/2.0;
+		double yVal = (v1.get_y()+v2.get_y())/2.0;
 		
+		return new Vector2d(xVal, yVal);
+		
+	}
+	
+	Vector2d crossoverIndividual(int pos1, int pos2) {
+		// Make the fittest individual pos1
+		if(this.fitnessOfPopulation[pos1]<this.fitnessOfPopulation[pos2]) {
+			int temp = pos1;
+			pos1 = pos2;
+			pos2 = temp;
+		}
+		
+		
+		Vector2d v1 = this.population[pos1];
+		Vector2d v2 = this.population[pos2];
+		
+		
+		Vector2d res = this.crossoverIndividual(v1, v2);
+		
+		// 60% chance of x being modified
+		if(takeChance(50)) {
+			double mod = amplificationFactor*generateRandomNumber(this.popDistToFlag[pos2].get_x());
+			res.set_x(res.get_x()+mod);
+			
+		}
+		
+		// 60% chance of y being modified
+		if(takeChance(50)) {
+			double mod = amplificationFactor*generateRandomNumber(this.popDistToFlag[pos2].get_y());
+			res.set_y(res.get_y()+mod);
+			
+		}
+		
+		return res;
 	}
 	
 	// TODO: Bug test this shit cause it seems like it shouldn't work
@@ -133,7 +253,7 @@ public class MergeAI extends NewAI implements PuttingBot {
 		
 		double[] best = this.findBestCurrentShot();
 		
-		while(best[1] > epsilon) {
+		while(best[1] > 0.01) {
 			int bestLocation = (int)best[0];
 			Vector2d currentError = this.popDistToFlag[bestLocation];
 			this.generatePopulationAimed(bestShot, currentError, ballObjective);
@@ -251,7 +371,7 @@ public class MergeAI extends NewAI implements PuttingBot {
 			Vector2d individual = new Vector2d(randomizedX, randomizedY);
 			
 			this.population[i] = individual;
-			this.popDistToFlag[i] = this.simulateAimedShot(shot, objective);
+			this.popDistToFlag[i] = this.simulateAimedShot(individual, objective);
 			this.fitnessOfPopulation[i] = this.popDistToFlag[i].get_scalar();
 			
 		}
@@ -301,8 +421,14 @@ public class MergeAI extends NewAI implements PuttingBot {
 		
 	}
 	
+	// Generates a random number between 0 and value-1
+	static int generateRandomNumber(int value) {
+		return (int) (Math.random()*value);
+	}
+	
 	/*
 	 * Generates a random value between 0-100
+	 * the change has to be a number between 0-100
 	 * If rvalue < chance then return true
 	 * Else return false
 	 */

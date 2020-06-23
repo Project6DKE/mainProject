@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import MainProject.PuttingCourse;
+import MainProject.PuttingSimulator;
+import MainProject.RungeKutta;
 import MainProject.Vector2d;
+import botFolder.MergeAI;
+import botFolder.NewAI;
 
 public class GridCreator {
 	GridNode[][] nodeList;
@@ -13,7 +17,6 @@ public class GridCreator {
 	
 	// The distance between the centerpoint of each node
 	double nodeDistance;
-	double nodeDistMultiplier;
 	
 	double gridLengthMultiplier;
 	
@@ -69,7 +72,47 @@ public class GridCreator {
 	void recreateGrid() {
 		this.gridLengthMultiplier = this.gridLengthMultiplier*2;
 		System.out.println("We need to go deeper");
+		this.setNodeDistance();
 		this.createGrid();
+	}
+	
+	/*
+	 * If the new ball position is outside of the grid everything is horrible and life sucks
+	 */
+	void changeBallPosition(Vector2d ballPosition) {
+		this.ballPosition = ballPosition;
+		
+		// I have to start by removing the ball from the start node
+		this.startNode.setBall(false);
+		
+		for(int i=0; i<nodeList.length; i++) {
+			for(int j=0;j<nodeList[0].length;j++) {
+				
+				GridNode aNode = this.nodeList[i][j];
+				
+				
+				
+				// I can do an extra check, because I know that start node has to be in the exact middle
+				// To do if the program sucks dick
+				if (aNode.checkIfLocationIsContained(ballPosition)) {
+					
+					// TODO: Fix this garbage so that the node has the ball in its center or something so that this shit's natural
+					aNode.setBall(true);
+					aNode.setCenter(ballPosition);
+					this.startNode = aNode;
+					double distToBall = aNode.findDistanceToCenter(ballPosition);
+					aNode.setBallDistance(distToBall);
+					
+				} else {
+					aNode.setBallDistance(Double.MAX_VALUE);
+				}
+				
+				
+			}
+			
+		}
+		
+		
 	}
 	
 	
@@ -129,8 +172,9 @@ public class GridCreator {
 					newNode.setBall(true);
 					newNode.setCenter(ballPosition);
 					this.startNode = newNode;
-					double distToBall = newNode.findDistanceToCenter(ballPosition);
-					newNode.setBallDistance(distToBall);
+					
+					// It has the ball so the distance to it is 0
+					newNode.setBallDistance(0.0);
 					
 					//startNodeCount is just there for bug testing purposes
 					// It's an easy AF way for me to know if multiple nodes have the ball
@@ -157,32 +201,10 @@ public class GridCreator {
 		
 		List<GridNode> list = new ArrayList<>();
 		
-		int xPos = 0;
-		int yPos = 0;
+		int[] positions = this.findNodePosition(aNode);
 		
-		boolean confirmAllWorks = false;
-		
-		outer: for(int i=0; i<this.nodeList.length; i++) {
-			for(int j=0; j<this.nodeList[0].length;j++) {
-				if (this.nodeList[i][j] == aNode) {
-					xPos = i;
-					yPos = j;
-					
-					confirmAllWorks = true;
-					
-					break outer;
-					
-				}
-				
-			}
-			
-		}
-		
-		// Exists only for bug-testing!
-		if(confirmAllWorks == false) {
-			throw new Exception();
-		}
-		
+		int xPos = positions[0];
+		int yPos = positions[1];
 		
 		// The idea is to check the 8 surrounding objects
 		for(int i=-1; i<2; i++) {
@@ -203,7 +225,13 @@ public class GridCreator {
 									
 									// TODO: Add one extra check to make sure the shot is doable between the two points
 									
-									list.add(nextNode);
+									MergeAI testAI = new MergeAI();
+									
+									// TODO: Optimize this so that the program doesn't have this horrible bottleneck
+									if(testAI.findIfShotIsValid(this.theCourse, aNode.centerPoint, nextNode.getCenter())) {
+										list.add(nextNode);
+									}
+									
 								}
 								
 								
@@ -224,6 +252,38 @@ public class GridCreator {
 		}
 		
 		return list;
+		
+	}
+	
+	/*
+	 * Finds the two positional values of a given node
+	 * @param aNode the node searched for in the grid. If it doesn't exist then an empty list is returned
+	 * @return Returns the X and Y values in the grid, with the first position = x, second = y
+	 */
+	
+	int[] findNodePosition(GridNode aNode) {
+		int[] space = new int[2];
+		
+		//boolean confirmAllWorks = false;
+		
+		for(int i=0; i<this.nodeList.length; i++) {
+			for(int j=0; j<this.nodeList[0].length;j++) {
+				if (this.nodeList[i][j] == aNode) {
+					space[0] = i;
+					space[1] = j;
+					
+					//confirmAllWorks = true;
+					
+					return space;
+					
+				}
+				
+			}
+			
+		}
+		
+		return null;
+		
 		
 	}
 	
@@ -329,7 +389,7 @@ public class GridCreator {
 			
 			// TODO: Update the method to check all kinds of traversable
 			// Should also do an extra update to make sure the point doesn't have too high a gradient
-			if(this.theCourse.is_traversable(aPoint)) {
+			if(!this.theCourse.is_traversable(aPoint)) {
 				return false;
 			}
 			
@@ -371,6 +431,50 @@ public class GridCreator {
 		return ("Explored:" + count + ", untraversable:" + countTraverse + ", Total:" + totalArea);
 		
 	}
+	
+	/*
+	 * Assumes a shot is being taken from start to end
+	 * First shot is taken with NewAI due to fast calculation time (particularly helpful as distance will usually be smallish here
+	 * 
+	 */
+	
+	// Method wasn't finished and isn't used
+	
+	/*
+	public boolean findIfShotIsValid(PuttingCourse aCourse, Vector2d start, Vector2d end) {
+		
+		if(!aCourse.stopsAtPoint(end)) {
+			return false;
+		}
+		
+		// I'm taking the accuracy bounds to be = to the hole tolerance
+		// Need a subjective number, this works as well as any
+		double accuracyBounds = aCourse.get_hole_tolerance();
+		
+		NewAI ai = new NewAI();
+		
+		Vector2d shot = ai.aimedShot(aCourse, start, end);
+		
+		PuttingSimulator sim = new PuttingSimulator(aCourse, new RungeKutta());
+		sim.set_ball_position(start);
+		
+		sim.take_shot(shot);
+		
+		Vector2d newPos = sim.get_ball_position();
+		
+		Vector2d diff = newPos.getVectDist(newPos);
+		
+		if(diff.get_scalar() <= accuracyBounds) {
+			return true;
+		} else {
+			
+			
+			
+		}
+		
+		
+		return false;
+	}*/
 	
 	// Assumes the given point is the center
 	// Hardcoded and not visually nice, but it's good enough for what's needed

@@ -1,5 +1,7 @@
 package pathFinding;
 
+import java.util.Comparator;
+
 import MainProject.PuttingCourse;
 import MainProject.Vector2d;
 import botFolder.MergeAI;
@@ -8,7 +10,7 @@ import botFolder.MergeAI;
 // But that means I'll have to do an extra check elsewhere for if the grid has the flag
 // Blaaaahh
 // And it's also good for checking if the node is traversable, as the check can be generalized
-public class GridNode {
+public class GridNode implements Comparable {
 	
 	
 	
@@ -156,6 +158,10 @@ public class GridNode {
 		return this.stoppable;
 	}
 	
+	public double getUnivScore() {
+		return this.univDistScore;
+	}
+	
 	// Only works because the nodes are meant to be squares
 	// So it checks if something is in the square's area
 	public boolean checkIfLocationIsContained(Vector2d objectLocation) {
@@ -180,9 +186,25 @@ public class GridNode {
 	
 	public String toString() {
 		String a = this.centerPoint.toString() + " distFlag " + this.distToFlag + " distBall " + this.distToBall + " totalScore " + this.univDistScore + "\n";
-		String b = " hasBall " + this.hasBall + " hasFlag " + this.hasFlag() + ",Stop:" + this.getStoppable() + ",Travers: " + this.isTraversable();
+		String b = " hasBall " + this.hasBall + " hasFlag " + this.hasFlag() + ",Stop:" + this.getStoppable() + ",Travers: " + this.isTraversable() + "\n";
 		
 		return (a + b);
+	}
+
+
+	@Override
+	public int compareTo(Object o) {
+		GridNode oNode = (GridNode)o;
+		
+		if (this.getUnivScore() > oNode.getUnivScore()) {
+			return 1;
+		} else if (this.getUnivScore() < oNode.getUnivScore()) {
+			return -1;
+		} else {
+			return 0;
+		}
+		
+		
 	}
 
 

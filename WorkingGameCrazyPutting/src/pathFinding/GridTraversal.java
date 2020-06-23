@@ -3,6 +3,7 @@ package pathFinding;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import MainProject.PuttingCourse;
 import MainProject.Vector2d;
@@ -52,7 +53,16 @@ public class GridTraversal {
 		
 		HashSet<GridNode> toExplore = new HashSet<>();
 		
-		toExplore.addAll(this.updateNearbyNodes(exploreNode));
+		List<GridNode> firstBatch = this.updateNearbyNodes(exploreNode);
+		
+		toExplore.addAll(firstBatch);
+		
+		
+		
+		// BUG TESTING FOR SPEED IMPROVEMENTS IN GENERATION
+		PriorityQueue<GridNode> minHeap = new PriorityQueue<>();
+		minHeap.addAll(firstBatch);
+		
 		
 		//List<GridNode> toExplore = new ArrayList<GridNode>();
 		
@@ -68,6 +78,10 @@ public class GridTraversal {
 			List<GridNode> surroundingNodes = this.updateNearbyNodes(exploreNode);
 			
 			toExplore.addAll(surroundingNodes);
+			
+			GridNode testNode = minHeap.poll();
+			minHeap.addAll(surroundingNodes);
+			
 			
 			if(toExplore.size() == 0) {
 				this.restartInternalInfo();
