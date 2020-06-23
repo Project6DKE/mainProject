@@ -21,9 +21,60 @@ public class FunctionH implements Function2d {
     }
     
     /*
-     * Exists solely so that RandomishFunction
-     * Can extend this function without problems
+     * A set of functions used for testing. I created a constructor to make it easier and cleaner to access them.
+     * In the comments I mention where the Flag and the Ball should be for the sake of the course
      */
+    
+    static FunctionH createInstance(int aValue) throws Exception {
+    	switch (aValue) {
+		case 1:
+			/*
+			 * Flag (0,4)
+			 * Ball (0,0)
+			 * 
+			 * In this function the ball is surrounded by water, with the exit being a very thin line
+			 * Used to test how the internal restart method works
+			 */
+			
+			FunctionH func = new FunctionH("2");
+			func.add_subfunct("-1", -10000, 10000, -100000, -1);
+			func.add_subfunct("-1", 0.0225, 2, 1, 2);
+			func.add_subfunct("-1", -2, -0.0225, 1, 2);
+			func.add_subfunct("-1", 1, 2, -2, 2);
+			func.add_subfunct("-1", -2, -1, -2, 2);
+			return func;
+		case 2:
+			/*
+			 * Flag (0,4)
+			 * Ball (0,0)
+			 * 
+			 * Here the ball and water are separated by a really long strip of water
+			 * Used to test the internal restart function
+			 */
+			FunctionH height = new FunctionH("2");
+			height.add_subfunct("-1", -10000, 10000, -100000, -1);
+			height.add_subfunct("-1", -10, 10, 1, 2);
+			return height;
+		case 3:
+			/*
+			 * Flag (-15.70766,-0.0012)
+			 * Ball (-3.14288,0.002504)
+			 * 
+			 * Ball and water are separated by a curvy mountain
+			 * Used to test 
+			 * 
+			 */
+		default:
+			return new FunctionH("2");
+			
+		
+    	}
+    	
+    	
+    	
+    }
+    
+    
     
    
     public void understand() throws Exception{
