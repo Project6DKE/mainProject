@@ -1,4 +1,4 @@
-package com.Thibault;
+package MainProject;
 
 public class TrapezoidIntegration {
     private final double h;
