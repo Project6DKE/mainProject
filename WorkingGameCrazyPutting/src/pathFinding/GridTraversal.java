@@ -180,7 +180,7 @@ public class GridTraversal {
 				
 				updated.add(aNode);
 				
-				System.out.println("I found the flag fucko");
+				System.out.println("I found the flag");
 				break;
 				
 				
