@@ -23,7 +23,7 @@ public class MergeAI extends NewAI implements PuttingBot {
 	final double amplificationFactor = 2;
 	
 	// Epsilon to decide accuracy when aiming a shot towards a specific spot different than the flag
-	double epsilon = 0.02;
+	double epsilon = 0.04;
 	
 	public MergeAI(){
 		super();
@@ -253,10 +253,19 @@ public class MergeAI extends NewAI implements PuttingBot {
 		
 		double[] best = this.findBestCurrentShot();
 		
-		while(best[1] > 0.01) {
+		while(best[1] > epsilon) {
 			int bestLocation = (int)best[0];
 			Vector2d currentError = this.popDistToFlag[bestLocation];
-			this.generatePopulationAimed(bestShot, currentError, ballObjective);
+			//this.generatePopulationAimed(bestShot, currentError, ballObjective);
+			best = this.findBestCurrentShot();
+			
+			// I'm pretty sure I won't be generating more populations
+			//this.generatePopulationAimed(bestShot, currentError, ballObjective);
+			
+			int[] valSort = this.sortShotsByFit();
+			this.crossoverPopulation(ballObjective);
+			
+			//double[] prevBest = best;
 			best = this.findBestCurrentShot();
 			
 		}

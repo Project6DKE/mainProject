@@ -219,7 +219,7 @@ public class PuttingSimulator {
 
 
 	public ArrayList<Vector2d> take_shot_verlet_list(Vector2d initial_ball_velocity){
-		System.out.println("This is shot #"+(++shot)+"using verlet");
+		//System.out.println("This is shot #"+(++shot)+"using verlet");
 		this.velocity = initial_Velocity_Check( initial_ball_velocity);
 		ballPath= new ArrayList<Vector2d>();
 
@@ -309,13 +309,13 @@ public class PuttingSimulator {
 
 	private boolean waterHandler() {
 		if(water_penalty) {
-			System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
+			//System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
 			position=ballPath.get(ballPath.size()-2);
 			ballPath.add(position);
 			velocity=new Vector2d(0,0);
 		}
 		else {
-			System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
+			//System.out.println("Your ball has gone into water, +1 shot penalty! \nCurrent Score: "+(++shot));
 			position=temp;
 			ballPath.add(position);
 			velocity=new Vector2d(0,0);

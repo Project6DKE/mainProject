@@ -65,11 +65,13 @@ public class TraversalBot extends MergeAI implements PuttingBot {
 			
 		}
 		
-		
+		this.theCourse = course;
 		
 		// First test is to check if it's viable or not to take a shot directly towards the flag
 		if(super.findIfShotIsValid(course, ball_position, course.get_flag_position())) {
+			this.ballPath.add(ball_position);
 			this.ballPath.add(course.get_flag_position());
+			this.createShotSequence();
 			return super.shot_velocity(course, ball_position);
 		}
 		
@@ -78,7 +80,7 @@ public class TraversalBot extends MergeAI implements PuttingBot {
 		
 		this.pathFinder = traveler;
 		
-		this.theCourse = course;
+		
 		
 		// TODO: add the auxiliary method that will make my life so much easier
 		
@@ -241,6 +243,19 @@ public class TraversalBot extends MergeAI implements PuttingBot {
 		this.ballPath = new ArrayList<Vector2d>();
 		this.pathFound = false;
 		return this.pathFinder.processedSolution();
+	}
+	
+	public String toString() {
+		String forw;
+		if(this.forward) {
+			forw = "forward";
+		} else {
+			forw = "backward";
+		}
+		
+		String shot = "," + this.shotSequence.size();
+		
+		return forw + shot;
 	}
 	
 }

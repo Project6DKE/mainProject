@@ -1,6 +1,7 @@
 package pathFinding;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -25,6 +26,8 @@ public class GridTraversal {
 	boolean foundSolution;
 	List<GridNode> solution;
 	
+	boolean heapUse;
+	
 	// Having the map elsewhere might be useless
 	
 	// TODO: Update the method so that it can receive a different ball location, in case the traversal needs to be updated
@@ -41,6 +44,11 @@ public class GridTraversal {
 		this(new GridCreator(aCourse));
 	}
 	
+	public GridTraversal(PuttingCourse aCourse, boolean aBool) throws Exception{
+		this(aCourse);
+		this.heapUse = aBool;
+	}
+	
 	public GridTraversal(PuttingCourse aCourse, Vector2d ball_position) throws Exception {
 		this(new GridCreator(aCourse, ball_position));
 	}
@@ -51,42 +59,54 @@ public class GridTraversal {
 		
 		//List<GridNode> firstBatch = this.updateNearbyNodes(exploreNode);
 		
-		HashSet<GridNode> toExplore = new HashSet<>();
+		
 		
 		List<GridNode> firstBatch = this.updateNearbyNodes(exploreNode);
 		
-		toExplore.addAll(firstBatch);
 		
+		HashSet<GridNode> toExplore = new HashSet<>();
 		
-		
-		// BUG TESTING FOR SPEED IMPROVEMENTS IN GENERATION
 		PriorityQueue<GridNode> minHeap = new PriorityQueue<>();
-		minHeap.addAll(firstBatch);
+		
+		if(this.heapUse) {
+			toExplore.addAll(firstBatch);
+		} else {
+			minHeap.addAll(firstBatch);
+		}
 		
 		
 		//List<GridNode> toExplore = new ArrayList<GridNode>();
 		
 		while(!this.foundSolution) {
-			exploreNode = findBestNode(toExplore);
-			
-			toExplore.remove(exploreNode);
+			if(this.heapUse) {
+				exploreNode = findBestNode(toExplore);
+				toExplore.remove(exploreNode);
+			} else {
+				exploreNode = minHeap.poll();
+			}
 			
 			exploreNode.setExplored(true);
 			
-			//exploreNode.setExplored(true);
 			
 			List<GridNode> surroundingNodes = this.updateNearbyNodes(exploreNode);
 			
-			toExplore.addAll(surroundingNodes);
 			
-			GridNode testNode = minHeap.poll();
-			minHeap.addAll(surroundingNodes);
+			if(this.heapUse) {
+				toExplore.addAll(surroundingNodes);
+			} else {
+				minHeap.addAll(this.cleanUpList(minHeap, surroundingNodes));
+			}
 			
 			
-			if(toExplore.size() == 0) {
+			if((toExplore.size() == 0) && (this.heapUse)) {
 				this.restartInternalInfo();
 				exploreNode = this.startNode;
 				toExplore.addAll(this.updateNearbyNodes(exploreNode));
+				
+			} else if ((minHeap.size() == 0) && (!this.heapUse)) {
+				this.restartInternalInfo();
+				exploreNode = this.startNode;
+				minHeap.addAll(this.updateNearbyNodes(exploreNode));
 				
 			}
 			
@@ -98,6 +118,18 @@ public class GridTraversal {
 	public void createNewPath() throws Exception {
 		this.restartInternalInfo();
 		this.createPath();
+		
+	}
+	
+	Collection<GridNode> cleanUpList(Collection<GridNode> aQ, List<GridNode> aList){
+		PriorityQueue<GridNode> updated = new PriorityQueue<>();
+		for(GridNode aNode : aList) {
+			if (!aQ.contains(aNode)) {
+				updated.add(aNode);
+			}
+			
+		}
+		return updated;
 		
 	}
 	
