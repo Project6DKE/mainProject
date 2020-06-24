@@ -93,7 +93,7 @@ public class TraversalBot extends MergeAI implements PuttingBot {
 			}
 			// This should be the first call so that the loop works properly
 			// But my mind isn't working a wy to properly organize it as such
-			// So screw it, temporary solution
+			//  temporary solution
 			
 			if(!this.pathFound) {
 				this.getNewPathFinding();
@@ -178,7 +178,7 @@ public class TraversalBot extends MergeAI implements PuttingBot {
 				
 				// TODO: Add a check in case the comparisonNode hasn't changed
 				// It'll work as a way of notifying the program that the course is not deemed valid
-				// And that life sucks
+
 				
 			} else {
 			

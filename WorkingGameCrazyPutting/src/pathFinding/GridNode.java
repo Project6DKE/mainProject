@@ -8,7 +8,7 @@ import botFolder.MergeAI;
 
 // I'm not delimiting the size of the grid node here, it's probably for the best
 // But that means I'll have to do an extra check elsewhere for if the grid has the flag
-// Blaaaahh
+
 // And it's also good for checking if the node is traversable, as the check can be generalized
 public class GridNode implements Comparable {
 	
@@ -49,8 +49,8 @@ public class GridNode implements Comparable {
 	// It only makes sense to check the values that have been updated in their distToBall
 	// So by adding this little extra boolean I should be able to hurry up the search a bit
 	// Aaah or maybe not.
-	// Because I'd have to go through all of the nodes either way, which sounds like absolute shit
-	// aahhhh
+	// Because I'd have to go through all of the nodes either way, which sounds not so good
+
 	boolean toCheck;
 	
 	
@@ -73,8 +73,7 @@ public class GridNode implements Comparable {
 		
 		this.hasFlag = this.checkIfLocationIsContained(flagPos);
 		
-		// God this is is such a shit way of dealing with not being able to have null values
-		// But if fucking works with what I need, so screw it
+
 		this.distToBall = Double.MAX_VALUE;
 		this.explored = false;
 		

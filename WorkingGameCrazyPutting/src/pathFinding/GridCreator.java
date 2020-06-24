@@ -29,7 +29,7 @@ public class GridCreator {
 	static int specialNodeCount = 0;
 	
 	// I'll need an extra constructor in case I'm giving it a separate ball position
-	// Blah, to do later
+	//  to do later
 	
 	// This is just a really handy way of keeping some information for nodes and grid nodes
 	// I can probably change it to instead be like a long ass static method.
@@ -77,7 +77,7 @@ public class GridCreator {
 	}
 	
 	/*
-	 * If the new ball position is outside of the grid everything is horrible and life sucks
+	 * If the new ball position is outside of the grid everything is horrible
 	 */
 	void changeBallPosition(Vector2d ballPosition) {
 		this.ballPosition = ballPosition;
@@ -93,7 +93,7 @@ public class GridCreator {
 				
 				
 				// I can do an extra check, because I know that start node has to be in the exact middle
-				// To do if the program sucks dick
+				// To do if the program doesnt work
 				if (aNode.checkIfLocationIsContained(ballPosition)) {
 					
 					// TODO: Fix this garbage so that the node has the ball in its center or something so that this shit's natural
