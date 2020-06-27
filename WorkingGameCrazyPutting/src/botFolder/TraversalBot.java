@@ -22,10 +22,19 @@ public class TraversalBot extends MergeAI implements PuttingBot {
 	
 	boolean pathFound;
 	
+	boolean forward;
+	
+	
+	PuttingCourse theCourse;
+	
 	// First test it to attempt a hole in one.
 	// If it ain't doable, then go backwards and try different shots
 	public TraversalBot(){
-		super(5);
+		this(50);
+	}
+	
+	public TraversalBot(int val) {
+		super(val);
 		this.ballPath = new ArrayList<Vector2d>();
 		this.shotSequence = new ArrayList<Vector2d>();
 		
@@ -34,19 +43,43 @@ public class TraversalBot extends MergeAI implements PuttingBot {
 		this.pathFound = false;
 	}
 	
+	public TraversalBot(boolean bool) {
+		this(50);
+		this.forward=bool;
+	}
+	
 	// TODO: Store solutions inside traversal bot somehow so that it's easier for it to respond to a given shot
 	@Override
 	public Vector2d shot_velocity(PuttingCourse course, Vector2d ball_position) throws Exception {
 		
+		// The gist of this call is to check if the course already exists inside of the code
+		// If it does instead of having to go through every step it'll just find the relevant step and return that
+		if(course == this.theCourse) {
+			int pos = this.findClosestLocation(ball_position);
+			
+			// Due to how the shot sequence and the ball path are created
+			// Ball position (i) is reached by taking shot (i-1)
+			if(pos > 0) {
+				return this.shotSequence.get(pos-1);
+			}
+			
+		}
+		
+		this.theCourse = course;
+		
 		// First test is to check if it's viable or not to take a shot directly towards the flag
 		if(super.findIfShotIsValid(course, ball_position, course.get_flag_position())) {
+			this.ballPath.add(ball_position);
 			this.ballPath.add(course.get_flag_position());
+			this.createShotSequence();
 			return super.shot_velocity(course, ball_position);
 		}
+		
 		
 		GridTraversal traveler = new GridTraversal(course, ball_position);
 		
 		this.pathFinder = traveler;
+		
 		
 		
 		// TODO: add the auxiliary method that will make my life so much easier
@@ -54,11 +87,15 @@ public class TraversalBot extends MergeAI implements PuttingBot {
 		List<GridNode> nodes = traveler.processedSolution();
 		
 		while(!this.pathFound) {
-			this.createForwardShotSequenceList(nodes);
-			
+			//this.createForwardShotSequenceList(nodes);
+			if(this.forward) {
+				this.createForwardShotSequenceList(nodes);
+			} else {
+				this.createBackwardsShotSequenceList(nodes);
+			}
 			// This should be the first call so that the loop works properly
 			// But my mind isn't working a wy to properly organize it as such
-			// So screw it, temporary solution
+			//  temporary solution
 			
 			if(!this.pathFound) {
 				this.getNewPathFinding();
@@ -70,8 +107,32 @@ public class TraversalBot extends MergeAI implements PuttingBot {
 		
 		this.createShotSequence();
 		
-		return this.shotSequence.get(0);
 		
+		Vector2d returnShot = this.shotSequence.get(0);
+		
+		return returnShot;
+		
+		
+	}
+	
+	
+	/**
+	 * @param aVec the vector that will be checked internally
+	 * @return pos  the position of the closest vector in the ballpath
+	 * 				if no vector exists, returns -1
+	 */
+	public int findClosestLocation(Vector2d aVec) {
+		
+		for(int i=0; i<this.ballPath.size(); i++) {
+			Vector2d compareVec = this.ballPath.get(i);
+			
+			if(aVec.nearlyEquals(compareVec)) {
+				return i;
+			}
+			
+		}
+		
+		return -1;
 		
 	}
 	
@@ -119,7 +180,7 @@ public class TraversalBot extends MergeAI implements PuttingBot {
 				
 				// TODO: Add a check in case the comparisonNode hasn't changed
 				// It'll work as a way of notifying the program that the course is not deemed valid
-				// And that life sucks
+
 				
 			} else {
 			
@@ -163,7 +224,9 @@ public class TraversalBot extends MergeAI implements PuttingBot {
 				
 				comparisonNode = aNode;
 				validSearch = i;
-				i=0;
+				
+				// Crappy solution, but it's to make sure the loop restarts properly
+				i=-1;
 				
 			}
 			
@@ -180,6 +243,19 @@ public class TraversalBot extends MergeAI implements PuttingBot {
 		this.ballPath = new ArrayList<Vector2d>();
 		this.pathFound = false;
 		return this.pathFinder.processedSolution();
+	}
+	
+	public String toString() {
+		String forw;
+		if(this.forward) {
+			forw = "forward";
+		} else {
+			forw = "backward";
+		}
+		
+		String shot = "," + this.shotSequence.size();
+		
+		return forw + shot;
 	}
 	
 }

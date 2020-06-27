@@ -1,14 +1,16 @@
 package pathFinding;
 
+import java.util.Comparator;
+
 import MainProject.PuttingCourse;
 import MainProject.Vector2d;
 import botFolder.MergeAI;
 
 // I'm not delimiting the size of the grid node here, it's probably for the best
 // But that means I'll have to do an extra check elsewhere for if the grid has the flag
-// Blaaaahh
+
 // And it's also good for checking if the node is traversable, as the check can be generalized
-public class GridNode {
+public class GridNode implements Comparable {
 	
 	
 	
@@ -47,8 +49,8 @@ public class GridNode {
 	// It only makes sense to check the values that have been updated in their distToBall
 	// So by adding this little extra boolean I should be able to hurry up the search a bit
 	// Aaah or maybe not.
-	// Because I'd have to go through all of the nodes either way, which sounds like absolute shit
-	// aahhhh
+	// Because I'd have to go through all of the nodes either way, which sounds not so good
+
 	boolean toCheck;
 	
 	
@@ -71,8 +73,7 @@ public class GridNode {
 		
 		this.hasFlag = this.checkIfLocationIsContained(flagPos);
 		
-		// God this is is such a shit way of dealing with not being able to have null values
-		// But if fucking works with what I need, so screw it
+
 		this.distToBall = Double.MAX_VALUE;
 		this.explored = false;
 		
@@ -156,6 +157,10 @@ public class GridNode {
 		return this.stoppable;
 	}
 	
+	public double getUnivScore() {
+		return this.univDistScore;
+	}
+	
 	// Only works because the nodes are meant to be squares
 	// So it checks if something is in the square's area
 	public boolean checkIfLocationIsContained(Vector2d objectLocation) {
@@ -180,9 +185,25 @@ public class GridNode {
 	
 	public String toString() {
 		String a = this.centerPoint.toString() + " distFlag " + this.distToFlag + " distBall " + this.distToBall + " totalScore " + this.univDistScore + "\n";
-		String b = " hasBall " + this.hasBall + " hasFlag " + this.hasFlag() + ",Stop:" + this.getStoppable() + ",Travers: " + this.isTraversable();
+		String b = " hasBall " + this.hasBall + " hasFlag " + this.hasFlag() + ",Stop:" + this.getStoppable() + ",Travers: " + this.isTraversable() + "\n";
 		
 		return (a + b);
+	}
+
+
+	@Override
+	public int compareTo(Object o) {
+		GridNode oNode = (GridNode)o;
+		
+		if (this.getUnivScore() > oNode.getUnivScore()) {
+			return 1;
+		} else if (this.getUnivScore() < oNode.getUnivScore()) {
+			return -1;
+		} else {
+			return 0;
+		}
+		
+		
 	}
 
 

@@ -127,6 +127,15 @@ public class Game3D1 extends StackPane{
         all3DObjects.getChildren().add(ball);
     }
 
+    private void setWalls() {
+        for (Wall wall: puttingCourse.get_walls()) {
+            setWall(wall);
+        }
+
+        Wall wall = new Wall(new Vector2d(2, 3), new Vector2d(-100, 300));
+        setWall(wall);
+    }
+
 
     private void setWall(Wall wall) {
         Vector2d midpoint = wall.getMidpoint();
@@ -144,7 +153,7 @@ public class Game3D1 extends StackPane{
         double courseHeight = PS.getCourse().get_height().evaluate(midpoint) ;
         double yTranslation = courseHeight + moveUpHalfHeight;
 
-        Rotate rotationTransform = new Rotate(rotation * 0.5 - 12, Rotate.Y_AXIS);
+        Rotate rotationTransform = new Rotate(rotation * 0.5, Rotate.Y_AXIS);
         Translate moveUpTranslation = new Translate(midpoint.x, yTranslation, midpoint.y);
 
         wallObject.getTransforms().add(moveUpTranslation);
@@ -172,9 +181,9 @@ public class Game3D1 extends StackPane{
     }
 
     private void setBallPosition() {
-        Vector2d ballPosition = PS.get_ball_position();
-        this.ball.setTranslateX(ballPosition.get_x());
-        this.ball.setTranslateZ(ballPosition.get_y() /*- (ball_radius)*/);
+        Vector2d ballPosition = PS.take_angle_shot_list(0, 0).get(0);
+        this.ball.setTranslateX(ballPosition.get_x() * -50);
+        this.ball.setTranslateZ(ballPosition.get_y() * -50);
         this.ball.setTranslateY(PS.getCourse().get_height().evaluate(ballPosition) - 9);
         System.out.println("Ball updated : " + ballPosition.toString());
     }

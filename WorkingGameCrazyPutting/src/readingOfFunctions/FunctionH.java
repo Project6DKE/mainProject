@@ -21,9 +21,129 @@ public class FunctionH implements Function2d {
     }
     
     /*
-     * Exists solely so that RandomishFunction
-     * Can extend this function without problems
+     * A set of functions used for testing. I created a constructor to make it easier and cleaner to access them.
+     * In the comments I mention where the Flag and the Ball should be for the sake of the course
      */
+    
+    public static FunctionH createInstance(int aValue) throws Exception {
+    	
+    	FunctionH height;
+    	switch (aValue) {
+		case 1:
+			/*
+			 * Flag (0,4)
+			 * Ball (0,0)
+			 * 
+			 * In this function the ball is surrounded by water, with the exit being a very thin line
+			 * Used to test how the internal restart method works
+			 */
+			
+			FunctionH func = new FunctionH("2");
+			func.add_subfunct("-1", -10000, 10000, -100000, -1);
+			func.add_subfunct("-1", 0.0225, 2, 1, 2);
+			func.add_subfunct("-1", -2, -0.0225, 1, 2);
+			func.add_subfunct("-1", 1, 2, -2, 2);
+			func.add_subfunct("-1", -2, -1, -2, 2);
+			return func;
+		case 2:
+			/*
+			 * Flag (0,4)
+			 * Ball (0,0)
+			 * 
+			 * Here the ball and water are separated by a really long strip of water
+			 * Used to test the internal restart function
+			 */
+			height = new FunctionH("2");
+			height.add_subfunct("-1", -10000, 10000, -100000, -1);
+			height.add_subfunct("-1", -10, 10, 1, 2);
+			return height;
+		case 3:
+			/*
+			 * Ball (0,0)
+			 * 
+			 * Flags at:
+			 * 	(0,4)
+			 * 	(4,4)
+			 * 	(4,8)
+			 * 	(0,8)
+			 * 	(0,12)
+			 * 
+			 * A short path is created between ball and flag
+			 * Done to test speed for backwards vs forward solver
+			 * It's a crappy maze
+			 * 
+			 */
+			height = new FunctionH("2");
+			height.add_subfunct("-1", -100, 100, -10, -1);
+			
+			// Left wall
+			height.add_subfunct("-1", -2, -1, -1, 15);
+			//Middle block
+			height.add_subfunct("-1", -1, 3, 5, 7);
+			//Lower right block
+			height.add_subfunct("-1", 1, 5, -1, 3);
+			//Top right block
+			height.add_subfunct("-1", 1, 7, 9, 15);
+			return height;
+		case 4:
+			/*
+			 * Ball (10.5,1)
+			 * 
+			 * Flags at: 
+			 * 	(4,10)
+			 * 	(5, 16)
+			 *  (10,20)
+			 *  (17,17)
+			 *  (10,7)
+			 *  (13,5)
+			 */
+			
+			height = new FunctionH("2");
+			
+			// 1
+			height.add_subfunct("-1", 2.875, 6.125, 2.875, 3.125);
+			//2
+			height.add_subfunct("-1", 2.875, 3.125, 2.875, 18.125);
+			// 3
+			height.add_subfunct("-1", 2.875, 6.125, 8.875, 9.125);
+			// 4
+			height.add_subfunct("-1", 2.875, 9.125, 17.875, 18.125);
+			// 5
+			height.add_subfunct("-1", 2.875, 9.125, 14.875, 15.125);
+			//6
+			height.add_subfunct("-1", 5.875, 15.125, 11.875, 12.125);
+			//7
+			height.add_subfunct("-1", 11.875, 12.125, 14.875, 18.125);
+			//8
+			height.add_subfunct("-1", 11.875, 18.125, 17.875, 18.125);
+			//9
+			height.add_subfunct("-1", 17.875, 18.125, 2.875, 18.125);
+			
+			//10
+			height.add_subfunct("-1", 11.875, 18.125, 2.875, 3.125);
+			// 11
+			height.add_subfunct("-1", 11.875, 12.125, 2.875, 9.125);
+			
+			
+			//12
+			height.add_subfunct("-1", 5.875, 15.125, 5.875, 6.125);
+			//13
+			height.add_subfunct("-1", 8.875, 9.125, 5.875, 12.125);
+			// 14
+			height.add_subfunct("-1", 14.875, 15.125, 8.875, 15.875);
+			
+			return height;
+		default:
+			return new FunctionH("50");
+			
+		
+    	}
+    	
+    	
+    	
+    }
+    
+    
     
    
     public void understand() throws Exception{

@@ -4,7 +4,7 @@ public class Operations implements Something {
 
 
     /*
-    Use operation Type to properly define what operation is being used, a pain in the ass but fuck it.
+    Use operation Type to properly define what operation is being used
      */
     int operationType;
 
@@ -239,7 +239,7 @@ public class Operations implements Something {
 
 
     public double solve() {
-    	// I'm realizing now that this is probably kind of shit ahhhhhh
+
         return Operate(left, right);
     }
 

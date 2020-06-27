@@ -37,7 +37,7 @@ public class LessRandomFunctions extends FunctionH {
 		
 		// Done to make sure there's a closure of parenthesis
 		// I only open parenthesis when adding a function
-		// Lazy, but implementing parenthesis separately felt like a pain
+
 		int parenthesis = 0;
 		
 		// Done to avoid having constants, variables or operators that clash
@@ -145,7 +145,7 @@ public class LessRandomFunctions extends FunctionH {
 		return addSpace(elements);
 	}
 	
-	// Exists so that I can be lazy and construct the elements individually
+	// Exists so that I can  construct the elements individually
 	// Just adds a space inbetween each element
 	// Goes linearly through the elements in the array
 	static String addSpace(String[] stel) {

@@ -1,12 +1,14 @@
 package MainProject;
 
-public class Vector2d {
+public class Vector2d implements Comparable {
 	double x,y;
 	public Vector2d(double x, double y) {this.x=x;this.y=y;}
 	public double get_x(){return x;}
 	public double get_y(){return y;}
 	public void set_x(double x) {this.x=x;}
 	public void set_y(double y) {this.y=y;}
+	
+	
 	
 	public double get_scalar(){
 		return Math.abs(Math.sqrt(x*x+y*y));
@@ -53,4 +55,37 @@ public class Vector2d {
 	public String toString() {
 		return "X: "+x+"\t Y: "+y+"\t Scalar: "+get_scalar();
 	}
+	
+	static double epsilon = 0.02;
+	
+	public boolean nearlyEquals(Vector2d aVec) {
+		
+		double diffX = Math.abs(this.get_x()-aVec.get_x());
+		double diffY = Math.abs(this.get_y()-aVec.get_y());
+		
+		if((diffX<=Vector2d.epsilon)&&(diffY<=Vector2d.epsilon)) {
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+	
+	@Override
+	public int compareTo(Object o) {
+		Vector2d comp = (Vector2d) o;
+		double valThis = this.get_scalar();
+		double valComp = comp.get_scalar();
+		
+		if(valThis>valComp) {
+			return 1;
+		} else if (valComp>valThis) {
+			return -1;
+		} else {
+			return 0;
+		}
+		
+	}
+	
+	
 }
