@@ -6,6 +6,10 @@
           <option name="url" value="https://github.com/Project6DKE/mainProject" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://recordings.reu1.blindsidenetworks.com/instructure-trial/aecab9dd6085576bb4ee1de1a0d2a0e5ea805e99-1598968592639/presentation/" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="$USER_HOME$/Desktop" />
