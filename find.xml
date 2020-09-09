@@ -1,7 +1,7 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="File '.../src/com/Thibault/Arithmics.java'" />
-    <option name="defaultScopeName" value="File '.../src/com/Thibault/Arithmics.java'" />
-    <option name="SEARCH_SCOPE" value="File '.../src/com/Thibault/Arithmics.java'" />
+    <option name="customScope" value="File '.../Box.java'" />
+    <option name="defaultScopeName" value="File '.../Box.java'" />
+    <option name="SEARCH_SCOPE" value="File '.../Box.java'" />
   </component>
 </application>
